@@ -1,0 +1,283 @@
+@edit yaro-chat
+1 999999 d
+i
+$include $lib/yaro
+ 
+: createChannel ( s -- )
+    me @ "W" flag? if
+        dup prog swap "_channels/" swap strcat "/exists" strcat 1 setprop
+        dup #0 swap newexit prog setlink
+        dup prog swap "_channels/" swap strcat "/members" strcat { me @ } array_make array_put_reflist
+        me @ swap "Created new channel called " swap strcat "!" strcat 
+        me @ swap success_color ansi_notify
+    else
+        "Sorry! Only a wizard can do that!" me @ swap error_color tell
+    then
+;
+ 
+: deleteChannel ( -- )
+    me @ "W" flag? if
+        prog "_channels/" command @ strcat "/exists" strcat getprop if
+            prog "_channels/" command @ strcat remove_prop 
+            trigger @ recycle
+            me @ "Deleted channel " command @ strcat "!" strcat 
+            me @ swap success_color ansi_notify
+        else
+            "This channel does not exist!" me @ swap error_color tell
+        then
+    else
+        "Sorry! Only a wizard can do that!" me @ swap error_color tell
+    then
+;
+ 
+ 
+: who ( -- )
+    var listeners
+
+    { } array_make listeners !
+    prog "_channels/" command @ strcat "/members" strcat array_get_reflist
+    foreach
+        swap pop dup ok? over player? and if dup awake? if 
+            dup "_channels/" command @ strcat "/nick" strcat getprop dup if
+                me @ swap tag_color_1 " [" me @ swap tag_color_2 swap strcat "]" me @ swap tag_color_2 strcat 
+                swap name swap strcat listeners @ swap array_append listeners !
+            else
+                pop name listeners @ swap array_append listeners !
+            then
+        else
+            pop
+        then else pop then
+    repeat
+    me @ "Listeners on channel " command @ strcat 80 boxTitle
+    me @ listeners @ 80 boxList
+    me @ listeners @ array_count intostr " listeners on " strcat command @ strcat 80 boxTitle
+;
+
+: makeTag ( d s -- s )
+    over swap tag_color_1
+    over open_tag 3 pick swap tag_color_2 " " strcat swap strcat
+    " " 3 pick close_tag strcat rot swap tag_color_2 strcat 
+;
+ 
+: doSay ( s -- )
+    strip
+    prog "_channels/" command @ strcat "/members" strcat array_get_reflist
+    me @ "_channels/" command @ strcat "/gaglist" strcat array_get_reflist
+    swap array_diff
+    dup foreach
+        swap pop dup ok? if dup "_channels/" command @ strcat "/gaglist" strcat array_get_reflist 
+        me @ array_findval if
+            1 array_make swap array_diff
+        else
+            pop
+        then else pop then
+    repeat
+    dup me @ array_findval if
+        foreach
+            swap pop dup ok? over player? and if
+                prog "_channels/" command @ strcat "/alias" strcat getprop dup if
+                    over swap toupper makeTag 
+                else
+                    pop dup command @ toupper makeTag 
+                then
+                " " strcat 
+                me @ "_channels/" command @ strcat "/nick" strcat getprop dup if
+                else
+                    pop me @ name 
+                then 
+                3 pick swap ooc_color_1 strcat " says, \"" 3 pick swap ooc_color_1 strcat 
+                3 pick 3 pick swap ooc_color_2 strcat "\"" 3 pick swap ooc_color_1 strcat
+                otell 
+            else pop then
+        repeat
+    else
+        pop "You must join a channel before speaking on it." me @ swap error_color tell
+    then
+    pop
+;
+ 
+: doPose ( s -- )    
+    strip
+    prog "_channels/" command @ strcat "/members" strcat array_get_reflist
+    me @ "_channels/" command @ strcat "/gaglist" strcat array_get_reflist
+    swap array_diff
+    dup foreach
+        swap pop dup ok? if dup "_channels/" command @ strcat "/gaglist" strcat array_get_reflist 
+        me @ array_findval if
+            1 array_make swap array_diff
+        else
+            pop
+        then else pop then
+    repeat
+    dup me @ array_findval if
+        foreach
+            swap pop dup ok? over player? and if
+                prog "_channels/" command @ strcat "/alias" strcat getprop dup if
+                    over swap toupper makeTag
+                else
+                    pop dup command @ toupper makeTag
+                then
+                " " strcat
+                me @ "_channels/" command @ strcat "/nick" strcat getprop dup if
+                else
+                    pop me @ name 
+                then
+                3 pick swap ooc_color_1 strcat " " strcat 3 pick 3 pick swap ooc_color_1 strcat otell
+            else pop then
+        repeat
+    else
+        pop "You must join a channel before posing on it." me @ swap error_color tell
+    then    
+    pop
+;
+ 
+: onChannel ( -- )
+    prog "_channels/" command @ strcat "/members" strcat array_get_reflist
+    me @ array_findval if
+        "You are already in channel " command @ strcat "!" strcat
+        me @ swap error_color tell
+    else
+        prog "_channels/" command @ strcat "/members" strcat array_get_reflist
+        me @ swap dup array_count array_insertitem
+        prog swap "_channels/" command @ strcat "/members" strcat swap array_put_reflist
+        "Channel " command @ strcat " joined!" strcat me @ swap success_color tell
+        "has joined the channel. :)" doPose
+    then
+;
+ 
+: offChannel ( -- )
+    prog "_channels/" command @ strcat "/members" strcat array_get_reflist
+    var newArray
+    { } array_make newArray !
+    foreach
+        swap pop
+        dup me @ = if
+            pop
+        else
+            newArray @ dup array_count array_insertitem newArray !
+        then
+    repeat
+    "has left the channel. :(" doPose
+    prog "_channels/" command @ strcat "/members" strcat newArray @ array_put_reflist
+    "Left channel " command @ strcat "!" strcat me @ swap success_color tell
+;
+ 
+: doAlias ( s -- )
+    me @ "W" flag? if
+        dup if
+            dup prog "_channels/" command @ strcat "/alias" strcat rot setprop
+        "Alias " swap strcat " set for channel " me @ swap success_color strcat command @ strcat "!" strcat
+        me @ swap success_color tell
+        else
+            prog "_channels/" command @ strcat "/alias" strcat remove_prop
+            "Removed alias from channel " command @ strcat "!" strcat me @ swap success_color tell
+        then
+    else
+        "Sorry! Only a wizard can do that!" me @ swap error_color tell
+    then
+;
+ 
+: doNick ( s -- )
+    dup if
+        dup me @ "_channels/" command @ strcat "/nick" strcat rot setprop
+        "Nickname " swap strcat " set for channel " me @ swap success_color strcat command @ strcat "!" strcat
+        me @ swap success_color tell
+    else
+        me @ "_channels/" command @ strcat "/nick" strcat remove_prop
+        "Nickname cleared for channel " command @ strcat "!" strcat me @ swap success_color tell
+    then
+;
+ 
+: doRestrict ( -- )
+    me @ "W" flag? if
+        prog "_channels/" command @ strcat "/restricted" strcat 1 setprop
+        "This channel is now restricted to wizards only!" me @ swap success_color tell
+    else
+        "Sorry! Only a wizard can do that!" me @ swap error_color tell
+    then
+;
+ 
+: doUnrestrict ( -- )
+    me @ "W" flag? if
+        prog "_channels/" command @ strcat "/restricted" strcat remove_prop
+        "This channel is now open to all players!" me @ swap success_color tell
+    else
+        "Sorry! Only a wizard can do that!" me @ swap error_color tell
+    then
+;
+ 
+: gag ( s -- )
+    "*" swap strcat dup match me @ = if
+        "Gagging yourself?" me @ swap error_color tell
+        exit
+    then
+    dup me @ "_channels/" command @ strcat "/gaglist" strcat array_get_reflist
+    over match dup player? if
+        over swap array_findval if
+            var newArray
+            { } array_make newArray !
+            foreach
+                swap pop
+                over over swap match = if
+                    pop
+                else
+                    newArray @ dup array_count array_insertitem newArray !
+                then
+            repeat
+            me @ "_channels/" command @ strcat "/gaglist" strcat newArray @ array_put_reflist
+            "Removed gag on " swap match name strcat " in channel " strcat command @ strcat 
+            "!" strcat me @ swap success_color tell 
+        else
+            swap match over array_count rot swap
+            array_insertitem me @ swap "_channels/" command @ strcat "/gaglist" strcat swap
+            array_put_reflist
+            "Player " swap match name strcat " gagged on channel " strcat command @ strcat
+            "!" strcat me @ swap success_color tell
+        then
+    else
+        "I don't know that player!" me @ swap error_color tell
+    then
+;
+
+: show_help
+    me @ command @ " Command Help" strcat 80 boxTitle
+    me @ "#create <NAME> - WIZARDS ONLY: Create a new channel <NAME>" 80 boxContent
+    me @ "#delete <NAME> - WIZARDS ONLY: Delete channel <NAME>" 80 boxContent
+    me @ "#restrict - WIZARDS ONLY: Make " command @ strcat " accessible only to wizards" strcat 80 boxContent
+    me @ "#unrestrict - WIZARDS ONLY: Make " command @ strcat " accessible to all users" strcat 80 boxContent
+    me @ "#alias - WIZARDS ONLY: Set an alias for " command @ strcat 80 boxContent
+    me @ "#on - Join the " command @ strcat " channel" strcat 80 boxContent
+    me @ "#off - Leave the " command @ strcat " channel" strcat 80 boxContent
+    me @ "#who - Get a list of users listening on " command @ strcat 80 boxContent
+    me @ "#nick - Give yourself a nickname on " command @ strcat 80 boxContent
+    me @ "#gag - Stop a user from sending or recieving messages from you on " command @ strcat 80 boxContent
+    me @ "#help - Display this message." 80 boxContent
+    me @ me @ 80 line box_color tell
+;
+ 
+: main ( s -- )
+    prog "_channels/" command @ strcat "/restricted" strcat getprop 1 = if
+        me @ "W" flag? not if
+            "Only wizards have access to this channel." me @ swap error_color tell
+            exit
+        then
+    then
+    dup "create" paramTest if " " split swap pop createChannel exit then
+    dup "delete" paramTest if " " split swap pop deleteChannel exit then
+    dup "on" paramTest if " " split swap pop onChannel exit then
+    dup "off" paramTest if " " split swap pop offChannel exit then
+    dup "who" paramTest if " " split swap pop who exit then
+    dup "alias" paramTest if " " split swap pop doAlias exit then    
+    dup "nick" paramTest if " " split swap pop doNick exit then    
+    dup "restrict" paramTest if " " split swap pop doRestrict exit then    
+    dup "unrestrict" paramTest if " " split swap pop doUnrestrict exit then    
+    dup "gag" paramTest if " " split swap pop gag exit then    
+    dup "help" paramTest if pop show_help exit then    
+    dup ":" instr 1 = if ":" split swap pop doPose exit then
+    doSay
+;
+.
+c
+q
+
+
