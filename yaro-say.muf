@@ -7,6 +7,8 @@ $include $lib/yaro
 var timeout
 
 : updatePo ( -- )
+    var current_turn
+
     loc @ "poseorder/order" getConfig dup if
         var newPO
         { }dict newPO ! foreach
@@ -25,17 +27,25 @@ var timeout
         pop { me @ name systime }dict
     then
     dup loc @ swap "poseorder/order" swap setconfig
-    dup array_vals array_make SORTTYPE_CASE_ASCEND array_sort 0 array_getitem
-    array_findval 0 array_getitem dup match swap
-    loc @ getPlayers pop pop over { swap match } array_make swap array_diff 
-    foreach swap pop
-        dup "poseorder/notify" getConfig if
-            over "It is now " swap strcat "'s pose." strcat over swap info_color otell
+    foreach
+        systime swap - timeout @ > not if
+            pmatch dup "status" getConfig dup not if pop "???" then 
+            "status" match swap "statuses/" swap strcat getConfig dup not if pop "?" then
+            "I" stringcmp not if
+                current_turn ! break
+            else pop then
         else pop then
-    repeat pop
-    dup "poseorder/notify" getConfig if
-        dup "It is now your pose!" info_color otell
-    else pop then
+    repeat
+    loc @ getPlayers pop pop foreach swap pop
+        dup "poseorder/notify" getConfig if
+            dup current_turn @ = if
+                dup "It is now currently your pose." info_color otell
+            else
+                dup "It is now currently " current_turn @ name "'s pose." strcat strcat
+                info_color otell
+            then
+        else pop then
+    repeat
 ;
 
 : makeOOC ( d -- s )
