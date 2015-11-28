@@ -96,7 +96,7 @@ $include $lib/yaro
             dup command @ match swap "/commands" strcat getConfig dup array? if
                 command @ array_findval if
                     command ! exit
-                then
+                else pop then
             else pop pop then
         repeat
     then
