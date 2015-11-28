@@ -638,32 +638,34 @@ lvar cache
     dup invalidRefs !
     asleepRefs !
  
-    dup string? if
-        " " explode array_make foreach swap pop
-            dup pmatch dup player? over ok? and if
-                swap pop dup awake? if
-                    validRefs @ swap 1 array_make array_union validRefs !
+    dup case 
+        string? when
+            " " explode array_make foreach swap pop
+                dup pmatch dup player? over ok? and if
+                    swap pop dup awake? if
+                        validRefs @ swap array_append validRefs !
+                    else
+                        asleepRefs @ swap array_append asleepRefs !
+                    then
                 else
-                    asleepRefs @ swap 1 array_make array_union asleepRefs !
+                    pop invalidRefs @ swap array_append invalidRefs !
                 then
-            else
-                pop invalidRefs @ swap 1 array_make array_union invalidRefs !
-            then
-        repeat
-    then
-    dup dbref? if
-        contents begin dup while
-            dup player? if
-                dup awake? if
-                    validRefs @ over array_append validRefs !
+            repeat
+        end
+        dbref? when
+            contents begin dup while
+                dup player? if
+                    dup awake? if
+                        validRefs @ over array_append validRefs !
+                    else
+                        asleepRefs @ over array_append asleepRefs !
+                    then
                 else
-                    asleepRefs @ over array_append asleepRefs !
                 then
-            else
-            then
-            next
-        repeat pop
-    then
+                next
+            repeat pop
+        end
+    endcase
  
     validRefs @
     invalidRefs @
