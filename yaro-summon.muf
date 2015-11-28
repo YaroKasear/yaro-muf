@@ -5,6 +5,8 @@ i
 $include $lib/yaro
 
 : doSummon ( s -- )
+    var player_name
+
     dup if
         dup pmatch dup case
             ok? not when "I don't recognize a player named \"" rot strcat "!\"" strcat me @ swap error_color tell end
@@ -12,13 +14,16 @@ $include $lib/yaro
             awake? not when swap pop name " is not awake." strcat me @ swap error_color tell end
             me @ = when me @ "Summoning yourself?" error_color tell end
             default 
-                pop swap pop me @ "summon/join_req" getConfig dup if
+                name player_name ! swap pop me @ "summon/join_req" getConfig dup if
                     dup "_" rinstr strcut swap dup strlen 1 - strcut pop swap
                     atoi systime swap - 600 > not over pmatch 4 pick = and if
                         pop dup loc @ moveto
                         "_config/summon" remove_prop
                         me @ "_config/summon" remove_prop
                         me @ "Summoned." note_color tell
+                        me @ location getPlayers pop pop foreach swap pop
+                            dup player_name @ " has been summoned into the room." strcat note_color otell
+                        repeat
                         exit
                     else
                     pop dup "summon/summon_req" me @ name "_" strcat systime intostr strcat setConfig
@@ -54,6 +59,9 @@ $include $lib/yaro
                         "_config/summon" remove_prop
                         me @ "_config/summon" remove_prop
                         me @ "Joined." note_color tell
+                        me @ location getPlayers pop pop foreach swap pop
+                            dup me @ name " has been summoned into the room." strcat note_color otell
+                        repeat
                         exit
                     else
                         pop dup "summon/join_req" me @ name "_" strcat systime intostr strcat setConfig
@@ -70,7 +78,7 @@ $include $lib/yaro
             end
         endcase
     else
-        pop me @ "Who do you wish to summon?" error_color tell
+        pop me @ "Who do you wish to join?" error_color tell
     then
 ;
 
