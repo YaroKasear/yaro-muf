@@ -31,7 +31,7 @@ var timeout
         systime swap - timeout @ > not if
             pmatch dup "status" getConfig dup not if pop "???" then 
             "status" match swap "statuses/" swap strcat getConfig dup not if pop "?" then
-            "I" stringcmp not if
+            "I" stringcmp not over awake? and if
                 current_turn ! break
             else pop then
         else pop then

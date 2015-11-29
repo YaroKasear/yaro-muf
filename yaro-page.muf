@@ -1,306 +1,206 @@
+@q
 @program yaro-page.muf
 1 9999999 del
 i
 $include $lib/yaro
 $include $lib/jmail
- 
-: doPage ( s s -- )
-    var asleepNames
-    var invalidNames
-    var validNames
-    var asleepList
-    var invalidList
-    var validList
 
-    { } array_make
-    dup asleepNames !
-    dup invalidNames !
-    validNames !
-
-    "" 
-    dup asleepList !
-    dup invalidList !
-    validList !
-
-    swap getPlayers dup if 
-        dup array_count 1 = if
-            0 array_getitem name
-            me @ swap " is currently asleep. Please use " command @ strcat " #mail to leave them a message." 
-            strcat strcat info_color tell
-        else
-            foreach swap pop
-                name asleepNames @ swap array_append asleepNames !
-            repeat
-            asleepNames @ foreach
-                swap 0 = if
-                    "and " swap strcat 
-                    asleepList @ swap strcat asleepList !
-                else
-                    ", " strcat
-                    asleepList @ strcat asleepList !
-                then
-            repeat
-            asleepList @ " are currently asleep. Please use " command @ strcat " #mail to leave them a message."
-            strcat strcat me @ swap info_color tell
-        then
+: listify_ref ( d a -- s )
+    dup array_count 1 > if
+        "" swap
+        foreach swap pop
+            name strcat ", " strcat
+        repeat
+        "," rsplit pop
+        "," rsplit ", and" swap strcat strcat
+        swap name "you" swap subst
     else
-        pop
-    then
-    dup if
-        dup array_count 1 = if
-            0 array_getitem
-            me @ swap " is not a valid player." strcat error_color tell
-        else
-            foreach swap pop
-                invalidNames @ swap array_append invalidNames !
-            repeat
-            invalidNames @ foreach
-                swap 0 = if
-                    "and " swap strcat 
-                    invalidList @ swap strcat invalidList !
-                else
-                    ", " strcat
-                    invalidList @ strcat invalidList !
-                then
-            repeat
-            invalidList @ " are not valid players!" strcat me @ swap error_color tell
-        then
-    else
-        pop
-    then
-    dup if
-        dup dup array_count 1 = if
-            0 array_getitem
-            me @ swap name "\" to " swap strcat ooc_color_1 
-            3 pick dup ":" instr 1 = if
-                ":" split swap pop
-                me @ "You page-pose, \"" ooc_color_1
-                swap me @ name " " strcat swap strcat me @ swap ooc_color_2 strcat
-                swap strcat tell
-                0 array_getitem swap
-                ":" split swap pop
-                "In a page-pose to you, " me @ name strcat " " strcat swap strcat
-                over swap ooc_color_1 over swap otell 
-                1 array_make 
-            else
-                me @ swap ooc_color_2 swap strcat 
-                me @ "You page, \"" ooc_color_1 swap strcat tell
-                0 array_getitem dup 
-                me @ name " pages, \"" strcat ooc_color_1
-                rot 3 pick swap ooc_color_2 strcat
-                over "\" to you." ooc_color_1 strcat over swap otell 
-                1 array_make
-            then
-        else
-            foreach swap pop
-                name validNames @ swap array_append validNames !
-            repeat
-            over dup ":" instr 1 = if
-                ":" split swap pop
-                validNames @ foreach
-                    swap 0 = if
-                        "and " swap strcat 
-                        validList @ swap strcat validList !
-                    else
-                        ", " strcat
-                        validList @ strcat validList !
-                    then
-                repeat
-                me @ "You page-pose, \"" ooc_color_1
-                swap me @ swap me @ name " " strcat swap strcat ooc_color_2 strcat
-                me @ "\" to " validList @ strcat ooc_color_1 strcat
-                tell
-
-                over ":" split swap pop over foreach swap pop
-                    { } array_make
-                    validNames !
-    
-                    "" 
-                    validList !
-
-                    3 pick foreach swap pop
-                        over over = if
-                            pop "you"
-                        else
-                            name
-                        then
-                        validNames @ swap array_append validNames !
-                    repeat
-                    validNames @ foreach
-                        swap 0 = if
-                            "and " swap strcat 
-                            validList @ swap strcat validList !
-                        else
-                            ", " strcat
-                            validList @ strcat validList !
-                        then
-                    repeat
-                    dup "In a page-pose to " validList @ strcat ", " strcat 
-                    me @ name strcat " " strcat
-                    4 pick strcat ooc_color_1 otell
-                repeat
-            else
-                validNames @ foreach
-                    swap 0 = if
-                        "and " swap strcat 
-                        validList @ swap strcat validList !
-                    else
-                        ", " strcat
-                        validList @ strcat validList !
-                    then
-                repeat
-                me @ "You page, \"" ooc_color_1
-                swap me @ swap ooc_color_2 strcat
-                me @ "\" to " validList @ strcat ooc_color_1 strcat
-                tell
-
-                over over foreach swap pop
-                    { } array_make
-                    validNames !
-    
-                    "" 
-                    validList !
-
-                    3 pick foreach swap pop
-                        over over = if
-                            pop "you"
-                        else
-                            name
-                        then
-                        validNames @ swap array_append validNames !
-                    repeat
-                    validNames @ foreach
-                        swap 0 = if
-                            "and " swap strcat 
-                            validList @ swap strcat validList !
-                        else
-                            ", " strcat
-                            validList @ strcat validList !
-                        then
-                    repeat
-                    dup me @ name " pages, \"" strcat ooc_color_1
-                    3 pick 3 pick swap ooc_color_2 strcat
-                    over validList @ "\" to " swap strcat "." strcat ooc_color_1
-                    strcat otell
-                repeat
-                pop swap pop
-            then
-        then
-        me @ swap "page/last-paged" swap setConfig
-    else
-        pop
+        0 array_getitem name
+        swap name "you" swap subst
     then
 ;
 
-: doMail ( s s -- )
-    var invalidNames
-    var validNames
-    var invalidList
-    var validList
-    var myName
-
-    me @ myName !
-
-    { } array_make
-    dup invalidNames !
-    validNames !
-
-    "" 
-    dup invalidList !
-    validList !
-
-    swap getPlayers
-    swap dup if
-        dup array_count 1 = if
-            0 array_getitem
-            me @ swap " is not a valid player." strcat error_color tell
-        else
-            foreach swap pop
-                invalidNames @ swap array_append invalidNames !
-            repeat
-            invalidNames @ foreach
-                swap 0 = if
-                    "and " swap strcat 
-                    invalidList @ swap strcat invalidList !
-                else
-                    ", " strcat
-                    invalidList @ strcat invalidList !
-                then
-            repeat
-            invalidList @ " are not valid players!" strcat me @ swap error_color tell
-        then
+: listify_string ( a -- s )
+    dup array_count 1 > if
+        "" swap
+        foreach swap pop
+            strcat ", " strcat
+        repeat
+        "," rsplit pop
+        "," rsplit ", and" swap strcat strcat
     else
-        pop
-    then 
-    array_union dup if
-        dup array_count 1 = if
-            0 array_getitem
-            me @ over name "\" to " swap strcat ooc_color_1 
-            me @ "You page-mail, \"" ooc_color_1 
-            4 pick me @ swap ooc_color_2 strcat swap strcat tell 
-            swap "You have a page-mail from " me @ name strcat "!" strcat 
-            swap jmail-player
-        else
-            dup foreach swap pop
-                name validNames @ swap array_append validNames !
-            repeat   
-            validNames @ foreach
-                swap 0 = if
-                    "and " swap strcat 
-                    validList @ swap strcat validList !
-                else
-                    ", " strcat
-                    validList @ strcat validList !
-                then
-            repeat
-            me @ "You page-mail, \"" ooc_color_1 
-            3 pick me @ swap ooc_color_2 strcat
-            me @ "\" to " validList @ strcat ooc_color_1 strcat tell
-            me @ "temp/mail-list" rot setConfig
-            me @ "_config/temp/mail-list" "You have a page-mail from " me @ name strcat "!" strcat
-            4 rotate jmail-list
-        then
-    else
-        pop
+        0 array_getitem
     then
 ;
- 
-: doUsage ( -- )
-    me @ "Usage: " info_color me @ command @ "[#mail] [RECIPIENT]=[:]<MESSAGE>" 
-    strcat note_color strcat tell
+
+: do_summon ( s -- )
+    getPlayers array_dedup dup if
+        dup array_count 1 > if
+            me @ swap listify_ref
+            me @ swap " are currently asleep and cannot recieve your summons." strcat 
+        else
+            me @ swap listify_ref
+            me @ swap " is currently asleep and cannot recieve your summons." strcat 
+        then
+        error_color tell
+    else pop then
+    array_dedup dup if
+        listify_string
+        me @ swap "I do not recognize " swap strcat ". They will not be summoned." strcat 
+        error_color tell
+    else pop then
+    array_dedup dup if
+        dup foreach swap pop
+            over over swap listify_ref 
+            "You sense that " me @ name strcat " is looking for " strcat swap strcat " in " strcat
+            loc @ name strcat "." strcat over swap info_color otell
+        repeat
+        me @ over listify_ref "You have sent your summons to " swap strcat "." strcat me @ swap
+        note_color tell
+        me @ "_config/page/last_paged#/" remove_prop
+        me @ swap "page/last_paged" swap setConfig
+    then
 ;
- 
-: main ( s -- )
+
+: do_pose ( a s -- )
+    var message
+    var players
+
+    message !
+    array_dedup players !
+    "You page-pose, '" me @ name strcat " " strcat message @ strcat "' to " strcat me @ players @ listify_ref strcat "." strcat
+    "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes tell
+    players @ foreach swap pop
+        "In a page-pose to " over players @ listify_ref strcat ", " strcat 
+        me @ name strcat " " strcat message @ strcat "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes otell
+    repeat
+    me @ "_config/page/last_paged#/" remove_prop
+    me @ "page/last_paged" players @ setConfig
+;
+
+: do_say ( a s -- )
+    var message
+    var players
+
+    message !
+    array_dedup players !
+    "You page, \"" message @ strcat "\" to " strcat me @ players @ listify_ref strcat "." strcat
+    "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes tell
+    players @ foreach swap pop
+        me @ name " pages, \"" strcat message @ strcat "\" to " strcat over players @ listify_ref
+        strcat "." strcat "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes otell
+    repeat
+    me @ "_config/page/last_paged#/" remove_prop
+    me @ "page/last_paged" players @ setConfig
+;
+
+: do_mail ( a s -- )
+    var message
+    var players
+    var whoami
+
+    message !
+    players !
+    me @ whoami !
+
+    me @ "_config/page/mail-list" players @ array_put_reflist
+    me @ "_config/page/mail-list" "You have a page-mail from " me @ name strcat "." strcat message @ jmail-list if    
+        whoami @ "You page-mail, \"" message @ strcat "\" to " strcat me @ players @ listify_ref strcat "." strcat
+        "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes otell
+    else
+        whoami @ "Something went wrong when sending your mail to " players @ listify_ref strcat "." strcat
+        error_color otell
+    then
+;
+
+: show_help
+    me @ trigger @ name ";" split pop " Command Usage" strcat 80 boxTitle
+    me @ me @ command @ " [players]=<message>" strcat field_color 
+    me @ "Send a private message to players." content_color 80 boxInfo
+    me @ me @ command @ " players" strcat field_color 
+    me @ "Send a summon message to players" content_color 80 boxInfo
+    me @ me @ command @ " #mail [players]=<message>" strcat field_color 
+    me @ "Send a private mail to players." content_color 80 boxInfo
+    me @ me @ command @ " #help" strcat field_color 
+    me @ "Show this dialog." content_color 80 boxInfo
+    me @ me @ 80 line box_color tell
+; 
+
+: main
+    var asleep
+
+    { } array_make asleep !
     strip
-    dup if
-        dup "mail" paramTest if
-            " " split swap pop dup if
+    dup case
+        "help" paramTest when show_help exit end
+        "mail" paramTest when 
+            "#mail" split swap pop strip
+            dup if
                 dup "=" instr if
-                    "=" split doMail exit
+                    "=" split swap getPlayers swap array_dedup dup if
+                        listify_string
+                        me @ swap "I do not recognize " swap strcat ". They will not be mailed." strcat 
+                        error_color tell
+                    else pop then
+                    array_union swap do_mail
                 else
-                    doUsage exit
+                    me @ "I need a message to send." error_color tell
                 then
             else
-                doUsage exit
+                me @ "Who are you page-mailing?" error_color tell
             then
-        then
-        dup "=" instr if
-            dup "=" instr 1 = if
-                me @ "last-paged" getConfig dup if 
-                    swap "=" split swap pop doPage
+        exit end
+        default
+            pop dup "=" instr if
+                "=" split strip swap dup if
+                    getPlayers array_dedup dup if
+                        dup array_count 1 > if
+                            me @ swap listify_ref
+                            me @ swap " are currently asleep and cannot recieve your page. Use page #mail to leave them a message." strcat 
+                        else
+                            me @ swap listify_ref
+                            me @ swap dup pmatch " is currently asleep and cannot recieve your page. Use page #mail to leave %o a message." pronoun_sub strcat 
+                        then
+                        error_color tell
+                    else pop then
+                    array_dedup dup if
+                        listify_string
+                        me @ swap "I do not recognize " swap strcat ". They will not be paged." strcat 
+                        error_color tell
+                    else pop then
                 else
-                    pop me @ "Page who?" error_color tell exit
+                    pop me @ "page/last_paged" getConfig { swap foreach swap pop
+                        dup ok? not if pop else
+                            dup awake? not if
+                                asleep @ swap array_append asleep !
+                            then
+                        then
+                    repeat } array_make
                 then
-            else
-                "=" split doPage
-            then
-        else
-            doUsage
-        then
-    else
-        doUsage
-    then
+                asleep @ array_dedup dup if
+                    dup array_count 1 > if
+                        me @ swap listify_ref
+                        me @ swap " are currently asleep and cannot recieve your page. Use page #mail to leave them a message." strcat 
+                    else
+                        me @ swap listify_ref
+                        me @ swap dup pmatch " is currently asleep and cannot recieve your page. Use page #mail to leave %o a message." pronoun_sub strcat 
+                    then
+                    error_color tell
+                else pop then
+                dup if
+                    swap dup ":" instr 1 = if
+                        ":" split swap pop do_pose
+                    else
+                        do_say
+                    then
+                else
+                    pop me @ "No one to page." error_color tell
+                then
+            else do_summon then
+        end
+    endcase
 ;
+
 .
 c
 q
