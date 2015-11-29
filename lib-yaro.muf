@@ -641,7 +641,7 @@ lvar cache
     dup case 
         string? when
             " " explode array_make foreach swap pop
-                dup pmatch dup player? over ok? and if
+                dup if dup pmatch dup player? over ok? and if
                     swap pop dup awake? if
                         validRefs @ swap array_append validRefs !
                     else
@@ -649,7 +649,7 @@ lvar cache
                     then
                 else
                     pop invalidRefs @ swap array_append invalidRefs !
-                then
+                then else pop then
             repeat
         end
         dbref? when
