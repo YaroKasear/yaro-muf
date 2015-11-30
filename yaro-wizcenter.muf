@@ -10,7 +10,7 @@ $include $lib/yaro
     ref !
 
     ref @ name 
-    ref @ "status" getConfig dup not if 
+    ref @ "~status" getConfig dup not if 
         pop "???" 
     then toupper
 
