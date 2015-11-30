@@ -74,7 +74,7 @@ $include $lib/yaro
             then
             p !
         
-            me @ "player locations" 80 boxtitle
+            me @ "Player Locations" 80 boxtitle
             me @ { "Name" "Sex" "Species" "Status" "Idle" "Room" } array_make
             { p @ array_dedup foreach swap pop ref ! 
                 ref @ descriptors array_make dup array_count 0 > if 
