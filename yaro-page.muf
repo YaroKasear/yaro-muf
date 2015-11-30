@@ -4,6 +4,7 @@
 i
 $include $lib/yaro
 $include $lib/jmail
+$include $cmd/status
 
 : listify_ref ( d a -- s )
     dup array_count 1 > if
@@ -33,6 +34,13 @@ $include $lib/jmail
     then
 ;
 
+: get_idle ( a -- a )
+    { swap foreach swap pop
+        dup descrleastidle descrcon conidle 900 > 
+        over get_status swap pop "A" stringcmp not or not if pop then
+    repeat } array_make
+;
+
 : do_summon ( s -- )
     getPlayers array_dedup dup if
         dup array_count 1 > if
@@ -50,6 +58,13 @@ $include $lib/jmail
         error_color tell
     else pop then
     array_dedup dup if
+        dup get_idle dup if dup array_count 1 > if
+            me @ swap listify_ref "^INFO_COLOR^" swap strcat 
+            " are currently idle or away from their keyboard and might not get back to you soon." strcat tell
+        else
+            me @ swap listify_ref "^INFO_COLOR^" swap strcat me @ name "you" subst 
+            " is currently idle or away from their keyboard and might not get back to you soon." strcat tell
+        then else pop then
         dup foreach swap pop
             over over swap listify_ref 
             "You sense that " me @ name strcat " is looking for " strcat swap strcat " in " strcat
@@ -187,6 +202,13 @@ $include $lib/jmail
                     then
                     error_color tell
                 else pop then
+                dup get_idle dup if dup array_count 1 > if
+                    me @ swap listify_ref "^INFO_COLOR^" swap strcat 
+                    " are currently idle or away from their keyboard and might not get back to you soon." strcat tell
+                else
+                    me @ swap listify_ref "^INFO_COLOR^" swap strcat me @ name "you" subst 
+                    " is currently idle or away from their keyboard and might not get back to you soon." strcat tell
+                then else pop then
                 dup if
                     swap dup ":" instr 1 = if
                         ":" split swap pop do_pose

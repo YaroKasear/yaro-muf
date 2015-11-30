@@ -286,5 +286,5 @@ public get_status
 c
 q
 @reg yaro-status=cmd/status
-@set yaro-status=_defs/get_status:"$cmd-status" match "get_status" call
+@set yaro-status=_defs/get_status:"$cmd/status" match "get_status" call
 

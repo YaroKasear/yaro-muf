@@ -741,7 +741,8 @@ lvar submitted
                     "changeme" newplayer newPRef !
                     newPRef @ "G" set
                     me @ loadPInfo
-                    newPRef @ "status" "NEW" setConfig
+                    newPRef @ "~status" "NEW" setConfig
+                    newPRef @ "~stype" "O" setConfig
                     newPRef @ "pinfo/rname" rname @ setConfig
                     newPRef @ "pinfo/prname" prname @ setConfig
                     newPRef @ "pinfo/rsex" rsex @ setConfig

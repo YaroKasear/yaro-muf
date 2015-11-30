@@ -3,6 +3,7 @@
 1 999999 del
 i
 $include $lib/yaro
+$include $cmd/status
 
 : cansee? ( d -- n )
     dup "D" flag? over me @ control? and swap "D" flag? not or
@@ -218,11 +219,11 @@ $include $lib/yaro
             { } array_make playerList !
             me @ "PLAYERS" 80 boxTitle
             foreach swap pop
-                dup name me @ swap content_color over "~status" getConfig dup not if
-                    pop "???"
+                dup name me @ swap content_color over get_status pop dup not if
+                    pop "^CONTENT_COLOR^???"
                 then 
                 3 pick awake? not if
-                    pop "ZZZ" 
+                    pop "^CONTENT_COLOR^ZZZ" 
                 then 
                 toupper me @ swap tag_color_1 me @ open_tag me @ swap tag_color_2 swap strcat
                 me @ close_tag " " strcat me @ swap tag_color_2 strcat swap strcat

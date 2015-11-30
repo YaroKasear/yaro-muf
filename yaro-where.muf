@@ -3,6 +3,7 @@
 1 9999 del
 i
 $include $lib/yaro
+$include $cmd/status
 
 : get_info ( d n -- s s s s s s )
     var ref
@@ -20,12 +21,10 @@ $include $lib/yaro
     endcase cleanString "^CONTENT_COLOR^" strcat me @ swap process_tags
     ref @ "~species" getprop dup not if pop "Unknown" then
     ref @ awake? if
-        ref @ "~status" getConfig dup not if
-            pop "???"
-        then
+        me @ ref @ get_status pop "^CONTENT_COLOR^" strcat process_tags
     else
-        "ZZZ"
-    then toupper
+        "^CONTENT_COLOR^ZZZ"
+    then
     c @ dup -1 = not if conidle time_format else pop "N/A" then
     ref @ location name
 ;
@@ -44,12 +43,10 @@ $include $lib/yaro
     endcase cleanString "^CONTENT_COLOR^" strcat me @ swap process_tags
     ref @ "~species" getprop dup not if pop "Unknown" then
     ref @ awake? if
-        ref @ "~status" getConfig dup not if
-            pop "???"
-        then
+        me @ ref @ get_status pop "^CONTENT_COLOR^" strcat process_tags
     else
-        "ZZZ"
-    then toupper
+        "^CONTENT_COLOR^ZZZ"
+    then
     ref @ awake? if
         ref @ descrleastidle descrcon conidle time_format
     else

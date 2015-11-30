@@ -3,6 +3,7 @@
 1 99999 del
 i
 $include $lib/yaro
+$include $cmd/status
 
 : get_details ( d - s s s )
     var ref
@@ -10,12 +11,9 @@ $include $lib/yaro
     ref !
 
     ref @ name 
-    ref @ "~status" getConfig dup not if 
-        pop "???" 
-    then toupper
-
+    me @ ref @ get_status pop "^CONTENT_COLOR^" strcat process_tags
     ref @ "role" getConfig dup not if
-        pop ""
+        pop "Who knows?"
     then
 ;
 

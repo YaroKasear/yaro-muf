@@ -3,6 +3,7 @@
 1 999999 del
 i
 $include $lib/yaro
+$include $cmd/status
 
 var timeout
 
@@ -18,7 +19,7 @@ var timeout
             dup systime swap - timeout @ -1 = swap timeout @ < or if
                 over swap array_findval 0 array_getitem
                 dup pmatch awake? over pmatch location loc @ = and 
-                over pmatch "~status" getConfig dup not if pop "???" then "status" match swap "statuses/" swap strcat getConfig dup not if pop "?" then "I" stringcmp not and if
+                over pmatch get_status swap pop "I" stringcmp not and if
                     " " strcat names @ swap strcat names !
                 else
                     pop
