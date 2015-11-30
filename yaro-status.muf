@@ -1,165 +1,290 @@
-@
+@q
 @program yaro-status.muf
 1 99999 del
 i
 $include $lib/yaro
 
-: doAdd ( a -- )
-    var newStatuses
+: get_status_string ( d s -- )
+    var status
+    var ref
+    toupper status !
+    ref !
 
-    { } array_make newStatuses !
-
-    foreach swap pop
-        dup "statuses/" swap strcat
-        command @ tolower match swap getConfig if
-        else
-            newStatuses @ swap array_append newStatuses !
+    "status" match "statuses" getConfig dup dictionary? if
+        status @ array_getitem
+    then
+    dup not if
+        pop ref @ "~stype" getConfig dup not if
+            pop "?"
         then
-    repeat
-    newStatuses @ foreach swap pop
-        dup command @ tolower match swap "statuses/" swap strcat "P" setConfig
-        command @ tolower match name over ";go" swap strcat split strcat 
-        over ";go" swap strcat strcat command @ tolower match swap setname
-        me @ swap "Successfully added new status " swap toupper strcat "!" strcat
-        success_color tell
-    repeat
+    then
+    case
+        "I" stringcmp not when "^IC_COLOR_1^" status @ strcat end
+        "O" stringcmp not when "^OOC_COLOR_1^" status @ strcat end
+        "A" stringcmp not when "^OOC_COLOR_2^" status @ strcat end
+        "D" stringcmp not when "^SUCCESS_COLOR^" status @ strcat end
+        "F" stringcmp not when "^ERROR_COLOR^" status @ strcat end
+        default pop status @ end
+    endcase
 ;
 
-: doAddSpecial ( a -- )
-    var newStatuses
+: get_status ( d -- s s )
+    var ref
+    var status
 
-    { } array_make newStatuses !
+    ref !
 
-    foreach swap pop
-        dup "statuses/" swap strcat
-        command @ tolower match swap getConfig if
-        else
-            newStatuses @ swap array_append newStatuses !
-        then
-    repeat
-    newStatuses @ foreach swap pop
-        dup command @ tolower match swap "statuses/" swap strcat "W" setConfig
-        command @ tolower match name over ";go" swap strcat split strcat 
-        over ";go" swap strcat strcat command @ tolower match swap setname
-        me @ swap "Successfully added new special status " swap toupper strcat "!" strcat
-        success_color tell
-    repeat
-;
-
-: doAddIC ( a -- )
-    var newStatuses
-
-    { } array_make newStatuses !
-
-    foreach swap pop
-        dup "statuses/" swap strcat
-        command @ tolower match swap getConfig if
-        else
-            newStatuses @ swap array_append newStatuses !
-        then
-    repeat
-    newStatuses @ foreach swap pop
-        dup command @ tolower match swap "statuses/" swap strcat "I" setConfig
-        command @ tolower match name over ";go" swap strcat split strcat 
-        over ";go" swap strcat strcat command @ tolower match swap setname
-        me @ swap "Successfully added new special status " swap toupper strcat "!" strcat
-        success_color tell
-    repeat
-;
-
-: doRemove ( a -- )
-    foreach swap pop
-        dup "_config/statuses/" swap strcat
-        command @ tolower match swap remove_prop
-        command @ tolower match name over ";go" swap strcat split strcat 
-        command @ tolower match swap setname
-    repeat
-    me @ swap "Successfully removed status " swap toupper strcat "!" strcat
-    success_color tell
-;
-
-: setStatus ( s -- )
-    dup command @ tolower match "statuses" getConfig dup if
-        swap array_getitem dup if
-            dup "P" stringcmp not over "I" stringcmp not or swap "W" stringcmp not me @ "W" flag? and or if
-                dup me @ swap "~status" swap setConfig
-                toupper dup "You have gone " swap strcat "!" strcat me @ swap success_color tell
-                loc @ getPlayers pop pop me @ 1 array_make swap array_diff 
-                foreach swap pop
-                    dup me @ name " has gone " strcat 4 pick strcat "!" strcat info_color otell
-                repeat pop
-            else
-                me @ "You are not allowed to go " rot toupper strcat "!" strcat error_color tell
-            then
-        else
-            pop me @ "I do not know the \"" rot toupper strcat "\" status!" strcat error_color tell
+    ref @ "~status" getConfig dup if
+        toupper status ! 
+    else
+        pop "???" status !
+    then
+    "status" match "statuses" getConfig dup dictionary? if
+        status @ array_getitem dup not if
+            pop "?"
         then
     else
-        me @ "I do not have any statuses configured!" error_color tell
+        pop "?"
+    then
+    ref @ status @ get_status_string swap
+;
+
+: show_help
+    me @ trigger @ name ";" split pop " Usage Help" strcat 80 boxTitle
+    me @ me @ "status" field_color 
+    me @ "Pick from a menu of statuses." content_color 80 boxInfo
+    me @ me @ "status <STATUS>" field_color 
+    me @ "Change to STATUS." content_color 80 boxInfo
+    me @ me @ "go<STATUS>" field_color 
+    me @ "Change to STATUS." content_color 80 boxInfo
+    me @ me @ "status #add-ic" field_color
+    me @ "W" flag? if
+        me @ "Add an IC status." content_color 80 boxInfo
+        me @ me @ "status #add-ooc" field_color
+        me @ "Add an OOC status." content_color 80 boxInfo
+        me @ me @ "status #add-away" field_color
+        me @ "Add an AWAY status." content_color 80 boxInfo
+        me @ me @ "status #add-onduty" field_color
+        me @ "Add an ON-DUTY status." content_color 80 boxInfo
+        me @ me @ "status #add-offduty" field_color
+        me @ "Add an OFF-DUTY status." content_color 80 boxInfo
+        me @ me @ "status #remove" field_color 
+        me @ "Remove a status." content_color 80 boxInfo
+        me @ me @ "status #set-custom <STATUS> [PLAYER]" field_color
+        me @ "Set a custom status STATUS on yourself or PLAYER." content_color 80 boxInfo
+    then
+    me @ me @ "status #help" field_color
+    me @ "Show this dialog." content_color 80 boxInfo
+    me @ me @ 80 line box_color tell
+;
+
+: add_status ( s s -- )
+    var type
+    var status
+    var statuses
+
+    me @ "W" flag? not if
+        me @ "You are not authorized to add statuses." error_color tell
+        exit
+    then
+    dup if
+        trigger @ "statuses" getConfig dup dictionary? not if
+            pop { }dict
+        then
+        statuses !
+        type !
+        dup if 
+            toupper status !
+            statuses @ status @ array_getitem if
+                "^ERROR_COLOR^That status already exists." tell exit
+            then
+            status @ tolower ";go" swap strcat dup
+            trigger @ swap trigger @ name swap "" swap subst rot strcat setname
+            trigger @ "_config/statuses" remove_prop
+            trigger @ "statuses" type @ statuses @ status @ array_insertitem setConfig
+            "^SUCCESS_COLOR^Added the status " me @ status @ get_status_string strcat "^SUCCESS_COLOR^ successfully!" 
+            strcat tell
+        else
+            pop "^ERROR_COLOR^I need a status to add!" tell
+        then
+    else
+        pop "^ERROR_COLOR^There is no type for this status! This should not happen! Tell " prog owner name strcat "!" strcat tell
+    then
+;
+
+: remove_status ( s -- )
+    var status
+    var status_string
+    var statuses
+
+    toupper status !
+    
+    trigger @ "statuses" getConfig dup dictionary? not if
+        pop "^ERROR_COLOR^No such status exists." tell exit 
+    then
+    dup status @ array_getitem not if
+        pop "^ERROR_COLOR^No such status exists." tell exit
+    then
+    status @ array_delitem statuses !
+    me @ status @ get_status_string status_string !
+    trigger @ "_config/statuses/" remove_prop
+    
+    trigger @ "statuses" statuses @ setConfig
+    trigger @ trigger @ name status @ tolower ";go" swap strcat "" swap subst setname
+    "^SUCCESS_COLOR^Removed the status " status_string @ strcat "." strcat tell
+;
+
+: set_status ( s -- )
+    var status
+    var type
+
+    toupper status !
+    trigger @ "statuses" getConfig dup dictionary? not if
+        pop "^ERROR_COLOR^I do not know the status " status @ strcat "." strcat tell exit
+    then
+    status @ array_getitem dup not if
+        pop "^ERROR_COLOR^I do not know the status " status @ strcat "." strcat tell exit
+    then
+    type !
+    type @ "D" stringcmp not type @ "F" stringcmp not or if
+        me @ "W" flag? not if
+            "^ERROR_COLOR^You are not authorized to use the " 
+            me @ status @ get_status_string strcat "^ERROR_COLOR^ status." strcat
+            tell exit
+        then
+    then
+    me @ "~status" status @ setConfig
+    me @ "~stype" type @ setConfig
+    "^NOTE_COLOR^" me @ name strcat " has gone " strcat me @ status @ get_status_string strcat 
+    "^NOTE_COLOR^!" strcat 
+    loc @ getPlayers pop pop foreach swap pop
+        over otell
+    repeat
+;
+
+: status_menu
+    var statuses
+    var list
+
+    trigger @ "statuses" getConfig dup dictionary? not if
+        pop "^ERROR_COLOR^I do not have any statuses configured." tell exit
+    then statuses !
+    me @ "Select Status"
+    statuses @ array_keys array_make dup list ! { swap foreach 
+        swap 1 + swap me @ swap get_status_string me @ swap process_tags 
+    repeat } 
+    2 / 1 + "Cancel" over 50 doMenu
+    1 - list @ swap array_getitem dup if
+        set_status
+    else
+        pop "^NOTE_COLOR^Canceled status selection." tell
+    then
+;
+
+: set_custom ( d s -- )
+    var status
+    var ref
+
+    me @ "W" flag? not if
+        "^ERROR_COLOR^You are not authorized to set custom statuses." tell exit
+    then
+    dup if 
+        toupper status !
+        dup ok? over player? and if
+            ref !
+        else
+            pop "^ERROR_COLOR^I do not know that player." tell
+        then
+    else
+        "^ERROR_COLOR^I need a status to set!" tell
+    then
+    me @ "Select Status Type"
+    1 "IC"
+    2 "OOC"
+    3 "AWAY"
+    4 "ON-DUTY"
+    5 "OFF-DUTY"
+    6 "Cancel"
+    6 50 doMenu case
+        1 = when ref @ "~stype" "I" setConfig end
+        2 = when ref @ "~stype" "O" setConfig end
+        3 = when ref @ "~stype" "A" setConfig end
+        4 = when ref @ "W" flag? if 
+                ref @ "~stype" "D" setConfig 
+            else
+                me @ ref @ name " is not a wizard." strcat error_color tell exit
+            then
+        end
+        5 = when ref @ "W" flag? if 
+                ref @ "~stype" "F" setConfig 
+            else
+                me @ ref @ name " is not a wizard." strcat error_color tell exit
+            then end
+        6 = when exit end
+    endcase
+    ref @ "~status" status @ setConfig
+    "^SUCCESS_COLOR^You set " ref @ name strcat "'s status to " strcat
+    ref @ status @ get_status_string strcat "." strcat tell
+    me @ ref @ = not if
+        ref @ "^NOTE_COLOR^" me @ name strcat " has set your status to " strcat 
+        ref @ status @ get_status_string strcat "^NOTE_COLOR^!" strcat otell
     then
 ;
 
 : main ( s -- )
-    tolower
-    dup "add-status" paramTest if
-        me @ "W" flag? if
-            " " explode swap pop 1 - array_make doAdd
-        else
-            me @ "You are not authorized to add statuses!" error_color tell
-        then
-        exit
-    then
-    dup "add-special" paramTest if
-        me @ "W" flag? if
-            " " explode swap pop 1 - array_make doAddSpecial
-        else
-            me @ "You are not authorized to add special statuses!" error_color tell
-        then
-        exit
-    then
-    dup "add-ic" paramTest if
-        me @ "W" flag? if
-            " " explode swap pop 1 - array_make doAddIC
-        else
-            me @ "You are not authorized to add in-character statuses!" error_color tell
-        then
-        exit
-    then
-    dup "remove" paramTest if
-        me @ "W" flag? if
-            " " explode swap pop 1 - array_make doRemove
-        else
-            me @ "You are not authorized to remove statuses!" error_color tell
-        then
-        exit
-    then
-    command @ tolower "status" stringcmp not if
-        " " split pop dup if 
-            setStatus exit
-        else
-            command @ tolower match "statuses" getConfig dup if
-                var statlist
-                { } array_make statlist !
-
-                foreach 
-                    dup "P" stringcmp not over "I" stringcmp not or swap "W" stringcmp not me @ "W" flag? and or if
-                        toupper statlist @ swap array_append statlist !
-                    else pop then
-                repeat
-                statlist @ me @ "SELECT STATUS" statlist @ foreach
-                    swap 1 + swap
-                repeat 
-                over 1 + 999 swap "Cancel" swap
-                0 doMenu dup 999 = if exit then
-                1 - array_getitem tolower setStatus exit
-            else
-                pop me @ "I do not have any statuses configured!" error_color tell
+    strip tolower dup
+    case
+        "add-ic" paramTest when
+            "#add-ic" split swap pop strip
+            "I" add_status
+        end
+        "add-ooc" paramTest when
+            "#add-ooc" split swap pop strip
+            "O" add_status
+        end
+        "add-away" paramTest when
+            "#add-away" split swap pop strip
+            "A" add_status
+        end
+        "add-onduty" paramTest when
+            "#add-onduty" split swap pop strip
+            "D" add_status
+        end
+        "add-offduty" paramTest when
+            "#add-offduty" split swap pop strip
+            "F" add_status
+        end
+        "remove" paramTest when
+            "#remove" split swap pop strip
+            remove_status
+        end
+        "set-custom" paramTest when
+            "#set-custom" split swap pop strip
+            " " split " " split pop dup not if
+                pop me @ name
             then
-        then
-    then
-    command @ tolower "go" split swap pop dup if setStatus then
+            pmatch swap
+            set_custom
+        end
+        "help" paramTest when show_help exit end
+        command @ "go" instr 1 = when
+            command @ "go" split swap pop strip set_status
+        end
+        command @ "status" stringcmp not when
+            dup if
+                set_status
+            else
+                status_menu
+            then
+        end
+        default show_help exit end
+    endcase
 ;
+
+public get_status
 .
 c
 q
+@reg yaro-status=cmd/status
+@set yaro-status=_defs/get_status:"$cmd-status" match "get_status" call
 
