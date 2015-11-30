@@ -29,7 +29,7 @@ var timeout
     dup loc @ swap "poseorder/order" swap setconfig
     foreach
         systime swap - timeout @ > not if
-            pmatch dup "status" getConfig dup not if pop "???" then 
+            pmatch dup "~status" getConfig dup not if pop "???" then 
             "status" match swap "statuses/" swap strcat getConfig dup not if pop "?" then
             "I" stringcmp not over awake? and if
                 current_turn ! break

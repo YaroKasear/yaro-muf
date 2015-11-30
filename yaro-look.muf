@@ -218,7 +218,7 @@ $include $lib/yaro
             { } array_make playerList !
             me @ "PLAYERS" 80 boxTitle
             foreach swap pop
-                dup name me @ swap content_color over "status" getConfig dup not if
+                dup name me @ swap content_color over "~status" getConfig dup not if
                     pop "???"
                 then 
                 3 pick awake? not if

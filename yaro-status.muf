@@ -82,7 +82,7 @@ $include $lib/yaro
     dup command @ tolower match "statuses" getConfig dup if
         swap array_getitem dup if
             dup "P" stringcmp not over "I" stringcmp not or swap "W" stringcmp not me @ "W" flag? and or if
-                dup me @ swap "status" swap setConfig
+                dup me @ swap "~status" swap setConfig
                 toupper dup "You have gone " swap strcat "!" strcat me @ swap success_color tell
                 loc @ getPlayers pop pop me @ 1 array_make swap array_diff 
                 foreach swap pop
