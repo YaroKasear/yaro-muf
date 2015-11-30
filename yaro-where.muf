@@ -20,7 +20,7 @@ $include $lib/yaro
     endcase cleanString "^CONTENT_COLOR^" strcat me @ swap process_tags
     ref @ "~species" getprop dup not if pop "Unknown" then
     ref @ awake? if
-        ref @ "status" getConfig dup not if
+        ref @ "~status" getConfig dup not if
             pop "???"
         then
     else
@@ -44,7 +44,7 @@ $include $lib/yaro
     endcase cleanString "^CONTENT_COLOR^" strcat me @ swap process_tags
     ref @ "~species" getprop dup not if pop "Unknown" then
     ref @ awake? if
-        ref @ "status" getConfig dup not if
+        ref @ "~status" getConfig dup not if
             pop "???"
         then
     else
