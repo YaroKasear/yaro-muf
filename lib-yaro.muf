@@ -616,7 +616,7 @@ lvar cache
     strings @ foreach swap pop buffer !
         begin buffer @ ansi_strlen width @ > while
             buffer @ width @ strcut swap
-            dup ansi_strip " " rinstr dup if
+            dup " " rinstr dup if
                 strcut rot strcat buffer !
             else
                 pop swap buffer !
@@ -766,7 +766,7 @@ lvar cache
  
     { string2 @ string1 @ ansi_strlen 1 + width @ 4 - swap - format_wrap foreach swap pop
         string1 @ ansi_strlen 1 + width @ 4 - swap - format_right
-    repeat } array_make
+    repeat } array_make 
     0 array_extract string1 @ " " strcat swap strcat
     ref @ swap content_color
     ref @ ref @ vline " " strcat box_color swap strcat
