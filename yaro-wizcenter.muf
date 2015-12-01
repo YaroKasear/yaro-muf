@@ -31,10 +31,6 @@ $include $cmd/status
     else
         me @ "There are no alerts to bring to your attention!" 80 boxContent
     then
-    me @ me @ 80 line box_color tell
-    me @ "Please post bug reports and feature requests for Yaro's programs to "
-    "https://github.com/YaroKasear/yaro-muf/issues" strcat 80 boxContent
-    me @ me @ 80 line box_color tell
 ;
 
 : list_wizards
@@ -58,6 +54,12 @@ $include $cmd/status
     me @ me @ 80 line box_color tell
 ;
 
+: get_sysinfo
+    me @ "System Information" 80 boxTitle
+    me @ "^FIELD_COLOR^Server Time:" "^CONTENT_COLOR^%C %r" systime timefmt 80 boxInfo
+    me @ "^FIELD_COLOR^Connected Players:" "^CONTENT_COLOR^" concount intostr strcat 80 boxInfo
+;
+
 : main
     dup "help" paramTest if show_help exit then
     command @ case
@@ -74,7 +76,16 @@ $include $cmd/status
             then
             list_wizards 
         end
-        "wcenter" stringcmp not rot "Connect" stringcmp not or when me @ "W" flag? if getAlerts then end
+        "wcenter" stringcmp not rot "Connect" stringcmp not or when 
+            me @ "W" flag? if 
+                getAlerts 
+                get_sysinfo
+                me @ "" 80 boxContent
+                me @ "Please post bug reports and feature requests for Yaro's programs to "
+                "https://github.com/YaroKasear/yaro-muf/issues" strcat 80 boxContent
+                me @ version 80 boxTitle
+            then 
+        end
         default 
             me @ "Please tell " prog owner name strcat 
             " that the incorrect command " strcat command @ strcat 
