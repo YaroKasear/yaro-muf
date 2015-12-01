@@ -81,7 +81,7 @@ $include $cmd/status
     var message
     var players
 
-    message !
+    strip message !
     array_dedup players !
     "You page-pose, '" me @ name strcat " " strcat message @ strcat "' to " strcat me @ players @ listify_ref strcat "." strcat
     "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes tell
@@ -97,7 +97,7 @@ $include $cmd/status
     var message
     var players
 
-    message !
+    strip message !
     array_dedup players !
     "You page, \"" message @ strcat "\" to " strcat me @ players @ listify_ref strcat "." strcat
     "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes tell
