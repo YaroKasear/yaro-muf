@@ -3,6 +3,7 @@
 1 9999 del
 i
 $include $lib/yaro
+$include $cmd/status
 
 var timeout
 
@@ -29,23 +30,23 @@ var timeout
     dup loc @ swap "poseorder/order" swap setconfig
     foreach
         systime swap - timeout @ > not if
-            pmatch dup "~status" getConfig dup not if pop "???" then 
-            "status" match swap "statuses/" swap strcat getConfig dup not if pop "?" then
-            "I" stringcmp not over awake? and if
+            pmatch dup get_status swap pop "I" stringcmp not over awake? and if
                 current_turn ! break
             else pop then
         else pop then
     repeat
-    loc @ getPlayers pop pop foreach swap pop
-        dup "poseorder/notify" getConfig if
-            dup current_turn @ = if
-                dup "It is now currently your pose." info_color otell
-            else
-                dup "It is now currently " current_turn @ name "'s pose." strcat strcat
-                info_color otell
-            then
-        else pop then
-    repeat
+    current_turn @ if
+        loc @ getPlayers pop pop foreach swap pop
+            dup "poseorder/notify" getConfig if
+                dup current_turn @ = if
+                    dup "It is now currently your pose." info_color otell
+                else
+                    dup "It is now currently " current_turn @ name "'s pose." strcat strcat
+                    info_color otell
+                then
+            else pop then
+        repeat
+    then
 ;
 
 : makeOOC ( d -- s )

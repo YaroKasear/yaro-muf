@@ -213,7 +213,7 @@ $include $cmd/status
         "!" strcat
     then
     80 boxContent
-    dup exit? not over program? not and if dup getPlayers swap pop array_union dup if
+    dup exit? not over program? not and if dup getPlayers swap pop swap array_merge dup if
         over cansee? if
             var playerList
             { } array_make playerList !
