@@ -759,13 +759,19 @@ lvar cache
     var string2
     var width
  
+    var t
+    
     width !
     ref @ swap process_tags cleanString string2 !
     ref @ swap process_tags cleanString string1 !
     ref !
  
-    { string2 @ string1 @ ansi_strlen 1 + width @ 4 - swap - format_wrap foreach swap pop
-        string1 @ ansi_strlen 1 + width @ 4 - swap - format_right
+    { string2 @ string1 @ ansi_strlen 1 + width @ 4 - swap - format_wrap dup array_count t ! foreach swap pop
+        string1 @ ansi_strlen 1 + width @ 4 - swap - t @ 1 > if 
+            format_left
+        else
+            format_right
+        then
     repeat } array_make 
     0 array_extract string1 @ " " strcat swap strcat
     ref @ swap content_color
