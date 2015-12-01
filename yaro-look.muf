@@ -189,9 +189,17 @@ $include $cmd/status
     dup parseDesc description !
     dup me @ swap dup dup exit? if 
         name ";" split pop
+    else dup player? if
+        dup "~sex" getprop dup not if pop "" then
+        " " strcat
+        over "~species" getprop dup not if pop "" then
+        strcat strip tolower dup if
+            "A " swap strcat " named " strcat
+        else pop "" then
+        swap name strcat
     else
         name 
-    then
+    then then
     me @ "look/see_refs" getConfig if
         swap me @ control? if
             " " strcat
