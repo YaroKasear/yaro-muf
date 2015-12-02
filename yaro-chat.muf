@@ -254,7 +254,7 @@ $include $lib/yaro
     var message
     var o1
 
-    message !
+    strip message !
     command @ get_channel_name channel_name !
     me @ channel_name @ on_channel? if
         me @ channel_name @ "/color/ooc1" strcat getConfig o1 ! 
@@ -281,14 +281,20 @@ $include $lib/yaro
     var message
     var o1
 
-    message !
+    strip message !
     command @ get_channel_name channel_name !
     me @ channel_name @ on_channel? if
         me @ channel_name @ "/color/ooc1" strcat getConfig o1 ! 
         o1 @ not if me @ "" ooc_color_1 o1 ! then
         command @ match channel_name @ "/members" strcat getConfig foreach swap pop
             dup me @ channel_name @ is_gagged? over me @ swap channel_name @ is_gagged? or not if
-                dup me @ channel_name @ get_nickname o1 @ strcat " " strcat message @ strcat channel_name @ swap channel_decorate otell
+                dup me @ channel_name @ get_nickname o1 @ strcat 
+                message @ case
+                    ":" instr 1 = when "" end
+                    "," instr 1 = when "" end
+                    default pop " " end
+                endcase
+                strcat message @ strcat channel_name @ swap channel_decorate otell
             else pop then
         repeat 
     else
