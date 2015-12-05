@@ -56,7 +56,7 @@ var timeout
 ;
 
 : doPose ( s -- )
-    loc @ getPlayers pop pop foreach swap pop
+    strip loc @ getPlayers pop pop foreach swap pop
         over me @ name " " strcat swap strcat
         "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes
         over swap process_tags otell
@@ -65,7 +65,7 @@ var timeout
 ;
 
 : doSpoof ( s -- )
-    loc @ getPlayers pop pop foreach swap pop
+    strip loc @ getPlayers pop pop foreach swap pop
         over dup me @ name instr if
             "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes
             over swap process_tags otell
@@ -85,7 +85,7 @@ var timeout
 ;
 
 : doSay ( s -- )
-    dup "You say, \"" swap strcat "\"" strcat 
+    strip dup "You say, \"" swap strcat "\"" strcat 
     "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes
     me @ swap process_tags tell
     loc @ getPlayers pop pop me @ 1 array_make swap array_diff 
@@ -99,7 +99,7 @@ var timeout
 ;
 
 : doOsay ( s -- )
-    dup "You say, \"" swap strcat "\"" strcat 
+    strip dup "You say, \"" swap strcat "\"" strcat 
     "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
     me @ makeOOC " " strcat swap strcat me @ swap process_tags tell
     loc @ getPlayers pop pop me @ 1 array_make swap array_diff 
@@ -114,7 +114,7 @@ var timeout
 : doOpose ( s -- )
     dup ":" instr 1 = if 
         ":" split swap pop
-    then
+    then strip
     loc @ getPlayers pop pop foreach swap pop
         over me @ name " " strcat swap strcat
         "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
@@ -124,7 +124,7 @@ var timeout
 ;
 
 : doOspoof ( s -- )
-    loc @ getPlayers pop pop foreach swap pop
+    strip loc @ getPlayers pop pop foreach swap pop
         over dup me @ name instr if
             "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
             over makeOOC " " strcat swap strcat over swap process_tags otell
