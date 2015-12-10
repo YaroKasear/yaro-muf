@@ -224,10 +224,8 @@ $include $cmd/status
     80 boxContent
     dup exit? not over program? not and if dup getPlayers swap pop swap array_merge dup if
         over cansee? if
-            var playerList
-            { } array_make playerList !
             me @ "PLAYERS" 80 boxTitle
-            foreach swap pop
+            { swap foreach swap pop
                 dup cansee? if
                     dup name me @ swap content_color over get_status pop dup not if
                         pop "^CONTENT_COLOR^???"
@@ -246,10 +244,9 @@ $include $cmd/status
                             pop
                         then
                     else swap pop then
-                    playerList @ swap array_append playerList !
                 else pop then
-            repeat
-            me @ playerList @ 80 boxList
+            repeat } array_make
+            me @ swap 80 boxList
         else
             pop
         then

@@ -359,37 +359,6 @@ lvar cache
     swap pop
 ;
    
-: process_tags ( d s -- s )
-    var s
-    var ref
-
-    s !
-    ref !
-
-    s @ "^" instr if
-        ( s @ dup "^^" instr not if )
-            s @
-            dup toupper "^ERROR_COLOR^" instr if ref @ "" error_color    "^ERROR_COLOR^" subst then
-            dup toupper "^SUCCESS_COLOR^" instr if ref @ "" success_color  "^SUCCESS_COLOR^" subst then
-            dup toupper "^INFO_COLOR^" instr if ref @ "" info_color     "^INFO_COLOR^" subst then
-            dup toupper "^NOTE_COLOR^" instr if ref @ "" note_color     "^NOTE_COLOR^" subst then
-            dup toupper "^TAG_COLOR_1R^" instr if ref @ "" tag_color_1    "^TAG_COLOR_1^" subst then
-            dup toupper "^TAG_COLOR_2^" instr if ref @ "" tag_color_2    "^TAG_COLOR_2^" subst then
-            dup toupper "^OOC_COLOR_1^" instr if ref @ "" ooc_color_1    "^OOC_COLOR_1^" subst then
-            dup toupper "^OOC_COLOR_2^" instr if ref @ "" ooc_color_2    "^OOC_COLOR_2^" subst then
-            dup toupper "^OPTION_COLOR_1^" instr if ref @ "" option_color_1 "^OPTION_COLOR_1^" subst then
-            dup toupper "^OPTION_COLOR_2^" instr if ref @ "" option_color_2 "^OPTION_COLOR_2^" subst then
-            dup toupper "^IC_COLOR_1^" instr if ref @ "" ic_color_1       "^IC_COLOR_1^" subst then
-            dup toupper "^IC_COLOR_2^" instr if ref @ "" ic_color_2       "^IC_COLOR_2^" subst then
-            dup toupper "^TITLE_COLOR^" instr if ref @ "" title_color    "^TITLE_COLOR^" subst then
-            dup toupper "^FIELD_COLOR^" instr if ref @ "" field_color    "^FIELD_COLOR^" subst then
-            dup toupper "^BOX_COLOR^" instr if ref @ "" box_color      "^BOX_COLOR^" subst then
-            dup toupper "^CONTENT_COLOR^" instr if ref @ "" content_color  "^CONTENT_COLOR^" subst then
-            cleanString
-        ( then )
-    else s @ then
-;
-
 : line ( d n -- )
     var myLine
     var outputLine
@@ -471,6 +440,39 @@ lvar cache
     "vline" getConfig dup not if
         pop "|" dup cache_key @ swap cache_write
     then
+;
+
+: process_tags ( d s -- s )
+    var s
+    var ref
+
+    s !
+    ref !
+
+    s @ "^" instr if
+        ( s @ dup "^^" instr not if )
+            s @
+            dup toupper "^ERROR_COLOR^" instr if ref @ "" error_color    "^ERROR_COLOR^" subst then
+            dup toupper "^SUCCESS_COLOR^" instr if ref @ "" success_color  "^SUCCESS_COLOR^" subst then
+            dup toupper "^INFO_COLOR^" instr if ref @ "" info_color     "^INFO_COLOR^" subst then
+            dup toupper "^NOTE_COLOR^" instr if ref @ "" note_color     "^NOTE_COLOR^" subst then
+            dup toupper "^TAG_COLOR_1^" instr if ref @ "" tag_color_1    "^TAG_COLOR_1^" subst then
+            dup toupper "^TAG_COLOR_2^" instr if ref @ "" tag_color_2    "^TAG_COLOR_2^" subst then
+            dup toupper "^OOC_COLOR_1^" instr if ref @ "" ooc_color_1    "^OOC_COLOR_1^" subst then
+            dup toupper "^OOC_COLOR_2^" instr if ref @ "" ooc_color_2    "^OOC_COLOR_2^" subst then
+            dup toupper "^OPTION_COLOR_1^" instr if ref @ "" option_color_1 "^OPTION_COLOR_1^" subst then
+            dup toupper "^OPTION_COLOR_2^" instr if ref @ "" option_color_2 "^OPTION_COLOR_2^" subst then
+            dup toupper "^IC_COLOR_1^" instr if ref @ "" ic_color_1       "^IC_COLOR_1^" subst then
+            dup toupper "^IC_COLOR_2^" instr if ref @ "" ic_color_2       "^IC_COLOR_2^" subst then
+            dup toupper "^TITLE_COLOR^" instr if ref @ "" title_color    "^TITLE_COLOR^" subst then
+            dup toupper "^FIELD_COLOR^" instr if ref @ "" field_color    "^FIELD_COLOR^" subst then
+            dup toupper "^BOX_COLOR^" instr if ref @ "" box_color      "^BOX_COLOR^" subst then
+            dup toupper "^CONTENT_COLOR^" instr if ref @ "" content_color  "^CONTENT_COLOR^" subst then
+            dup toupper "^OPEN_TAG^" instr if ref @ open_tag  "^OPEN_TAG^" subst then
+            dup toupper "^CLOSE_TAG^" instr if ref @ close_tag  "^CLOSE_TAG^" subst then
+            cleanString
+        ( then )
+    else s @ then
 ;
  
 : tell ( s -- )
