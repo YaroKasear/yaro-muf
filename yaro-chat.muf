@@ -213,24 +213,25 @@ $include $lib/yaro
     channel_name !
     ref !
 
-    me @ channel_name @ "/color/tag1" strcat getConfig tc1 !
-    me @ channel_name @ "/color/tag2" strcat getConfig tc2 !
-    me @ channel_name @ "/color/ooc1" strcat getConfig o1 ! 
-    me @ channel_name @ "/color/ooc2" strcat getConfig o2 ! 
-    me @ channel_name @ "/open_tag" strcat getConfig ot ! 
-    me @ channel_name @ "/close_tag" strcat getConfig ct ! 
+    ref @ channel_name @ "/color/tag1" strcat getConfig tc1 !
+    ref @ channel_name @ "/color/tag2" strcat getConfig tc2 !
+    ref @ channel_name @ "/color/ooc1" strcat getConfig o1 ! 
+    ref @ channel_name @ "/color/ooc2" strcat getConfig o2 ! 
+    ref @ channel_name @ "/open_tag" strcat getConfig ot ! 
+    ref @ channel_name @ "/close_tag" strcat getConfig ct ! 
 
-    tc1 @ not if me @ "" tag_color_1 tc1 ! then
-    tc2 @ not if me @ "" tag_color_2 tc2 ! then
-    o1 @ not if me @ "" ooc_color_1 o1 ! then
-    o2 @ not if me @ "" ooc_color_2 o2 ! then
-    ot @ not if me @ open_tag ot ! then
-    ct @ not if me @ close_tag ct ! then
+    tc1 @ not if ref @ "" tag_color_1 tc1 ! then
+    tc2 @ not if ref @ "" tag_color_2 tc2 ! then
+    o1 @ not if ref @ "" ooc_color_1 o1 ! then
+    o2 @ not if ref @ "" ooc_color_2 o2 ! then
+    ot @ not if ref @ open_tag ot ! then
+    ct @ not if ref @ close_tag ct ! then
 
     channel_name @ get_channel_alias toupper tc1 @ swap strcat
     ot @ tc2 @ swap strcat " " strcat swap strcat
     " " ct @ tc2 @ swap strcat strcat strcat
-    me @ message @ o1 @ o2 @ color_quotes process_tags " " swap strcat strcat
+    ref @ message @ o1 @ "^REPLACE_ME^" subst 
+    o1 @ o2 @ color_quotes process_tags " " swap strcat strcat
 ;
 
 : alert_members ( s s -- )
@@ -252,20 +253,17 @@ $include $lib/yaro
 : doSay ( s -- )
     var channel_name
     var message
-    var o1
 
     strip message !
     command @ get_channel_name channel_name !
     me @ channel_name @ on_channel? if
-        me @ channel_name @ "/color/ooc1" strcat getConfig o1 ! 
-        o1 @ not if me @ "" ooc_color_1 o1 ! then
         "You say, \"" message @ strcat "\"" strcat 
         me @ swap channel_name @ swap channel_decorate tell
         command @ match channel_name @ "/members" strcat getConfig foreach swap pop
             dup me @ = if pop
             else
                 dup me @ channel_name @ is_gagged? over me @ swap channel_name @ is_gagged? or not if
-                    dup me @ channel_name @ get_nickname o1 @ strcat " says, \"" strcat message @ strcat "\"" strcat
+                    dup me @ channel_name @ get_nickname "^REPLACE_ME^" strcat " says, \"" strcat message @ strcat "\"" strcat
                     channel_name @ swap channel_decorate otell
                 else pop then
             then
@@ -279,16 +277,13 @@ $include $lib/yaro
 : doPose ( s -- )    
     var channel_name
     var message
-    var o1
 
     strip message !
     command @ get_channel_name channel_name !
     me @ channel_name @ on_channel? if
-        me @ channel_name @ "/color/ooc1" strcat getConfig o1 ! 
-        o1 @ not if me @ "" ooc_color_1 o1 ! then
         command @ match channel_name @ "/members" strcat getConfig foreach swap pop
             dup me @ channel_name @ is_gagged? over me @ swap channel_name @ is_gagged? or not if
-                dup me @ channel_name @ get_nickname o1 @ strcat 
+                dup me @ channel_name @ get_nickname "^REPLACE_ME^" strcat 
                 message @ case
                     ":" instr 1 = when "" end
                     "," instr 1 = when "" end
