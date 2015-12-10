@@ -7,6 +7,7 @@ $include $cmd/status
 
 : cansee? ( d -- n )
     dup "D" flag? over me @ control? and swap "D" flag? not or
+    loc @ me @ control? or
 ;
 
 : parseDesc ( d -- s )
@@ -17,12 +18,12 @@ $include $cmd/status
     me @ "Title" 25 boxTitle
     me @ "Content" 25 boxContent
     me @ "Title" 25 boxTitle
-    me @ open_tag 
-    me @ swap tag_color_2 
-    me @ "TAG" tag_color_1 strcat 
-    me @ close_tag 
+    me @ open_tag
+    me @ swap tag_color_2
+    me @ "TAG" tag_color_1 strcat
+    me @ close_tag
     me @ swap tag_color_2 strcat
-    me @ " Listing" content_color strcat 
+    me @ " Listing" content_color strcat
     me @ swap 25 boxContent
     me @ 25 line me @ swap box_color tell
     " " tell
@@ -43,24 +44,24 @@ $include $cmd/status
     me @ "line" getConfig me @ swap "temp/line" swap setConfig
     me @ "vline" getConfig me @ swap "temp/vline" swap setConfig
     begin
-        me @ "temp/open_tag" getConfig me @ swap 
+        me @ "temp/open_tag" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "open_tag" strcat swap setConfig
-        me @ "temp/close_tag" getConfig me @ swap 
+        me @ "temp/close_tag" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "close_tag" strcat swap setConfig
-        me @ "temp/line" getConfig me @ swap 
+        me @ "temp/line" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "line" strcat swap setConfig
-        me @ "temp/vline" getConfig me @ swap 
+        me @ "temp/vline" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "vline" strcat swap setConfig
 
         testBox
 
-        me @ "orig/open_tag" getConfig me @ swap 
+        me @ "orig/open_tag" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "open_tag" strcat swap setConfig
-        me @ "orig/close_tag" getConfig me @ swap 
+        me @ "orig/close_tag" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "close_tag" strcat swap setConfig
-        me @ "orig/line" getConfig me @ swap 
+        me @ "orig/line" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "line" strcat swap setConfig
-        me @ "orig/vline" getConfig me @ swap 
+        me @ "orig/vline" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "vline" strcat swap setConfig
 
         me @ "Interface Configuration"
@@ -70,18 +71,18 @@ $include $cmd/status
         4 "Vertical Line"
         8 "Save"
         9 "Quit"
-        6 0 doMenu dup 9 = not 
+        6 0 doMenu dup 9 = not
     while
         case
             1 = when getChar dup if me @ swap "temp/open_tag" swap setConfig else pop then end
             2 = when getChar dup if me @ swap "temp/close_tag" swap setConfig else pop then end
             3 = when getChar dup if me @ swap "temp/line" swap setConfig else pop then end
             4 = when getChar dup if me @ swap "temp/vline" swap setConfig else pop then end
-            8 = when 
+            8 = when
                 me @ "temp/open_tag" getConfig me @ swap "orig/open_tag" swap setConfig
                 me @ "temp/close_tag" getConfig me @ swap "orig/close_tag" swap setConfig
-                me @ "temp/line" getConfig me @ swap "orig/line" swap setConfig       
-                me @ "temp/vline" getConfig me @ swap "orig/vline" swap setConfig       
+                me @ "temp/line" getConfig me @ swap "orig/line" swap setConfig
+                me @ "temp/vline" getConfig me @ swap "orig/vline" swap setConfig
             end
         endcase
     repeat pop
@@ -100,29 +101,29 @@ $include $cmd/status
     me @ "color/content" getConfig me @ swap "temp/color/content" swap setConfig
     me @ "color/tag2" getConfig me @ swap "temp/color/tag2" swap setConfig
     me @ "color/tag1" getConfig me @ swap "temp/color/tag1" swap setConfig
-    begin 
-        me @ "temp/color/title" getConfig me @ swap 
+    begin
+        me @ "temp/color/title" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "color/title" strcat swap setConfig
-        me @ "temp/color/box" getConfig me @ swap 
+        me @ "temp/color/box" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "color/box" strcat swap setConfig
-        me @ "temp/color/content" getConfig me @ swap 
+        me @ "temp/color/content" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "color/content" strcat swap setConfig
-        me @ "temp/color/tag2" getConfig me @ swap 
+        me @ "temp/color/tag2" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "color/tag2" strcat swap setConfig
-        me @ "temp/color/tag1" getConfig me @ swap 
+        me @ "temp/color/tag1" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "color/tag1" strcat swap setConfig
 
         testBox
 
-        me @ "orig/color/title" getConfig me @ swap 
+        me @ "orig/color/title" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "color/title" strcat swap setConfig
-        me @ "orig/color/box" getConfig me @ swap 
+        me @ "orig/color/box" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "color/box" strcat swap setConfig
-        me @ "orig/color/content" getConfig me @ swap 
+        me @ "orig/color/content" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "color/content" strcat swap setConfig
-        me @ "orig/color/tag2" getConfig me @ swap 
+        me @ "orig/color/tag2" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "color/tag2" strcat swap setConfig
-        me @ "orig/color/tag1" getConfig me @ swap 
+        me @ "orig/color/tag1" getConfig me @ swap
         command @ match name ";" split pop "/" strcat "color/tag1" strcat swap setConfig
 
         me @ "Color Configuration"
@@ -132,19 +133,19 @@ $include $cmd/status
         4 "Outside Tag Color"
         5 "Inside Tag Color"
         8 "Save"
-        9 "Quit" 
+        9 "Quit"
         7 0 doMenu dup 9 = not while case
             1 = when me @ color_menu dup if me @ swap "temp/color/title" swap setConfig else pop then end
             2 = when me @ color_menu dup if me @ swap "temp/color/box" swap setConfig else pop then end
             3 = when me @ color_menu dup if me @ swap "temp/color/content" swap setConfig else pop then end
             4 = when me @ color_menu dup if me @ swap "temp/color/tag2" swap setConfig else pop then end
             5 = when me @ color_menu dup if me @ swap "temp/color/tag1" swap setConfig else pop then end
-            8 = when 
+            8 = when
                 me @ "temp/color/title" getConfig me @ swap "orig/color/title" swap setConfig
                 me @ "temp/color/box" getConfig me @ swap "orig/color/box" swap setConfig
-                me @ "temp/color/content" getConfig me @ swap "orig/color/content" swap setConfig       
-                me @ "temp/color/tag2" getConfig me @ swap "orig/color/tag2" swap setConfig       
-                me @ "temp/color/tag1" getConfig me @ swap "orig/color/tag1" swap setConfig       
+                me @ "temp/color/content" getConfig me @ swap "orig/color/content" swap setConfig
+                me @ "temp/color/tag2" getConfig me @ swap "orig/color/tag2" swap setConfig
+                me @ "temp/color/tag1" getConfig me @ swap "orig/color/tag1" swap setConfig
             end
         endcase
     repeat pop
@@ -187,7 +188,7 @@ $include $cmd/status
         pop loc @
     then
     dup parseDesc description !
-    dup me @ swap dup dup exit? if 
+    dup me @ swap dup dup exit? if
         name ";" split pop
     else dup player? if
         dup "~sex" getprop dup not if pop "" then
@@ -198,7 +199,7 @@ $include $cmd/status
         else pop "" then
         swap name strcat
     else
-        name 
+        name
     then then
     me @ "look/see_refs" getConfig if
         swap me @ control? if
@@ -212,11 +213,11 @@ $include $cmd/status
 
     80 boxTitle
     me @ description @ dup not if
-        pop "You see absolutely positively nothing special about " 
+        pop "You see absolutely positively nothing special about "
         3 pick dup exit? if
             name ";" split pop strcat
         else
-             name strcat 
+             name strcat
         then
         "!" strcat
     then
@@ -227,24 +228,26 @@ $include $cmd/status
             { } array_make playerList !
             me @ "PLAYERS" 80 boxTitle
             foreach swap pop
-                dup name me @ swap content_color over get_status pop dup not if
-                    pop "^CONTENT_COLOR^???"
-                then 
-                3 pick awake? not if
-                    pop "^CONTENT_COLOR^ZZZ" 
-                then 
-                toupper me @ swap tag_color_1 me @ open_tag me @ swap tag_color_2 swap strcat
-                me @ close_tag " " strcat me @ swap tag_color_2 strcat swap strcat
-                me @ "look/see_refs" getConfig if
-                    swap dup me @ control? if  
-                        intostr "#" swap strcat
-                        me @ open_tag " " swap strcat swap strcat
-                        me @ close_tag strcat strcat
-                    else
-                        pop
+                dup cansee? if
+                    dup name me @ swap content_color over get_status pop dup not if
+                        pop "^CONTENT_COLOR^???"
                     then
-                else swap pop then
-                playerList @ swap array_append playerList !
+                    3 pick awake? not if
+                        pop "^CONTENT_COLOR^ZZZ"
+                    then
+                    toupper me @ swap tag_color_1 me @ open_tag me @ swap tag_color_2 swap strcat
+                    me @ close_tag " " strcat me @ swap tag_color_2 strcat swap strcat
+                    me @ "look/see_refs" getConfig if
+                        swap dup me @ control? if
+                            intostr "#" swap strcat
+                            me @ open_tag " " swap strcat swap strcat
+                            me @ close_tag strcat strcat
+                        else
+                            pop
+                        then
+                    else swap pop then
+                    playerList @ swap array_append playerList !
+                else pop then
             repeat
             me @ playerList @ 80 boxList
         else
@@ -259,17 +262,19 @@ $include $cmd/status
             { } array_make playerList !
             me @ "CONTENTS" 80 boxTitle
             foreach swap pop
-                dup name 
-                me @ "look/see_refs" getConfig if
-                    swap dup me @ control? if  
-                        intostr "#" swap strcat
-                        me @ open_tag " " swap strcat swap strcat
-                        me @ close_tag strcat strcat
-                    else
-                        pop
-                    then
-                else swap pop then
-                playerList @ swap array_append playerList !
+                dup cansee? if
+                    dup name
+                    me @ "look/see_refs" getConfig if
+                        swap dup me @ control? if
+                            intostr "#" swap strcat
+                            me @ open_tag " " swap strcat swap strcat
+                            me @ close_tag strcat strcat
+                        else
+                            pop
+                        then
+                    else swap pop then
+                    playerList @ swap array_append playerList !
+                else pop then
             repeat
             me @ playerList @ 80 boxList
         else
@@ -284,24 +289,26 @@ $include $cmd/status
             { } array_make playerList !
             me @ "OBVIOUS EXITS" 80 boxTitle
             foreach swap pop
-                dup name ";" split ";" split pop dup if
-                    toupper me @ swap tag_color_1 me @ open_tag swap strcat 
-                    me @ swap tag_color_2 
-                    me @ close_tag " " strcat me @ swap tag_color_2 strcat swap 
-                    me @ swap content_color strcat
-                else
-                    pop
-                then
-                me @ "look/see_refs" getConfig if
-                    swap dup me @ control? if  
-                        intostr "#" swap strcat
-                        me @ open_tag " " swap strcat swap strcat
-                        me @ close_tag strcat me @ swap content_color strcat
+                dup cansee? if
+                    dup name ";" split ";" split pop dup if
+                        toupper me @ swap tag_color_1 me @ open_tag swap strcat
+                        me @ swap tag_color_2
+                        me @ close_tag " " strcat me @ swap tag_color_2 strcat swap
+                        me @ swap content_color strcat
                     else
                         pop
                     then
-                else swap pop then
-                playerList @ swap array_append playerList !
+                    me @ "look/see_refs" getConfig if
+                        swap dup me @ control? if
+                            intostr "#" swap strcat
+                            me @ open_tag " " swap strcat swap strcat
+                            me @ close_tag strcat me @ swap content_color strcat
+                        else
+                            pop
+                        then
+                    else swap pop then
+                    playerList @ swap array_append playerList !
+                else pop then
             repeat
             me @ playerList @ 80 boxList
         else
