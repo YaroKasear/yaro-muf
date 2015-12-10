@@ -124,7 +124,7 @@ lvar cache
     0
 ;
 
-: getConfig ( d s -- x )
+: getConfig ( x s -- x )
     var ref
     var key
     var myValue
@@ -133,34 +133,37 @@ lvar cache
     var cache_key
 
     key !
-    ref !
-
-    ref @ key @ make_cache_key cache_key !
-
-    cache_key @ cache_read dup if exit else pop then
-
-    key @ "_config/" swap strcat myKey !
-    command @ match ok? if
-        "_config/" command @ match name ";" split pop strcat "/" strcat key @ strcat myProgKey !
-    else
-        myKey @ myProgKey !
+    dup array? not if
+        { swap } array_make
     then
-
-    ref @ myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-    ref @ myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-    ( loc @ myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-    loc @ myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then )
-    loc @ begin dup while
-        dup myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-        dup myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-        location
-    repeat pop
-    trigger @ ok? if    
-        trigger @ myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-        trigger @ myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-    then
-    prog myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-    prog myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
+    foreach nip
+        ref !
+    
+        ref @ key @ make_cache_key cache_key !
+    
+        cache_key @ cache_read dup if exit else pop then
+    
+        key @ "_config/" swap strcat myKey !
+        command @ match ok? if
+            "_config/" command @ match name ";" split pop strcat "/" strcat key @ strcat myProgKey !
+        else
+            myKey @ myProgKey !
+        then
+    
+        ref @ myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
+        ref @ myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
+        loc @ begin dup while
+            dup myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
+            dup myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
+            location
+        repeat pop
+        trigger @ ok? if    
+            trigger @ myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
+            trigger @ myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
+        then
+        prog myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
+        prog myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
+    repeat
     0
 ;
  
