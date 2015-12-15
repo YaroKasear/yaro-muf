@@ -85,9 +85,10 @@ $include $cmd/status
             look_ref @ player? not and
             look_ref @ "O" flag? or
             over "O" flag? or not if pop else
-                dup name ";" split ";" split pop
-                toupper "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^" swap strcat
-                "^TAG_COLOR_2^^CLOSE_TAG^ " strcat swap strcat
+                dup name ";" split ";" split pop dup if
+                    toupper "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^" swap strcat
+                    "^TAG_COLOR_2^^CLOSE_TAG^ " strcat swap strcat
+                else pop then
                 swap dup me @ control? see_refs @ and if
                     dtos " ^OPEN_TAG^" swap strcat "^CLOSE_TAG^" strcat strcat
                 else pop then
