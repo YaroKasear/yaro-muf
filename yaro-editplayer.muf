@@ -201,6 +201,8 @@ lvar submitted
 
     ref !
 
+    clear_cache
+
     ref @ "~sex" getprop dup not if pop "NOT SET [TALK TO WIZARD]" then sex !
     ref @ "~species" getprop dup not if pop "NOT SET [TALK TO WIZARD]" then species !
     ref @ "cinfo/bdate" getConfig dup not if pop "NOT SET" then bdate !
@@ -697,6 +699,111 @@ lvar submitted
     endcase
 ;
 
+: new_morph ( d s -- s )
+    var ref
+    var current_name
+
+    current_name !
+    ref !
+
+    ref @ "_config/morph/" current_name @ strcat remove_prop
+    ref @ "_config/cinfo" ref @ "_config/morph/" current_name @ strcat 1 copyprops pop
+    "" begin dup not while
+        "^NOTE_COLOR^Please type a name for the new morph without a space." tell
+        read dup " " instr if
+            pop "" "^ERROR_COLOR^Please do not use a space." tell
+        then
+    repeat
+    "^SUCCESS_COLOR^Copied current morph into new morph named " over strcat "!" strcat tell
+    "^SUCCESS_COLOR^You will be put in the character editor now." tell
+    ref @ loadCInfo
+    ref @ doCInfo pop
+    dup ref @ swap "_config/cinfo" swap 
+    ref @ swap "_config/morph/" swap strcat 1 copyprops pop
+    dup ref @ swap "cinfo/morph_name" swap setConfig
+;
+
+: delete_morph ( a -- a )
+    var morphs
+
+    morphs !
+    me @ "Morph Deletion" morphs @ array_to_menu ++ dup "Cancel" swap 50 doMenu
+    dup morphs @ array_count > not if
+        -- morphs @ swap array_extract dup me @ "cinfo/morph_name" getConfig stringcmp if
+            swap morphs !
+            me @ swap "_config/morph/" swap strcat remove_prop
+            me @ "_config/morphs#" remove_prop
+            me @ "morphs" morphs @ setConfig
+        else
+            pop "^ERROR_COLOR^You can't delete your current morph." tell
+        then
+    then
+    morphs @
+;
+
+: set_morph ( s -- )
+    var morph_name
+
+    morph_name !
+    me @ "morphs" getConfig dup array? if
+        morph_name @ array_findval if
+            me @ "_config/cinfo" remove_prop
+            me @ "_config/morph/" morph_name @ strcat me @ "_config/cinfo" 1 copyprops pop
+            me @ loadCInfo
+            "^SUCCESS_COLOR^Morphed into " morph_name @ strcat "!" strcat tell
+        else
+            "^ERROR_COLOR^That is not a valid morph." tell
+        then
+    else
+        "^ERROR_COLOR^That is not a valid morph." tell
+    then
+;
+
+: doMorphs ( d -- )
+    var ref
+    var current_name
+    var morphs
+
+    dup ref ! 
+    "cinfo/morph_name" getConfig dup not if
+        "^INFO_COLOR^You do not have a name for your current default morph state!" tell
+        "^NOTE_COLOR^Please type a name for this morph." tell
+        pop "" begin read dup " " instr while
+            pop "^ERROR_COLOR^No spaces are allowed in morph names." tell
+        repeat
+        dup ref @ swap "cinfo/morph_name" swap setConfig
+        dup { swap } array_make ref @ swap "morphs" swap setConfig
+        dup ref @ swap "_config/cinfo" swap 
+        ref @ swap "_config/morph/" swap strcat 1 copyprops pop
+    then
+    current_name !
+
+    ref @ "morphs" getConfig dup array? not if
+        pop { current_name @ } array_make
+    then
+    morphs ! begin me @ "Morph Editor" morphs @ array_to_menu ++
+    dup "New Morph" swap ++ 
+    dup "Delete Morph" swap ++ 
+    dup "Quit" swap
+    50 doMenu dup morphs @ array_count 3 + = not while
+        case 
+            morphs @ array_count ++ = when
+                ref @ current_name @ new_morph
+                morphs @ swap array_append morphs !
+                ref @ "_config/morphs#" remove_prop
+                ref @ "morphs" morphs @ setConfig
+            end
+            morphs @ array_count 2 + = when
+                morphs @ delete_morph morphs !
+            end
+            default
+                -- morphs @ swap array_getitem
+                set_morph exit
+            end
+        endcase
+    repeat
+;
+
 : show_help
     me @ command @ " Command Help" strcat 80 boxTitle
     me @ "editplayer - Change player information, character information, and preferences." 80 boxContent
@@ -716,13 +823,15 @@ lvar submitted
                 me @ "Player Editor"
                 1 "Player Information"
                 2 "Character Information"
-                3 "Preferences"
+                3 "Morphs"
+                4 "Preferences"
                 9 "Quit"
-            4 0 doMenu dup 9 = not while
+            5 0 doMenu dup 9 = not while
                 case
                     1 = when me @ doPInfo end
                     2 = when me @ doCInfo end
-                    3 = when doPrefs end
+                    3 = when me @ doMorphs end
+                    4 = when doPrefs end
                 endcase
             repeat
             pop me @ "Thank you for using the Player Editor!" note_color tell
@@ -825,6 +934,9 @@ lvar submitted
             else
                 me @ "Get character information on who?" error_color tell
             then
+        end
+        "morph" stringcmp not when
+            strip " " split pop set_morph
         end
     endcase
 ;

@@ -266,6 +266,28 @@ $include $lib/yaro
             pmatch swap
             set_custom
         end
+        "idle" stringcmp not when
+            command @ match "idle_status" getConfig dup if
+                me @ "idle/~status" me @ get_status pop setConfig
+                me @ "idle/~stype" me @ get_status swap pop setConfig
+                set_status
+            else pop then
+        end
+        "unidle" stringcmp not when
+            command @ match "idle_status" getConfig dup if
+                me @ "idle/~status" getConfig
+                me @ swap "~status" swap setConfig
+                me @ "idle/~stype" getConfig
+                me @ swap "~stype" swap setConfig
+                me @ "idle/~status" 0 setConfig
+                me @ "idle/~stype" 0 setConfig
+                "^NOTE_COLOR^" me @ name strcat " has gone " strcat me @ get_status pop strcat 
+                "^NOTE_COLOR^!" strcat 
+                loc @ getPlayers pop pop foreach swap pop
+                    over otell
+                repeat
+            else pop then
+        end
         "help" paramTest when show_help exit end
         command @ "go" instr 1 = when
             command @ "go" split swap pop strip set_status

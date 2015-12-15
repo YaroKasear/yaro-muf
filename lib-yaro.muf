@@ -32,6 +32,10 @@ lvar cache
     else pop then
 ;
 
+: clear_cache ( -- )
+    0 cache ! cache_gen
+;
+
 : time_format ( i -- s )
     var t
 
@@ -521,6 +525,10 @@ lvar cache
     arr2 !
  
     arr1 @ arr1 @ array_count arr2 @ array_insertrange
+;
+
+: array_to_menu ( a -- @ s ... @' s' n )
+    { swap foreach swap 1 + swap repeat } 2 /
 ;
  
 : format_left ( s n -- s )
@@ -1232,6 +1240,8 @@ public cleanString
 public time_format
 public process_tags
 public color_quotes
+public array_to_menu
+public clear_cache
 .
 c
 q
@@ -1270,6 +1280,7 @@ q
 @set lib-yaro=_defs/array_dedup:"$lib/yaro" match "array_dedup" call
 @set lib-yaro=_defs/array_extract:"$lib/yaro" match "array_extract" call
 @set lib-yaro=_defs/array_merge:"$lib/yaro" match "array_merge" call
+@set lib-yaro=_defs/array_to_menu:"$lib/yaro" match "array_to_menu" call
 @set lib-yaro=_defs/control?:"$lib/yaro" match "control?" call
 @set lib-yaro=_defs/doMenu:"$lib/yaro" match "doMenu" call
 @set lib-yaro=_defs/boxTitle:"$lib/yaro" match "boxTitle" call
@@ -1290,4 +1301,5 @@ q
 @set lib-yaro=_defs/time_format:"$lib/yaro" match "time_format" call
 @set lib-yaro=_defs/process_tags:"$lib/yaro" match "process_tags" call
 @set lib-yaro=_defs/color_quotes:"$lib/yaro" match "color_quotes" call
+@set lib-yaro=_defs/clear_cache:"$lib/yaro" match "clear_cache" call
 
