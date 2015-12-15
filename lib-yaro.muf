@@ -181,6 +181,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : success_color ( d s -- s )
@@ -193,6 +194,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : info_color ( d s -- s )
@@ -205,6 +207,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : note_color ( d s -- s )
@@ -217,6 +220,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : tag_color_1 ( d s -- s )
@@ -229,6 +233,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : tag_color_2 ( d s -- s )
@@ -241,6 +246,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : ooc_color_1 ( d s -- s )
@@ -253,6 +259,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : ooc_color_2 ( d s -- s )
@@ -265,6 +272,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : ic_color_1 ( d s -- s )
@@ -277,6 +285,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
   
 : ic_color_2 ( d s -- s )
@@ -289,6 +298,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
 
 : title_color ( d s -- s )
@@ -301,6 +311,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : option_color_1 ( d s -- s )
@@ -313,6 +324,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : option_color_2 ( d s -- s )
@@ -325,6 +337,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : box_color ( d s -- s )
@@ -337,6 +350,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : content_color ( d s -- s )
@@ -349,6 +363,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
  
 : field_color ( d s -- s )
@@ -361,6 +376,7 @@ lvar cache
         swap strcat
     then
     swap pop
+    "\[[0m" swap strcat
 ;
    
 : line ( d n -- )
@@ -831,7 +847,7 @@ lvar cache
     ref @ close_tag " " swap strcat
     ref @ length @ line strcat
     ref @ swap box_color strcat
-    cleanString dup ansi_strlen
+    ref @ swap process_tags cleanString dup ansi_strlen
     target @ > if
         target @ ansi_strcut pop
     then
