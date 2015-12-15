@@ -474,8 +474,13 @@ lvar cache
             dup toupper "^CONTENT_COLOR^" instr if ref @ "" content_color  "^CONTENT_COLOR^" subst then
             dup toupper "^OPEN_TAG^" instr if ref @ open_tag  "^OPEN_TAG^" subst then
             dup toupper "^CLOSE_TAG^" instr if ref @ close_tag  "^CLOSE_TAG^" subst then
-            dup toupper "^RESET^" instr if "\[[0m" "^RESET^" subst then
             dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
+            dup toupper "^BOLD^" instr if "\[[1m" "^BOLD^" subst then
+            dup toupper "^DARK^" instr if "\[[2m" "^DARK^" subst then
+            dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
+            dup toupper "^FLASH^" instr if "\[[5m" "^FLASH^" subst then
+            dup toupper "^INVERT^" instr if "\[[7m" "^INVERT^" subst then
+            dup toupper "^RESET^" instr if "\[[0m" "^RESET^" subst then
             cleanString
         ( then )
     else s @ then
