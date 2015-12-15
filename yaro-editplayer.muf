@@ -11,11 +11,13 @@ lvar rsex
 lvar rbdate
 lvar rloc
 lvar rutc
+lvar remail
 lvar prname
 lvar prsex
 lvar prbdate
 lvar prloc
 lvar prutc
+lvar premail
 lvar sex
 lvar bdate
 lvar species
@@ -39,11 +41,13 @@ lvar submitted
     ref @ "pinfo/rbdate" getConfig dup not if pop "NOT SET" then rbdate !
     ref @ "pinfo/rloc" getConfig dup not if pop "NOT SET" then rloc !
     ref @ "pinfo/rutc" getConfig dup not if pop "0" then rutc !
+    ref @ "pinfo/remail" getConfig dup not if pop "NOT SET" then remail !
     ref @ "pinfo/prname" getConfig dup not if pop 0 then prname !
     ref @ "pinfo/prsex" getConfig dup not if pop 0 then prsex !
     ref @ "pinfo/prbdate" getConfig dup not if pop 0 then prbdate !
     ref @ "pinfo/prloc" getConfig dup not if pop 0 then prloc !
     ref @ "pinfo/prutc" getConfig dup not if pop 0 then prutc !
+    ref @ "pinfo/premail" getConfig dup not if pop 0 then premail !
 ;
 
 : showPInfo ( d n -- )
@@ -89,6 +93,11 @@ lvar submitted
         isme @ if prutc @ me @ swap checkbox " " strcat swap strcat then
         me @ rutc @ content_color 80 boxInfo
     then
+    premail @ isme @ or if
+        me @ me @ "E-Mail Address:" field_color
+        isme @ if premail @ me @ swap checkbox " " strcat swap strcat then
+        me @ remail @ content_color 80 boxInfo
+    then
 ;
 
 : doPInfo ( d n -- )
@@ -110,9 +119,11 @@ lvar submitted
         8 "Toggle Location"
         9 "Set Time Offset"
         10 "Toggle Time Offset"
+        11 "Set E-Mail Address"
+        12 "Toggle E-Mail Address"
         88 "Save"
         99 "Quit"
-        12 80 doMenu dup 99 = not while
+        14 80 doMenu dup 99 = not while
             case
             1 = when me @ "Please input your real name." note_color tell read dup not if "NOT SET" then rname ! end
             2 = when prname @ if 0 prname ! else 1 prname ! then end
@@ -137,6 +148,8 @@ lvar submitted
                 repeat
             end
             10 = when prutc @ if 0 prutc ! else 1 prutc ! then end
+            11 = when me @ "Please input your E-Mail Address." note_color tell read dup not if "NOT SET" then remail ! end
+            12 = when premail @ if 0 premail ! else 1 premail ! then end
             88 = when
                 ref @ "pinfo/rname" rname @ setConfig
                 ref @ "pinfo/prname" prname @ setConfig
@@ -148,6 +161,8 @@ lvar submitted
                 ref @ "pinfo/prloc" prloc @ setConfig
                 ref @ "pinfo/rutc" rutc @ setConfig
                 ref @ "pinfo/prutc" prutc @ setConfig
+                ref @ "pinfo/remail" remail @ setConfig
+                ref @ "pinfo/premail" premail @ setConfig
             end
         endcase
         repeat
