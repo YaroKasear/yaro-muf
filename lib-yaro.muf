@@ -462,6 +462,18 @@ lvar cache
     then
 ;
 
+: say ( d -- s )
+    "prefs/say" getConfig dup not if
+        pop "say"
+    then
+;
+
+: says ( d -- s )
+    "prefs/says" getConfig dup not if
+        pop "says"
+    then
+;
+
 : process_tags ( d s -- s )
     var s
     var ref
@@ -897,7 +909,7 @@ lvar cache
         ref @ option_tag strcat " " strcat
         ref @ swap option_color_1 swap
         ref @ swap option_color_2 strcat
-        cleanString dup ansi_strlen longest @ > if
+        ref @ swap process_tags cleanString dup ansi_strlen longest @ > if
             dup ansi_strlen longest !
         then
     repeat } array_make strings !
@@ -1265,6 +1277,8 @@ public process_tags
 public color_quotes
 public array_to_menu
 public clear_cache
+public say
+public says
 .
 c
 q
@@ -1325,4 +1339,6 @@ q
 @set lib-yaro=_defs/process_tags:"$lib/yaro" match "process_tags" call
 @set lib-yaro=_defs/color_quotes:"$lib/yaro" match "color_quotes" call
 @set lib-yaro=_defs/clear_cache:"$lib/yaro" match "clear_cache" call
+@set lib-yaro=_defs/say:"$lib/yaro" match "say" call
+@set lib-yaro=_defs/says:"$lib/yaro" match "says" call
 

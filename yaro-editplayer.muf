@@ -298,6 +298,8 @@ lvar submitted
     var content
     var open
     var close
+    var s1
+    var s2
     var set_defaults
     var save_defaults
 
@@ -324,6 +326,8 @@ lvar submitted
     me @ "" content_color content !
     me @ open_tag open !
     me @ close_tag close !
+    me @ say s1 !
+    me @ says s2 !
 
     me @ "orig/line" l @ setConfig
     me @ "orig/vline" vl @ setConfig
@@ -345,6 +349,8 @@ lvar submitted
     me @ "orig/color/field" field @ setConfig
     me @ "orig/color/box" box @ setConfig
     me @ "orig/color/content" content @ setConfig
+    me @ "orig/prefs/say" s1 @ setConfig
+    me @ "orig/prefs/says" s2 @ setConfig
     begin
         me @ 1 line l !
         me @ vline vl !
@@ -366,6 +372,8 @@ lvar submitted
         me @ "" content_color content !
         me @ open_tag open !
         me @ close_tag close !
+        me @ say s1 !
+        me @ says s2 !
         me @ "Preferences" 80 dup width ! boxTitle
         me @ "This is the lib-yaro preferences dialog. In this box you will "
              "be exposed to the various settings lib-yaro allows you to change "
@@ -381,7 +389,7 @@ lvar submitted
         me @ me @ me @ open_tag tag_color_2
         me @ "TAG" tag_color_1 strcat
         me @ me @ close_tag tag_color_2 strcat " " strcat
-        me @ "OOC says, \"" ooc_color_1
+        me @ "OOC/You " me @ says strcat "/" strcat me @ say strcat ", \"" strcat ooc_color_1
         me @ "This is a test message." ooc_color_2
         me @ "\"" ooc_color_1 strcat strcat strcat
         80 boxContent
@@ -398,26 +406,28 @@ lvar submitted
         2 "Vertical Line Character (" me @ vline strcat ")" strcat
         3 "Open Tag Character (" me @ open_tag strcat ")" strcat
         4 "Close Tag Character (" me @ close_tag strcat ")" strcat
-        5 me @ "Error Color" error_color me @ "" content_color strcat
-        6 me @ "Success Color" success_color me @ "" content_color strcat
-        7 me @ "Information Color" info_color me @ "" content_color strcat
-        8 me @ "Note Color" note_color me @ "" content_color strcat
-        9 me @ "Inner Tag Color" tag_color_1 me @ "" content_color strcat
-        10 me @ "Outer Tag Color" tag_color_2 me @ "" content_color strcat
-        11 me @ "OOC Description Color" ooc_color_1 me @ "" content_color strcat
-        12 me @ "OOC Message Color" ooc_color_2 me @ "" content_color strcat
-        13 me @ "IC Description Color" ic_color_1 me @ "" content_color strcat
-        14 me @ "IC Message Color" ic_color_2 me @ "" content_color strcat
-        15 me @ "Option Number Color" option_color_1 me @ "" content_color strcat
-        16 me @ "Option Text Color" option_color_2 me @ "" content_color strcat
-        17 me @ "Title Color" title_color me @ "" content_color strcat
-        18 me @ "Field Color" field_color me @ "" content_color strcat
-        19 me @ "Box Color" box_color me @ "" content_color strcat
-        20 me @ "Content Color" content_color me @ "" content_color strcat
+        5 "Change 'say' text (" me @ say strcat ")" strcat
+        6 "Change 'says' text (" me @ says strcat ")" strcat
+        7 me @ "Error Color" error_color me @ "" content_color strcat
+        8 me @ "Success Color" success_color me @ "" content_color strcat
+        9 me @ "Information Color" info_color me @ "" content_color strcat
+        10 me @ "Note Color" note_color me @ "" content_color strcat
+        11 me @ "Inner Tag Color" tag_color_1 me @ "" content_color strcat
+        12 me @ "Outer Tag Color" tag_color_2 me @ "" content_color strcat
+        13 me @ "OOC Description Color" ooc_color_1 me @ "" content_color strcat
+        14 me @ "OOC Message Color" ooc_color_2 me @ "" content_color strcat
+        15 me @ "IC Description Color" ic_color_1 me @ "" content_color strcat
+        16 me @ "IC Message Color" ic_color_2 me @ "" content_color strcat
+        17 me @ "Option Number Color" option_color_1 me @ "" content_color strcat
+        18 me @ "Option Text Color" option_color_2 me @ "" content_color strcat
+        19 me @ "Title Color" title_color me @ "" content_color strcat
+        20 me @ "Field Color" field_color me @ "" content_color strcat
+        21 me @ "Box Color" box_color me @ "" content_color strcat
+        22 me @ "Content Color" content_color me @ "" content_color strcat
         77 "Reset to Defaults"
         88 "Save"
         99 "Quit"
-    23 width @ doMenu dup 99 = not while
+    25 width @ doMenu dup 99 = not while
         case
             1 = when
                 me @ "Please enter a single character. Any extra will be truncated."
@@ -443,22 +453,30 @@ lvar submitted
                 dup close ! me @ swap "close_tag" swap setConfig
                 0 set_defaults !
             end
-            5 = when me @ color_menu dup if dup error ! me @ swap "color/error_color" swap setConfig 0 set_defaults ! else pop then end
-            6 = when me @ color_menu dup if dup success ! me @ swap "color/success_color" swap setConfig 0 set_defaults ! else pop then end
-            7 = when me @ color_menu dup if dup info ! me @ swap "color/info_color" swap setConfig 0 set_defaults ! else pop then end
-            8 = when me @ color_menu dup if dup note ! me @ swap "color/note_color" swap setConfig 0 set_defaults ! else pop then end
-            9 = when me @ color_menu dup if dup tag1 ! me @ swap "color/tag1" swap setConfig 0 set_defaults ! else pop then end
-            10 = when me @ color_menu dup if dup tag2 ! me @ swap "color/tag2" swap setConfig 0 set_defaults ! else pop then end
-            11 = when me @ color_menu dup if dup ooc1 ! me @ swap "color/ooc1" swap setConfig 0 set_defaults ! else pop then end
-            12 = when me @ color_menu dup if dup ooc2 ! me @ swap "color/ooc2" swap setConfig 0 set_defaults ! else pop then end
-            13 = when me @ color_menu dup if dup ic1 ! me @ swap "color/ic1" swap setConfig 0 set_defaults ! else pop then end
-            14 = when me @ color_menu dup if dup ic2 ! me @ swap "color/ic2" swap setConfig 0 set_defaults ! else pop then end
-            15 = when me @ color_menu dup if dup option1 ! me @ swap "color/opt1" swap setConfig 0 set_defaults ! else pop then end
-            16 = when me @ color_menu dup if dup option2 ! me @ swap "color/opt2" swap setConfig 0 set_defaults ! else pop then end
-            17 = when me @ color_menu dup if dup title ! me @ swap "color/title" swap setConfig 0 set_defaults ! else pop then end
-            18 = when me @ color_menu dup if dup field ! me @ swap "color/field" swap setConfig 0 set_defaults ! else pop then end
-            19 = when me @ color_menu dup if dup box ! me @ swap "color/box" swap setConfig 0 set_defaults ! else pop then end
-            20 = when me @ color_menu dup if dup content ! me @ swap "color/content" swap setConfig 0 set_defaults ! else pop then end
+            5 = when
+                "^NOTE_COLOR^Please enter a first-person present tense verb (e.g. \"say/chirr/roar/giggle\")" tell
+                read s1 ! me @ "prefs/say" s1 @ setConfig
+            end
+            6 = when
+                "^NOTE_COLOR^Please enter a third-person present tense verb (e.g. \"says/chirrs/roars/giggles\")" tell
+                read s2 ! me @ "prefs/says" s2 @ setConfig
+            end
+            7 = when me @ color_menu dup if dup error ! me @ swap "color/error_color" swap setConfig 0 set_defaults ! else pop then end
+            8 = when me @ color_menu dup if dup success ! me @ swap "color/success_color" swap setConfig 0 set_defaults ! else pop then end
+            9 = when me @ color_menu dup if dup info ! me @ swap "color/info_color" swap setConfig 0 set_defaults ! else pop then end
+            10 = when me @ color_menu dup if dup note ! me @ swap "color/note_color" swap setConfig 0 set_defaults ! else pop then end
+            11 = when me @ color_menu dup if dup tag1 ! me @ swap "color/tag1" swap setConfig 0 set_defaults ! else pop then end
+            12 = when me @ color_menu dup if dup tag2 ! me @ swap "color/tag2" swap setConfig 0 set_defaults ! else pop then end
+            13 = when me @ color_menu dup if dup ooc1 ! me @ swap "color/ooc1" swap setConfig 0 set_defaults ! else pop then end
+            14 = when me @ color_menu dup if dup ooc2 ! me @ swap "color/ooc2" swap setConfig 0 set_defaults ! else pop then end
+            15 = when me @ color_menu dup if dup ic1 ! me @ swap "color/ic1" swap setConfig 0 set_defaults ! else pop then end
+            16 = when me @ color_menu dup if dup ic2 ! me @ swap "color/ic2" swap setConfig 0 set_defaults ! else pop then end
+            17 = when me @ color_menu dup if dup option1 ! me @ swap "color/opt1" swap setConfig 0 set_defaults ! else pop then end
+            18 = when me @ color_menu dup if dup option2 ! me @ swap "color/opt2" swap setConfig 0 set_defaults ! else pop then end
+            19 = when me @ color_menu dup if dup title ! me @ swap "color/title" swap setConfig 0 set_defaults ! else pop then end
+            20 = when me @ color_menu dup if dup field ! me @ swap "color/field" swap setConfig 0 set_defaults ! else pop then end
+            21 = when me @ color_menu dup if dup box ! me @ swap "color/box" swap setConfig 0 set_defaults ! else pop then end
+            22 = when me @ color_menu dup if dup content ! me @ swap "color/content" swap setConfig 0 set_defaults ! else pop then end
             77 = when
                 me @ "line" 0 setConfig
                 me @ "vline" 0 setConfig
@@ -480,6 +498,8 @@ lvar submitted
                 me @ "color/field" 0 setConfig
                 me @ "color/box" 0 setConfig
                 me @ "color/content" 0 setConfig
+                me @ "prefs/say" 0 setConfig
+                me @ "prefs/says" 0 setConfig
                 1 set_defaults !
             end
             88 = when
@@ -503,6 +523,8 @@ lvar submitted
                 me @ "orig/color/field" field @ setConfig
                 me @ "orig/color/box" box @ setConfig
                 me @ "orig/color/content" content @ setConfig
+                me @ "orig/prefs/say" s1 @ setConfig
+                me @ "orig/prefs/says" s2 @ setConfig
                 set_defaults @ if
                     1 save_defaults !
                 else
@@ -531,6 +553,8 @@ lvar submitted
     me @ me @ "orig/color/field" getConfig "color/field" swap setConfig
     me @ me @ "orig/color/box" getConfig "color/box" swap setConfig
     me @ me @ "orig/color/content" getConfig "color/content" swap setConfig
+    me @ me @ "orig/prefs/say" getConfig "prefs/say" swap setConfig
+    me @ me @ "orig/prefs/says" getConfig "prefs/says" swap setConfig
     me @ "_config/orig" remove_prop
     save_defaults @ if
         me @ "line" 0 setConfig
@@ -552,6 +576,8 @@ lvar submitted
         me @ "color/field" 0 setConfig
         me @ "color/box" 0 setConfig
         me @ "color/content" 0 setConfig
+        me @ "prefs/say" 0 setConfig
+        me @ "prefs/says" 0 setConfig
     then
 ;
 

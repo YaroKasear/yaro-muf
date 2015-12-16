@@ -1,5 +1,5 @@
 @q
-@edit yaro-chat
+@program yaro-chat
 1 999999 d
 i
 $include $lib/yaro
@@ -257,13 +257,14 @@ $include $lib/yaro
     strip message !
     command @ get_channel_name channel_name !
     me @ channel_name @ on_channel? if
-        "You say, \"" message @ strcat "\"" strcat 
+        "You " me @ say strcat ", \"" strcat message @ strcat "\"" strcat 
         me @ swap channel_name @ swap channel_decorate tell
         command @ match channel_name @ "/members" strcat getConfig foreach swap pop
             dup me @ = if pop
             else
                 dup me @ channel_name @ is_gagged? over me @ swap channel_name @ is_gagged? or not if
-                    dup me @ channel_name @ get_nickname "^REPLACE_ME^" strcat " says, \"" strcat message @ strcat "\"" strcat
+                    dup me @ channel_name @ get_nickname "^REPLACE_ME^" strcat " " strcat 
+                    me @ says strcat ", \"" strcat message @ strcat "\"" strcat
                     channel_name @ swap channel_decorate otell
                 else pop then
             then

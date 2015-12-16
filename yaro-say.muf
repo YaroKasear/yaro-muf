@@ -85,12 +85,12 @@ var timeout
 ;
 
 : doSay ( s -- )
-    strip dup "You say, \"" swap strcat "\"" strcat 
+    strip dup "You " me @ say strcat ", \"" strcat swap strcat "\"" strcat 
     "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes
     me @ swap process_tags tell
     loc @ getPlayers pop pop me @ 1 array_make swap array_diff 
     foreach swap pop
-        over me @ name " says, \"" strcat
+        over me @ name " " strcat me @ says strcat ", \"" strcat
         swap strcat "\"" strcat 
         "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes
         over swap process_tags otell 
@@ -99,12 +99,12 @@ var timeout
 ;
 
 : doOsay ( s -- )
-    strip dup "You say, \"" swap strcat "\"" strcat 
+    strip dup "You " me @ say strcat ", \"" strcat swap strcat "\"" strcat 
     "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
     me @ makeOOC " " strcat swap strcat me @ swap process_tags tell
     loc @ getPlayers pop pop me @ 1 array_make swap array_diff 
     foreach swap pop
-        over me @ name " says, \"" strcat
+        over me @ name " " strcat me @ says strcat ", \"" strcat
         swap strcat "\"" strcat 
         "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
         over makeOOC " " strcat swap strcat over swap process_tags otell 
