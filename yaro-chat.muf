@@ -229,7 +229,7 @@ $include $lib/yaro
 
     channel_name @ get_channel_alias toupper tc1 @ swap strcat
     ot @ tc2 @ swap strcat " " strcat swap strcat
-    " " ct @ tc2 @ swap strcat strcat strcat
+    "^RESET^ " ct @ tc2 @ swap strcat strcat strcat
     ref @ message @ o1 @ "^REPLACE_ME^" subst 
     o1 @ o2 @ color_quotes process_tags " " swap strcat strcat
 ;
