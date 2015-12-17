@@ -12,21 +12,22 @@ $include $cmd/status
     c !
     ref !
 
-    ref @ name
+    ref @ name "^FIELD_COLOR^" swap strcat
     ref @ "~sex" getprop dup not if pop "U" then 1 strcut pop
     toupper dup case
         "M" stringcmp not when "^CYAN^" swap strcat end
         "F" stringcmp not when "^PURPLE^" swap strcat end
         default pop "^WHITE^" swap strcat end
-    endcase cleanString "^CONTENT_COLOR^" strcat me @ swap process_tags
-    ref @ "~species" getprop dup not if pop "Unknown" then
+    endcase cleanString "^CONTENT_COLOR^" strcat "^CONTENT_COLOR^" swap strcat
+    me @ swap process_tags
+    ref @ "~species" getprop dup not if pop "Unknown" then "^FIELD_COLOR^" swap strcat
     ref @ awake? if
         me @ ref @ get_status pop "^CONTENT_COLOR^" strcat process_tags
     else
         "^CONTENT_COLOR^ZZZ"
-    then
-    c @ dup -1 = not if conidle time_format else pop "N/A" then
-    ref @ location name
+    then "^CONTENT_COLOR^" swap strcat
+    c @ dup -1 = not if conidle time_format else pop "N/A" then "^FIELD_COLOR^" swap strcat
+    ref @ location name "^CONTENT_COLOR^" swap strcat
 ;
 
 : do_ws 

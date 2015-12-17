@@ -1034,13 +1034,12 @@ lvar cache
 
     ref @ swap field_color
 
-
     ref @ swap width @ boxContent
 
     ref @ ref @ ref @ width @ line box_color otell
 
     content @ foreach swap pop
-        "" swap foreach swap
+        "" swap foreach ref @ swap process_tags swap
             col_widths @ swap array_getitem
             over ansi_strlen over > if
                 swap over 4 - ansi_strcut pop
