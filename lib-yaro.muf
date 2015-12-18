@@ -56,46 +56,43 @@ lvar cache
 
 : cleanString ( s -- s )
     dup "^" instr if
-        ( dup "^^" instr not if )
-            "^RED^" dup 1 parse_ansi swap subst
-            "^CRIMSON^" dup 1 parse_ansi swap subst
-            "^CRED^" dup 1 parse_ansi swap subst
-            "^BRED^" dup 1 parse_ansi swap subst
-            "^GREEN^" dup 1 parse_ansi swap subst
-            "^FOREST^" dup 1 parse_ansi swap subst
-            "^CGREEN^" dup 1 parse_ansi swap subst
-            "^BGREEN^" dup 1 parse_ansi swap subst
-            "^YELLOW^" dup 1 parse_ansi swap subst
-            "^BROWN^" dup 1 parse_ansi swap subst
-            "^CYELLOW^" dup 1 parse_ansi swap subst
-            "^BYELLOW^" dup 1 parse_ansi swap subst
-            "^BLUE^" dup 1 parse_ansi swap subst
-            "^NAVY^" dup 1 parse_ansi swap subst
-            "^CBLUE^" dup 1 parse_ansi swap subst
-            "^BBLUE^" dup 1 parse_ansi swap subst
-            "^PURPLE^" dup 1 parse_ansi swap subst
-            "^VIOLET^" dup 1 parse_ansi swap subst
-            "^CPURPLE^" dup 1 parse_ansi swap subst
-            "^BPURPLE^" dup 1 parse_ansi swap subst
-            "^CYAN^" dup 1 parse_ansi swap subst
-            "^AQUA^" dup 1 parse_ansi swap subst
-            "^CCYAN^" dup 1 parse_ansi swap subst
-            "^BCYAN^" dup 1 parse_ansi swap subst
-            "^WHITE^" dup 1 parse_ansi swap subst
-            "^GRAY^" dup 1 parse_ansi swap subst
-            "^CWHITE^" dup 1 parse_ansi swap subst
-            "^BWHITE^" dup 1 parse_ansi swap subst
-            "^BLACK^" dup 1 parse_ansi swap subst
-            "^GLOOM^" dup 1 parse_ansi swap subst
-            "^CBLACK^" dup 1 parse_ansi swap subst
-            "^BBLACK^" dup 1 parse_ansi swap subst
-            "^CFAIL^" dup 1 parse_ansi swap subst
-            "^CSUCC^" dup 1 parse_ansi swap subst
-            "^CINFO^" dup 1 parse_ansi swap subst
-            "^CNOTE^" dup 1 parse_ansi swap subst
-            "^CMOVE^" dup 1 parse_ansi swap subst
-            ( "^^" "^" subst )
-        ( then )
+        "^RED^" dup 1 parse_ansi swap subst
+        "^CRIMSON^" dup 1 parse_ansi swap subst
+        "^CRED^" dup 1 parse_ansi swap subst
+        "^BRED^" dup 1 parse_ansi swap subst
+        "^GREEN^" dup 1 parse_ansi swap subst
+        "^FOREST^" dup 1 parse_ansi swap subst
+        "^CGREEN^" dup 1 parse_ansi swap subst
+        "^BGREEN^" dup 1 parse_ansi swap subst
+        "^YELLOW^" dup 1 parse_ansi swap subst
+        "^BROWN^" dup 1 parse_ansi swap subst
+        "^CYELLOW^" dup 1 parse_ansi swap subst
+        "^BYELLOW^" dup 1 parse_ansi swap subst
+        "^BLUE^" dup 1 parse_ansi swap subst
+        "^NAVY^" dup 1 parse_ansi swap subst
+        "^CBLUE^" dup 1 parse_ansi swap subst
+        "^BBLUE^" dup 1 parse_ansi swap subst
+        "^PURPLE^" dup 1 parse_ansi swap subst
+        "^VIOLET^" dup 1 parse_ansi swap subst
+        "^CPURPLE^" dup 1 parse_ansi swap subst
+        "^BPURPLE^" dup 1 parse_ansi swap subst
+        "^CYAN^" dup 1 parse_ansi swap subst
+        "^AQUA^" dup 1 parse_ansi swap subst
+        "^CCYAN^" dup 1 parse_ansi swap subst
+        "^BCYAN^" dup 1 parse_ansi swap subst
+        "^WHITE^" dup 1 parse_ansi swap subst
+        "^GRAY^" dup 1 parse_ansi swap subst
+        "^CWHITE^" dup 1 parse_ansi swap subst
+        "^BWHITE^" dup 1 parse_ansi swap subst
+        "^BLACK^" dup 1 parse_ansi swap subst
+        "^GLOOM^" dup 1 parse_ansi swap subst
+        "^CBLACK^" dup 1 parse_ansi swap subst
+        "^BBLACK^" dup 1 parse_ansi swap subst
+        "^CFAIL^" dup 1 parse_ansi swap subst
+        "^CSUCC^" dup 1 parse_ansi swap subst
+        "^CINFO^" dup 1 parse_ansi swap subst
+        "^CNOTE^" dup 1 parse_ansi swap subst
+        "^CMOVE^" dup 1 parse_ansi swap subst
     then
 ;
 
@@ -478,39 +475,45 @@ lvar cache
     var s
     var ref
 
-    s !
+    cleanString s !
     ref !
 
-    s @ "^" instr if
-        ( s @ dup "^^" instr not if )
-            s @
-            dup toupper "^ERROR_COLOR^" instr if ref @ "" error_color    "^ERROR_COLOR^" subst then
-            dup toupper "^SUCCESS_COLOR^" instr if ref @ "" success_color  "^SUCCESS_COLOR^" subst then
-            dup toupper "^INFO_COLOR^" instr if ref @ "" info_color     "^INFO_COLOR^" subst then
-            dup toupper "^NOTE_COLOR^" instr if ref @ "" note_color     "^NOTE_COLOR^" subst then
-            dup toupper "^TAG_COLOR_1^" instr if ref @ "" tag_color_1    "^TAG_COLOR_1^" subst then
-            dup toupper "^TAG_COLOR_2^" instr if ref @ "" tag_color_2    "^TAG_COLOR_2^" subst then
-            dup toupper "^OOC_COLOR_1^" instr if ref @ "" ooc_color_1    "^OOC_COLOR_1^" subst then
-            dup toupper "^OOC_COLOR_2^" instr if ref @ "" ooc_color_2    "^OOC_COLOR_2^" subst then
-            dup toupper "^OPTION_COLOR_1^" instr if ref @ "" option_color_1 "^OPTION_COLOR_1^" subst then
-            dup toupper "^OPTION_COLOR_2^" instr if ref @ "" option_color_2 "^OPTION_COLOR_2^" subst then
-            dup toupper "^IC_COLOR_1^" instr if ref @ "" ic_color_1       "^IC_COLOR_1^" subst then
-            dup toupper "^IC_COLOR_2^" instr if ref @ "" ic_color_2       "^IC_COLOR_2^" subst then
-            dup toupper "^TITLE_COLOR^" instr if ref @ "" title_color    "^TITLE_COLOR^" subst then
-            dup toupper "^FIELD_COLOR^" instr if ref @ "" field_color    "^FIELD_COLOR^" subst then
-            dup toupper "^BOX_COLOR^" instr if ref @ "" box_color      "^BOX_COLOR^" subst then
-            dup toupper "^CONTENT_COLOR^" instr if ref @ "" content_color  "^CONTENT_COLOR^" subst then
-            dup toupper "^OPEN_TAG^" instr if ref @ open_tag  "^OPEN_TAG^" subst then
-            dup toupper "^CLOSE_TAG^" instr if ref @ close_tag  "^CLOSE_TAG^" subst then
-            dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
-            dup toupper "^BOLD^" instr if "\[[1m" "^BOLD^" subst then
-            dup toupper "^DARK^" instr if "\[[2m" "^DARK^" subst then
-            dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
-            dup toupper "^FLASH^" instr if "\[[5m" "^FLASH^" subst then
-            dup toupper "^INVERT^" instr if "\[[7m" "^INVERT^" subst then
-            dup toupper "^RESET^" instr if "\[[0m" "^RESET^" subst then
-            cleanString
-        ( then )
+    begin s @ "^" instr while
+        s @ "^" split "^" split over tolower ref @ swap getConfig
+        dup dup array? not and if
+            rot pop
+        else
+            pop swap "!+!" swap strcat "!+!" strcat 
+        then
+        swap strcat strcat s !
+    repeat
+    s @ "^" "!+!" subst dup s ! "^" instr if
+        s @
+        dup toupper "^ERROR_COLOR^" instr if ref @ "" error_color    "^ERROR_COLOR^" subst then
+        dup toupper "^SUCCESS_COLOR^" instr if ref @ "" success_color  "^SUCCESS_COLOR^" subst then
+        dup toupper "^INFO_COLOR^" instr if ref @ "" info_color     "^INFO_COLOR^" subst then
+        dup toupper "^NOTE_COLOR^" instr if ref @ "" note_color     "^NOTE_COLOR^" subst then
+        dup toupper "^TAG_COLOR_1^" instr if ref @ "" tag_color_1    "^TAG_COLOR_1^" subst then
+        dup toupper "^TAG_COLOR_2^" instr if ref @ "" tag_color_2    "^TAG_COLOR_2^" subst then
+        dup toupper "^OOC_COLOR_1^" instr if ref @ "" ooc_color_1    "^OOC_COLOR_1^" subst then
+        dup toupper "^OOC_COLOR_2^" instr if ref @ "" ooc_color_2    "^OOC_COLOR_2^" subst then
+        dup toupper "^OPTION_COLOR_1^" instr if ref @ "" option_color_1 "^OPTION_COLOR_1^" subst then
+        dup toupper "^OPTION_COLOR_2^" instr if ref @ "" option_color_2 "^OPTION_COLOR_2^" subst then
+        dup toupper "^IC_COLOR_1^" instr if ref @ "" ic_color_1       "^IC_COLOR_1^" subst then
+        dup toupper "^IC_COLOR_2^" instr if ref @ "" ic_color_2       "^IC_COLOR_2^" subst then
+        dup toupper "^TITLE_COLOR^" instr if ref @ "" title_color    "^TITLE_COLOR^" subst then
+        dup toupper "^FIELD_COLOR^" instr if ref @ "" field_color    "^FIELD_COLOR^" subst then
+        dup toupper "^BOX_COLOR^" instr if ref @ "" box_color      "^BOX_COLOR^" subst then
+        dup toupper "^CONTENT_COLOR^" instr if ref @ "" content_color  "^CONTENT_COLOR^" subst then
+        dup toupper "^OPEN_TAG^" instr if ref @ open_tag  "^OPEN_TAG^" subst then
+        dup toupper "^CLOSE_TAG^" instr if ref @ close_tag  "^CLOSE_TAG^" subst then
+        dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
+        dup toupper "^BOLD^" instr if "\[[1m" "^BOLD^" subst then
+        dup toupper "^DARK^" instr if "\[[2m" "^DARK^" subst then
+        dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
+        dup toupper "^FLASH^" instr if "\[[5m" "^FLASH^" subst then
+        dup toupper "^INVERT^" instr if "\[[7m" "^INVERT^" subst then
+        dup toupper "^RESET^" instr if "\[[0m" "^RESET^" subst then
     else s @ then
 ;
  
@@ -522,13 +525,6 @@ lvar cache
 : otell ( d s -- )
     over swap process_tags cleanString
     notify
-;
- 
-: tell_array ( a s -- )
-    cleanString
-    swap foreach
-        swap pop over over swap process_tags ansi_notify
-    repeat
 ;
  
 : array_append ( a x -- a )
@@ -1093,13 +1089,12 @@ lvar cache
 ;
 
 : paramTest ( s1 s2 -- n )
-    swap " " split pop
-    dup "#" instr 1 = if
-        "#" split swap pop
-        stringcmp not
-    else
-        pop pop 0 exit
-    then
+    var arg
+    var parm 
+
+    "#" swap strcat parm !
+    " " split pop strip arg !
+    parm @ arg @ instr 1 =
 ;
 
 : color_quotes ( s s s -- s )
@@ -1153,7 +1148,6 @@ public line
 public vline
 public tell
 public otell
-public tell_array
 public paramTest
 public error_color
 public success_color
