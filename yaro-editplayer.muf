@@ -807,12 +807,11 @@ lvar submitted
     ref @ "morphs" getConfig dup array? not if
         pop { current_name @ } array_make
     then
-    debug_on
     morphs ! begin me @ "Morph Editor" morphs @ array_to_menu ++
     "New Morph" over dup ++ 
     "Delete Morph" over dup ++ 
     "Quit" over dup
-    50 debug_off doMenu dup morphs @ array_count 3 + = not while
+    50 doMenu dup morphs @ array_count 3 + = not while
         case 
             morphs @ array_count ++ = when
                 ref @ current_name @ new_morph

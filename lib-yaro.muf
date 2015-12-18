@@ -563,9 +563,7 @@ lvar cache
 ;
 
 : array_to_menu ( a -- @ s ... @' s' n )
-    debug_on
     { swap foreach swap 1 + swap over repeat } 3 /
-    debug_off
 ;
  
 : format_left ( s n -- s )
