@@ -93,6 +93,13 @@ lvar cache
         "^CINFO^" dup 1 parse_ansi swap subst
         "^CNOTE^" dup 1 parse_ansi swap subst
         "^CMOVE^" dup 1 parse_ansi swap subst
+        "\[[4m" "^UNDERLINE^" subst 
+        "\[[1m" "^BOLD^" subst 
+        "\[[2m" "^DARK^" subst 
+        "\[[4m" "^UNDERLINE^" subst 
+        "\[[5m" "^FLASH^" subst 
+        "\[[7m" "^INVERT^" subst 
+        "\[[0m" "^RESET^" subst 
     then
 ;
 
@@ -507,13 +514,7 @@ lvar cache
         dup toupper "^CONTENT_COLOR^" instr if ref @ "" content_color  "^CONTENT_COLOR^" subst then
         dup toupper "^OPEN_TAG^" instr if ref @ open_tag  "^OPEN_TAG^" subst then
         dup toupper "^CLOSE_TAG^" instr if ref @ close_tag  "^CLOSE_TAG^" subst then
-        dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
-        dup toupper "^BOLD^" instr if "\[[1m" "^BOLD^" subst then
-        dup toupper "^DARK^" instr if "\[[2m" "^DARK^" subst then
-        dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
-        dup toupper "^FLASH^" instr if "\[[5m" "^FLASH^" subst then
-        dup toupper "^INVERT^" instr if "\[[7m" "^INVERT^" subst then
-        dup toupper "^RESET^" instr if "\[[0m" "^RESET^" subst then
+        dup toupper "^VLINE^" instr if ref @ close_tag "^VLINE^" subst then
     else s @ then
 ;
  
@@ -1094,7 +1095,9 @@ lvar cache
 
     "#" swap strcat parm !
     " " split pop strip arg !
-    parm @ arg @ instr 1 =
+    arg @ if
+        parm @ arg @ instr 1 =
+    else 0 then
 ;
 
 : color_quotes ( s s s -- s )
