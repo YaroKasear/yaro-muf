@@ -171,9 +171,9 @@ $include $lib/yaro
     then statuses !
     me @ "Select Status"
     statuses @ array_keys array_make dup list ! { swap foreach 
-        swap 1 + swap me @ swap get_status_string me @ swap process_tags 
+        swap 1 + swap me @ swap get_status_string me @ swap process_tags over 
     repeat } 
-    2 / 1 + "Cancel" over 50 doMenu
+    3 / 1 + "Cancel" over dup 50 doMenu
     1 - list @ swap array_getitem dup if
         set_status
     else
@@ -199,12 +199,12 @@ $include $lib/yaro
         "^ERROR_COLOR^I need a status to set!" tell
     then
     me @ "Select Status Type"
-    1 "IC"
-    2 "OOC"
-    3 "AWAY"
-    4 "ON-DUTY"
-    5 "OFF-DUTY"
-    6 "Cancel"
+    1 "IC" 1
+    2 "OOC" 2
+    3 "AWAY" 3
+    4 "ON-DUTY" 4
+    5 "OFF-DUTY" 5
+    6 "Cancel" 6
     6 50 doMenu case
         1 = when ref @ "~stype" "I" setConfig end
         2 = when ref @ "~stype" "O" setConfig end

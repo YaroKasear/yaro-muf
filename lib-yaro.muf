@@ -563,7 +563,9 @@ lvar cache
 ;
 
 : array_to_menu ( a -- @ s ... @' s' n )
-    { swap foreach swap 1 + swap repeat } 2 /
+    debug_on
+    { swap foreach swap 1 + swap over repeat } 3 /
+    debug_off
 ;
  
 : format_left ( s n -- s )
@@ -886,75 +888,6 @@ lvar cache
     repeat
 ;
  
-: doMenu ( ref title option_number' option' ... number_of_options width -- selection )
-    var options
-    var title
-    var ref
- 
-    var strings
-    var longest
-    var width
-    var cols
-    var numbers
- 
-    var temp_width
- 
-    temp_width !
-    array_make_dict options !
-    swap ref !
-    ref @ swap process_tags cleanString title !
- 
-    { options @ foreach
-        swap intostr 
-        ref @ option_tag strcat " " strcat
-        ref @ swap option_color_1 swap
-        ref @ swap option_color_2 strcat
-        ref @ swap process_tags cleanString dup ansi_strlen longest @ > if
-            dup ansi_strlen longest !
-        then
-    repeat } array_make strings !
-    longest @ 1 + longest !
-    options @ array_keys array_make numbers !
-    title @ ansi_strlen longest @ > if
-        title @ ansi_strlen 10 + 
-        dup longest @ / cols !
-        dup longest @ 2 * - dup 4 <= if + else pop then         
-    else
-        longest @ 4 +
-        1 cols !
-    then
-    width !
-    temp_width @ width @ > if 
-        temp_width @ width ! 
-        width @ longest @ 1 + / cols !
-    then
-    ref @ title @ width @ boxTitle
-    strings @ cols @ width @ 4 - columns foreach swap pop
-        dup ansi_strlen width @ 4 - swap - space strcat
-        ref @ swap content_color
-        ref @ vline " " strcat
-        ref @ swap box_color swap strcat
-        ref @ vline " " swap strcat
-        ref @ swap box_color strcat
-        ref @ swap otell
-    repeat
-    ref @ width @ line
-    ref @ swap box_color
-    ref @ swap otell
-    ref @ " " otell
-    ref @ ref @ "Please select an option." note_color otell
-    -999 begin -999 = while
-        read dup number? if
-            atoi dup numbers @ swap array_findval not if
-                ref @ ref @ "I do not know that option." error_color otell pop -999
-            else dup then
-        else
-            ref @ ref @ "Please input a numerical response." error_color otell pop -999
-        then
-    repeat
-;
- 
- 
 : boxList ( d a n -- )
     var width
     var strings
@@ -1050,7 +983,44 @@ lvar cache
         ref @ swap width @ boxContent
     repeat 
 ;
- 
+  
+: doMenu ( ref title option_number' option' ... number_of_options width -- selection )
+    var n_options
+    var title
+    var ref
+    var options
+    var addresses
+    var width
+
+    width !
+    n_options !
+    { }dict dup options ! addresses ! 
+    
+    1 n_options @ 1 for pop
+        3 pick addresses @ swap array_insertitem addresses !
+        swap options @ swap array_insertitem options !
+    repeat
+
+    title !
+    ref !
+    ref @ ref @ title @ process_tags cleanString width @ boxTitle
+    ref @ { options @ foreach
+        swap intostr ") " strcat "^OPTION_COLOR_1^" 
+        swap strcat swap "^OPTION_COLOR_2^" swap strcat
+        strcat ref @ swap process_tags cleanString
+    repeat } array_make width @ boxList
+    ref @ "^BOX_COLOR^" ref @ width @ line strcat otell
+    ref @ "Select option." width @ boxContent
+    ref @ "^BOX_COLOR^" ref @ width @ line strcat otell
+    ref @ " " otell
+    begin read dup number? if atoi dup else dup then over options @ swap array_getitem and not while
+        pop ref @ "^ERROR_COLOR^That is not a valid option!" otell
+    repeat
+    dup addresses @ swap array_getitem dup address? if
+        over swap execute
+    else nip then
+;
+
 : checkbox ( ref value -- box )
     var ref 
  
@@ -1075,84 +1045,45 @@ lvar cache
     var ref
 
     dup ref ! "Please select a color."
-    1 "^RED^RED" ref @ "" content_color strcat
-    2 "^CRIMSON^CRIMSON" ref @ "" content_color strcat
-    3 "^CRED^CRED" ref @ "" content_color strcat
-    4 "^BRED^BRED" ref @ "" content_color strcat
-    5 "^GREEN^GREEN" ref @ "" content_color strcat
-    6 "^FOREST^FOREST" ref @ "" content_color strcat
-    7 "^CGREEN^CGREEN" ref @ "" content_color strcat
-    8 "^BGREEN^BGREEN" ref @ "" content_color strcat
-    9 "^YELLOW^YELLOW" ref @ "" content_color strcat
-    10 "^BROWN^BROWN" ref @ "" content_color strcat
-    11 "^CYELLOW^CYELLOW" ref @ "" content_color strcat
-    12 "^BYELLOW^BYELLOW" ref @ "" content_color strcat
-    13 "^BLUE^BLUE" ref @ "" content_color strcat
-    14 "^NAVY^NAVY" ref @ "" content_color strcat
-    15 "^CBLUE^CBLUE" ref @ "" content_color strcat
-    16 "^BBLUE^BBLUE" ref @ "" content_color strcat
-    17 "^PURPLE^PURPLE" ref @ "" content_color strcat
-    18 "^VIOLET^VIOLET" ref @ "" content_color strcat
-    19 "^CPURPLE^CPURPLE" ref @ "" content_color strcat
-    20 "^BPURPLE^BPURPLE" ref @ "" content_color strcat
-    21 "^CYAN^CYAN" ref @ "" content_color strcat
-    22 "^AQUA^AQUA" ref @ "" content_color strcat
-    23 "^CCYAN^CCYAN" ref @ "" content_color strcat
-    24 "^BCYAN^BCYAN" ref @ "" content_color strcat
-    25 "^WHITE^WHITE" ref @ "" content_color strcat
-    26 "^GRAY^GRAY" ref @ "" content_color strcat
-    27 "^CWHITE^CWHITE" ref @ "" content_color strcat
-    28 "^BWHITE^BWHITE" ref @ "" content_color strcat
-    29 "^BLACK^BLACK" ref @ "" content_color strcat
-    30 "^GLOOM^GLOOM" ref @ "" content_color strcat
-    31 "^CBLACK^CBLACK" ref @ "" content_color strcat
-    32 "^BBLACK^BBLACK" ref @ "" content_color strcat
-    33 "^CFAIL^CFAIL" ref @ "" content_color strcat
-    34 "^CSUCC^CSUCC" ref @ "" content_color strcat
-    35 "^CINFO^CINFO" ref @ "" content_color strcat
-    36 "^CNOTE^CNOTE" ref @ "" content_color strcat
-    37 "^CMOVE^CMOVE" ref @ "" content_color strcat
-    99 "Cancel"
-    38 0 doMenu case
-        1 = when "^RED^" 1 parse_ansi end
-        2 = when "^CRIMSON^" 1 parse_ansi end
-        3 = when "^CRED^" 1 parse_ansi end
-        4 = when "^BRED^" 1 parse_ansi end
-        5 = when "^GREEN^" 1 parse_ansi end
-        6 = when "^FOREST^" 1 parse_ansi end
-        7 = when "^CGREEN^" 1 parse_ansi end
-        8 = when "^BGREEN^" 1 parse_ansi end
-        9 = when "^YELLOW^" 1 parse_ansi end
-        10 = when "^BROWN^" 1 parse_ansi end
-        11 = when "^CYELLOW^" 1 parse_ansi end
-        12 = when "^BYELLOW^" 1 parse_ansi end
-        13 = when "^BLUE^" 1 parse_ansi end
-        14 = when "^NAVY^" 1 parse_ansi end
-        15 = when "^CBLUE^" 1 parse_ansi end
-        16 = when "^BBLUE^" 1 parse_ansi end
-        17 = when "^PURPLE^" 1 parse_ansi end
-        18 = when "^VIOLET^" 1 parse_ansi end
-        19 = when "^CPURPLE^" 1 parse_ansi end
-        20 = when "^BPURPLE^" 1 parse_ansi end
-        21 = when "^CYAN^" 1 parse_ansi end
-        22 = when "^AQUA^" 1 parse_ansi end
-        23 = when "^CCYAN^" 1 parse_ansi end
-        24 = when "^BCYAN^" 1 parse_ansi end
-        25 = when "^WHITE^" 1 parse_ansi end
-        26 = when "^GRAY^" 1 parse_ansi end
-        27 = when "^CWHITE^" 1 parse_ansi end
-        28 = when "^BWHITE^" 1 parse_ansi end
-        29 = when "^BLACK^" 1 parse_ansi end
-        30 = when "^GLOOM^" 1 parse_ansi end
-        31 = when "^CBLACK^" 1 parse_ansi end
-        32 = when "^BBLACK^" 1 parse_ansi end
-        33 = when "^CFAIL^" 1 parse_ansi end
-        34 = when "^CSUCC^" 1 parse_ansi end
-        35 = when "^CINFO^" 1 parse_ansi end
-        36 = when "^CNOTE^" 1 parse_ansi end
-        37 = when "^CMOVE^" 1 parse_ansi end
-        99 = when "" end
-    endcase
+    1 "^RED^RED^RESET^"              "^RED^" 1 parse_ansi 
+    2 "^CRIMSON^CRIMSON^RESET^"      "^CRIMSON^" 1 parse_ansi 
+    3 "^CRED^CRED^RESET^"            "^CRED^" 1 parse_ansi 
+    4 "^BRED^BRED^RESET^"            "^BRED^" 1 parse_ansi 
+    5 "^GREEN^GREEN^RESET^"          "^GREEN^" 1 parse_ansi 
+    6 "^FOREST^FOREST^RESET^"        "^FOREST^" 1 parse_ansi 
+    7 "^CGREEN^CGREEN^RESET^"        "^CGREEN^" 1 parse_ansi 
+    8 "^BGREEN^BGREEN^RESET^"        "^BGREEN^" 1 parse_ansi 
+    9 "^YELLOW^YELLOW^RESET^"        "^YELLOW^" 1 parse_ansi 
+    10 "^BROWN^BROWN^RESET^"          "^BROWN^" 1 parse_ansi 
+    11 "^CYELLOW^CYELLOW^RESET^"      "^CYELLOW^" 1 parse_ansi 
+    12 "^BYELLOW^BYELLOW^RESET^"      "^BYELLOW^" 1 parse_ansi 
+    13 "^BLUE^BLUE^RESET^"            "^BLUE^" 1 parse_ansi 
+    14 "^NAVY^NAVY^RESET^"            "^NAVY^" 1 parse_ansi 
+    15 "^CBLUE^CBLUE^RESET^"          "^CBLUE^" 1 parse_ansi 
+    16 "^BBLUE^BBLUE^RESET^"          "^BBLUE^" 1 parse_ansi 
+    17 "^PURPLE^PURPLE^RESET^"        "^PURPLE^" 1 parse_ansi 
+    18 "^VIOLET^VIOLET^RESET^"        "^VIOLET^" 1 parse_ansi 
+    19 "^CPURPLE^CPURPLE^RESET^"      "^CPURPLE^" 1 parse_ansi 
+    20 "^BPURPLE^BPURPLE^RESET^"      "^BPURPLE^" 1 parse_ansi 
+    21 "^CYAN^CYAN^RESET^"            "^CYAN^" 1 parse_ansi 
+    22 "^AQUA^AQUA^RESET^"            "^AQUA^" 1 parse_ansi 
+    23 "^CCYAN^CCYAN^RESET^"          "^CCYAN^" 1 parse_ansi 
+    24 "^BCYAN^BCYAN^RESET^"          "^BCYAN^" 1 parse_ansi 
+    25 "^WHITE^WHITE^RESET^"          "^WHITE^" 1 parse_ansi 
+    26 "^GRAY^GRAY^RESET^"            "^GRAY^" 1 parse_ansi 
+    27 "^CWHITE^CWHITE^RESET^"        "^CWHITE^" 1 parse_ansi 
+    28 "^BWHITE^BWHITE^RESET^"        "^BWHITE^" 1 parse_ansi 
+    29 "^BLACK^BLACK^RESET^"          "^BLACK^" 1 parse_ansi 
+    30 "^GLOOM^GLOOM^RESET^"          "^GLOOM^" 1 parse_ansi 
+    31 "^CBLACK^CBLACK^RESET^"        "^CBLACK^" 1 parse_ansi 
+    32 "^BBLACK^BBLACK^RESET^"        "^BBLACK^" 1 parse_ansi 
+    33 "^CFAIL^CFAIL^RESET^"          "^CFAIL^" 1 parse_ansi 
+    34 "^CSUCC^CSUCC^RESET^"          "^CSUCC^" 1 parse_ansi 
+    35 "^CINFO^CINFO^RESET^"          "^CINFO^" 1 parse_ansi 
+    36 "^CNOTE^CNOTE^RESET^"          "^CNOTE^" 1 parse_ansi 
+    37 "^CMOVE^CMOVE^RESET^"          "^CMOVE^" 1 parse_ansi 
+    99 "Cancel"                                              "" 
+    38 80 doMenu 
 ;
  
 : make_temp ( -- d )

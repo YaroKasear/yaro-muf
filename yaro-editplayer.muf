@@ -109,20 +109,20 @@ lvar submitted
     begin
         ref @ 1 showPInfo
         me @ "Options"
-        1 "Set Real Name"
-        2 "Toggle Real Name"
-        3 "Set Gender"
-        4 "Toggle Gender"
-        5 "Set Birthdate"
-        6 "Toggle Birthdate"
-        7 "Set Location"
-        8 "Toggle Location"
-        9 "Set Time Offset"
-        10 "Toggle Time Offset"
-        11 "Set E-Mail Address"
-        12 "Toggle E-Mail Address"
-        88 "Save"
-        99 "Quit"
+        1 "Set Real Name" 1
+        2 "Toggle Real Name" 2
+        3 "Set Gender" 3
+        4 "Toggle Gender" 4
+        5 "Set Birthdate" 5
+        6 "Toggle Birthdate" 6 
+        7 "Set Location" 7
+        8 "Toggle Location" 8
+        9 "Set Time Offset" 9
+        10 "Toggle Time Offset" 10
+        11 "Set E-Mail Address" 11
+        12 "Toggle E-Mail Address" 12
+        88 "Save" 88
+        99 "Quit" 99
         14 80 doMenu dup 99 = not while
             case
             1 = when me @ "Please input your real name." note_color tell read dup not if "NOT SET" then rname ! end
@@ -225,15 +225,15 @@ lvar submitted
     begin
         ref @ 1 showCInfo
         me @ "Options"
-        1 "Set Birthdate"
-        2 "Set Job"
-        3 "Set Family"
-        4 "Set Cutie Mark"
-        5 "Set Description"
-        6 "Toggle Look-Notify"
-        7 "Set Personality"
-        88 "Save"
-        99 "Quit"
+        1 "Set Birthdate" 1
+        2 "Set Job" 2
+        3 "Set Family" 3
+        4 "Set Cutie Mark" 4
+        5 "Set Description" 5
+        6 "Toggle Look-Notify" 6
+        7 "Set Personality" 7
+        88 "Save" 88
+        99 "Quit" 99
     9 80 doMenu dup 99 = not while
             case
                 1 = when me @ "Please input your character's birthdate." note_color tell read dup not if "NOT SET" then bdate ! end
@@ -402,31 +402,31 @@ lvar submitted
         me @ me @ "1) " option_color_1
         me @ "Option Text" option_color_2 strcat 80 boxContent
         me @ "Options"
-        1 "Horizontal Line Character (" me @ 1 line strcat ")" strcat
-        2 "Vertical Line Character (" me @ vline strcat ")" strcat
-        3 "Open Tag Character (" me @ open_tag strcat ")" strcat
-        4 "Close Tag Character (" me @ close_tag strcat ")" strcat
-        5 "Change 'say' text (" me @ say strcat ")" strcat
-        6 "Change 'says' text (" me @ says strcat ")" strcat
-        7 me @ "Error Color" error_color me @ "" content_color strcat
-        8 me @ "Success Color" success_color me @ "" content_color strcat
-        9 me @ "Information Color" info_color me @ "" content_color strcat
-        10 me @ "Note Color" note_color me @ "" content_color strcat
-        11 me @ "Inner Tag Color" tag_color_1 me @ "" content_color strcat
-        12 me @ "Outer Tag Color" tag_color_2 me @ "" content_color strcat
-        13 me @ "OOC Description Color" ooc_color_1 me @ "" content_color strcat
-        14 me @ "OOC Message Color" ooc_color_2 me @ "" content_color strcat
-        15 me @ "IC Description Color" ic_color_1 me @ "" content_color strcat
-        16 me @ "IC Message Color" ic_color_2 me @ "" content_color strcat
-        17 me @ "Option Number Color" option_color_1 me @ "" content_color strcat
-        18 me @ "Option Text Color" option_color_2 me @ "" content_color strcat
-        19 me @ "Title Color" title_color me @ "" content_color strcat
-        20 me @ "Field Color" field_color me @ "" content_color strcat
-        21 me @ "Box Color" box_color me @ "" content_color strcat
-        22 me @ "Content Color" content_color me @ "" content_color strcat
-        77 "Reset to Defaults"
-        88 "Save"
-        99 "Quit"
+        1 "Horizontal Line Character (" me @ 1 line strcat ")" strcat 1
+        2 "Vertical Line Character (" me @ vline strcat ")" strcat 2
+        3 "Open Tag Character (" me @ open_tag strcat ")" strcat 3
+        4 "Close Tag Character (" me @ close_tag strcat ")" strcat 4
+        5 "Change 'say' text (" me @ say strcat ")" strcat 5
+        6 "Change 'says' text (" me @ says strcat ")" strcat 6
+        7 me @ "Error Color" error_color me @ "" content_color strcat 7
+        8 me @ "Success Color" success_color me @ "" content_color strcat 8
+        9 me @ "Information Color" info_color me @ "" content_color strcat 9
+        10 me @ "Note Color" note_color me @ "" content_color strcat 10
+        11 me @ "Inner Tag Color" tag_color_1 me @ "" content_color strcat 11
+        12 me @ "Outer Tag Color" tag_color_2 me @ "" content_color strcat 12
+        13 me @ "OOC Description Color" ooc_color_1 me @ "" content_color strcat 13
+        14 me @ "OOC Message Color" ooc_color_2 me @ "" content_color strcat 14
+        15 me @ "IC Description Color" ic_color_1 me @ "" content_color strcat 15
+        16 me @ "IC Message Color" ic_color_2 me @ "" content_color strcat 16
+        17 me @ "Option Number Color" option_color_1 me @ "" content_color strcat 17
+        18 me @ "Option Text Color" option_color_2 me @ "" content_color strcat 18
+        19 me @ "Title Color" title_color me @ "" content_color strcat 19
+        20 me @ "Field Color" field_color me @ "" content_color strcat 20
+        21 me @ "Box Color" box_color me @ "" content_color strcat 21
+        22 me @ "Content Color" content_color me @ "" content_color strcat 22
+        77 "Reset to Defaults" 77
+        88 "Save" 88
+        99 "Quit" 99
     25 width @ doMenu dup 99 = not while
         case
             1 = when
@@ -592,10 +592,10 @@ lvar submitted
         me @ me @ "Gender:" field_color me @ sex @ dup not if pop "NOT SET" then content_color 40 boxInfo
         me @ me @ "Species:" field_color me @ species @ dup not if pop "NOT SET" then content_color 40 boxInfo
         me @ "Options"
-        1 "Set Gender"
-        2 "Set Species"
-        8 "Save"
-        9 "Quit"
+        1 "Set Gender" 1
+        2 "Set Species" 2
+        8 "Save" 8
+        9 "Quit" 9
         4 40 doMenu dup 9 = not while
             case
                 1 = when
@@ -629,8 +629,8 @@ lvar submitted
         me @ swap 80 boxContent
     repeat
     me @ "Do you accept this policy?"
-    1 "Yes"
-    2 "No"
+    1 "Yes" 1
+    2 "No" 2
     2 80 doMenu
     ref @ swap "aup_accepted" swap setConfig
 ;
@@ -640,9 +640,9 @@ lvar submitted
     ref !
 
     me @ "Are you sure you wish to submit your application?"
-    1 "Yes"
-    2 "No"
-    2 0 doMenu case
+    1 "Yes" 1
+    2 "No" 2
+    2 80 doMenu case
         1 = when
             ref @ "aup_accepted" getConfig 1 = not if
                 me @ "Please note you have not accepted the Authorized Use Policy! That is grounds for immediate rejection of your application." error_color tell
@@ -684,9 +684,9 @@ lvar submitted
     ref @ 0 showPInfo
     ref @ 0 showCInfo
     me @ "Application Outcome"
-    1 "Accept"
-    2 "Reject"
-    3 "Defer"
+    1 "Accept" 1
+    2 "Reject" 2
+    3 "Defer" 3
     3 80 doMenu case
         1 = when 
             ref @ "!G" set
@@ -807,11 +807,12 @@ lvar submitted
     ref @ "morphs" getConfig dup array? not if
         pop { current_name @ } array_make
     then
+    debug_on
     morphs ! begin me @ "Morph Editor" morphs @ array_to_menu ++
-    dup "New Morph" swap ++ 
-    dup "Delete Morph" swap ++ 
-    dup "Quit" swap
-    50 doMenu dup morphs @ array_count 3 + = not while
+    "New Morph" over dup ++ 
+    "Delete Morph" over dup ++ 
+    "Quit" over dup
+    50 debug_off doMenu dup morphs @ array_count 3 + = not while
         case 
             morphs @ array_count ++ = when
                 ref @ current_name @ new_morph
@@ -847,12 +848,12 @@ lvar submitted
         "editplayer" stringcmp not when pop
             begin
                 me @ "Player Editor"
-                1 "Player Information"
-                2 "Character Information"
-                3 "Morphs"
-                4 "Preferences"
-                9 "Quit"
-            5 0 doMenu dup 9 = not while
+                1 "Player Information" 1
+                2 "Character Information" 2
+                3 "Morphs" 3
+                4 "Preferences" 4
+                9 "Quit" 9
+            5 30 doMenu dup 9 = not while
                 case
                     1 = when me @ doPInfo end
                     2 = when me @ doCInfo end
@@ -905,13 +906,13 @@ lvar submitted
                     newPRef @ "pinfo/prutc" prutc @ setConfig
                     begin
                         me @ "Character Application"
-                        1 "Basics"
-                        2 "Player Information"
-                        3 "Character Information"
-                        4 "Read AUP - " me @ "EXTREMELY IMPORTANT" error_color strcat
-                        8 "Submit"
-                        9 "Quit"
-                    6 0 doMenu dup 9 = not while
+                        1 "Basics" 1
+                        2 "Player Information" 2
+                        3 "Character Information" 3
+                        4 "Read AUP - " me @ "EXTREMELY IMPORTANT" error_color strcat 4
+                        8 "Submit" 8
+                        9 "Quit" 9
+                    6 50 doMenu dup 9 = not while
                         case
                             1 = when newPRef @ doBasics end
                             2 = when newPRef @ doPInfo end
