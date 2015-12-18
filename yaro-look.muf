@@ -61,7 +61,7 @@ $include $cmd/status
     trap ! trap @ get_looktrap dup if
         trap !
         me @ trap @ ";" split pop 80 boxTitle
-        me @ loc @ "_details/" trap @ strcat getprop 80 boxContent
+        me @ loc @ loc @ "_details/" trap @ strcat getprop "(MUF)" 1 parsempi 80 boxContent
         "^BOX_COLOR^" me @ 80 line strcat tell
         " " tell
     else
@@ -111,7 +111,11 @@ $include $cmd/status
     dup "set-looktrap" paramTest if
         " " split swap pop dup if 
             dup "=" instr if
-                "=" split set_looktrap
+                loc @ me @ control? if
+                    "=" split set_looktrap
+                else
+                    "^ERROR_COLOR^You do not have permissions to create a looktrap here." tell
+                then
             else
                 looktrap_usage
             then
