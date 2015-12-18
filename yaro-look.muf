@@ -101,6 +101,32 @@ $include $cmd/status
     " the looktrap." strcat tell
 ;
 
+: toggle_refs
+    me @ "look/see_refs" getConfig if
+        me @ "look/see_refs" 0 setConfig
+        "^SUCCESS_COLOR^Now hiding controlled dbrefs." tell
+    else
+        me @ "look/see_refs" 1 setConfig
+        "^SUCCESS_COLOR^Now showing controlled dbrefs." tell
+    then
+;
+
+: show_help
+    me @ trigger @ name ";" split pop " Help" strcat 80 boxTitle
+    me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " [OBJECT]" strcat
+    "^CONTENT_COLOR^Show description, contents, and exits for [OBJECT]." 80 boxInfo
+    loc @ me @ control? if
+        me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #set-looktrap" strcat
+        "^CONTENT_COLOR^Set up looktraps in the current room." 80 boxInfo
+    then
+    me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #show-refs" strcat
+    "^CONTENT_COLOR^Toggle if dbrefs are shown for objects you control." 80 boxInfo
+    me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #help" strcat
+    "^CONTENT_COLOR^Show this box" 80 boxInfo
+    "^BOX_COLOR^" me @ 80 line strcat tell
+    " " tell
+;
+
 : main
     var look_ref
     var look_name
@@ -124,6 +150,8 @@ $include $cmd/status
         then
         exit
     then
+    dup "show-refs" paramTest if toggle_refs exit then
+    dup "help" paramTest if show_help exit then
     me @ "look/see_refs" getConfig see_refs !
     case
         dup not if pop loc @ end
