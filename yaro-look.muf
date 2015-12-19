@@ -111,6 +111,16 @@ $include $cmd/status
     then
 ;
 
+: toggle_sleepers
+    me @ "look/hide_sleepers" getConfig if
+        me @ "look/hide_sleepers" 0 setConfig
+        "^SUCCESS_COLOR^Now showing sleeping players." tell
+    else
+        me @ "look/hide_sleepers" 1 setConfig
+        "^SUCCESS_COLOR^Now hiding sleeping players." tell
+    then
+;
+
 : show_help
     me @ trigger @ name ";" split pop " Help" strcat 80 boxTitle
     me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " [OBJECT]" strcat
@@ -121,6 +131,8 @@ $include $cmd/status
     then
     me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #show-refs" strcat
     "^CONTENT_COLOR^Toggle if dbrefs are shown for objects you control." 80 boxInfo
+    me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #hide-sleepers" strcat
+    "^CONTENT_COLOR^Toggle if you see sleeping players or not." 80 boxInfo
     me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #help" strcat
     "^CONTENT_COLOR^Show this box" 80 boxInfo
     "^BOX_COLOR^" me @ 80 line strcat tell
@@ -132,6 +144,7 @@ $include $cmd/status
     var look_name
     var look_desc
     var see_refs
+    var hide_sleepers
 
     "" look_name !
     dup "set-looktrap" paramTest if
@@ -151,8 +164,10 @@ $include $cmd/status
         exit
     then
     dup "show-refs" paramTest if toggle_refs exit then
+    dup "hide-sleepers" paramTest if toggle_sleepers exit then
     dup "help" paramTest if show_help exit then
     me @ "look/see_refs" getConfig see_refs !
+    me @ "look/hide_sleepers" getConfig hide_sleepers !
     case
         dup not if pop loc @ end
         dup match ok? when match end
@@ -213,7 +228,7 @@ $include $cmd/status
             me @ "OBVIOUS EXITS" 80 boxTitle
             me @ swap 80 boxList
         else pop then
-        look_ref @ getPlayers nip swap array_merge { swap foreach nip
+        look_ref @ getPlayers nip hide_sleepers @ not if swap array_merge else pop then { swap foreach nip 
             dup visible? not if pop else
                 dup name over dup awake? if 
                     get_status pop 
