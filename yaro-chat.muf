@@ -88,17 +88,20 @@ $include $lib/yaro
 : command_match ( s - )
     var channel_list
 
-    command @ match "channels" getConfig channel_list !
-    channel_list @ command @ get_channel_name array_findval if
-        command @ get_channel_name command !
+    command @ match "channels" getConfig dup array? if
+        channel_list ! channel_list @ command @ get_channel_name array_findval if
+            command @ get_channel_name command !
+        else
+            channel_list @ foreach swap pop
+                dup command @ match swap "/commands" strcat getConfig dup array? if
+                    command @ array_findval if
+                        command ! exit
+                    else pop then
+                else pop pop then
+            repeat
+        then
     else
-        channel_list @ foreach swap pop
-            dup command @ match swap "/commands" strcat getConfig dup array? if
-                command @ array_findval if
-                    command ! exit
-                else pop then
-            else pop pop then
-        repeat
+        pop 
     then
 ;
  
@@ -213,12 +216,12 @@ $include $lib/yaro
     channel_name !
     ref !
 
-    ref @ channel_name @ "/color/tag1" strcat getConfig tc1 !
-    ref @ channel_name @ "/color/tag2" strcat getConfig tc2 !
-    ref @ channel_name @ "/color/ooc1" strcat getConfig o1 ! 
-    ref @ channel_name @ "/color/ooc2" strcat getConfig o2 ! 
-    ref @ channel_name @ "/open_tag" strcat getConfig ot ! 
-    ref @ channel_name @ "/close_tag" strcat getConfig ct ! 
+    ref @ channel_name @ "/prefs/color/tag1" strcat getConfig tc1 !
+    ref @ channel_name @ "/prefs/color/tag2" strcat getConfig tc2 !
+    ref @ channel_name @ "/prefs/color/ooc1" strcat getConfig o1 ! 
+    ref @ channel_name @ "/prefs/color/ooc2" strcat getConfig o2 ! 
+    ref @ channel_name @ "/prefs/open_tag" strcat getConfig ot ! 
+    ref @ channel_name @ "/prefs/close_tag" strcat getConfig ct ! 
 
     tc1 @ not if ref @ "" tag_color_1 tc1 ! then
     tc2 @ not if ref @ "" tag_color_2 tc2 ! then
@@ -568,6 +571,8 @@ $include $lib/yaro
             me @ "Toggle a user ban on " command @ strcat "." strcat content_color 80 boxInfo
             me @ me @ command @ " #add-command <COMMAND>" strcat field_color 
             me @ "Add a new command to use " command @ strcat "." strcat content_color 80 boxInfo
+            me @ me @ command @ " #channel-settings" strcat field_color 
+            me @ "Set configurations for " command @ strcat "." strcat content_color 80 boxInfo
         then
         me @ me @ command @ " #on" strcat field_color 
         me @ "Join the " command @ strcat " channel" strcat content_color 80 boxInfo
@@ -630,6 +635,104 @@ $include $lib/yaro
         command @ match channel_name @ "/members" strcat listeners @ setConfig
     else pop exit then
 ;
+
+: channel_color_setting ( n -- s s )
+    case
+        1 = when 
+            me @ color_menu dup if
+                "/prefs/color/tag1" swap dup
+            else pop 9 9 then
+        end
+        2 = when
+            me @ color_menu dup if
+                "/prefs/color/tag2" swap dup
+            else pop 9 9 then
+        end
+        3 = when
+            me @ color_menu dup if
+                "/prefs/color/ooc1" swap dup
+            else pop 9 9 then
+        end
+        4 = when 
+            me @ color_menu dup if
+                "/prefs/color/ooc2" swap dup
+            else pop 9 9 then
+        end
+    endcase
+;
+
+: channel_decoration_setting ( n -- s s )
+    case
+        5 = when
+            "^NOTE_COLOR^Please enter a single character." tell read dup if
+                1 ansi_strcut pop "/prefs/open_tag" swap dup
+            else pop 9 9 then
+        end
+        6 = when
+            "^NOTE_COLOR^Please enter a single character." tell read dup if
+                1 ansi_strcut pop "/prefs/close_tag" swap dup
+            else pop 9 9 then
+        end
+    endcase
+;
+
+: channel_settings
+    me @ "W" flag? if
+        command @ match "_config/" command @ get_channel_name strcat "/orig" strcat remove_prop
+        command @ match "_config/" command @ get_channel_name strcat "/prefs" strcat
+        command @ match "_config/" command @ get_channel_name strcat "/orig/prefs" strcat 1
+        copyprops pop
+        begin 
+            clear_cache
+            me @ command @ me @ name " " strcat me @ says strcat
+            ", \"This is a test message.\"" strcat channel_decorate tell
+            " " tell
+            me @ "Channel Settings"
+            1 "Inner Tag Color" 'channel_color_setting
+            2 "Outer Tag Color" 'channel_color_setting
+            3 "Message Description Color" 'channel_color_setting
+            4 "Message Color" 'channel_color_setting
+            5 "Open Tag" 'channel_decoration_setting
+            6 "Close Tag" 'channel_decoration_setting
+            7 "Defaults" 7
+            8 "Save" 8
+            9 "Quit" 0
+            9 50 doMenu
+        dup while
+            dup int? if 
+                case
+                    7 = when 
+                        command @ match "_config/" command @ get_channel_name strcat
+                        "/prefs" strcat remove_prop
+                    end
+                    8 = when 
+                        command @ match "_config/" command @ get_channel_name strcat "/orig" strcat remove_prop
+                        command @ match "_config/" command @ get_channel_name strcat "/prefs" strcat
+                        command @ match "_config/" command @ get_channel_name strcat "/orig/prefs" strcat 1
+                        copyprops pop
+                    end
+                    9 = when then
+                endcase
+            else
+                pop 3 pick case
+                    6 <= when
+                        rot pop command @ get_channel_name rot strcat 
+                        swap command @ match rot rot setConfig
+                    end
+                endcase
+            then
+        repeat
+        command @ match "_config/" command @ get_channel_name strcat "/prefs" strcat remove_prop
+        command @ match "_config/" command @ get_channel_name strcat "/orig/prefs" strcat
+        command @ match "_config/" command @ get_channel_name strcat "/prefs" strcat 1
+        copyprops pop
+        command @ match "_config/" command @ get_channel_name strcat "/orig" strcat remove_prop
+        me @ "^NOTE_COLOR^These changes apply to this channel only and not your preferences." tell
+    else
+        "^ERROR_COLOR^You do not have authorization to modify " command @ get_channel_name get_channel_alias
+        strcat "." strcat tell
+    then
+;
  
 : main ( s -- )
     command_match clear_bad
@@ -645,6 +748,7 @@ $include $lib/yaro
     dup "kick" paramTest if " " split swap pop kick exit then    
     dup "ban" paramTest if " " split swap pop ban exit then    
     dup "add-command" paramTest if " " split swap pop add_command exit then    
+    dup "channel-settings" paramTest if " " split swap pop channel_settings exit then    
     dup "help" paramTest if pop show_help exit then    
     dup ":" instr 1 = if ":" split swap pop doPose exit then
     doSay
