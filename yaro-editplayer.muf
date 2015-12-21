@@ -288,10 +288,12 @@ lvar submitted
     var tag2
     var ooc1
     var ooc2
+    var oocn
     var option1
     var option2
     var ic1
     var ic2
+    var icn
     var title
     var field
     var box
@@ -316,10 +318,12 @@ lvar submitted
     me @ "" tag_color_2 tag2 !
     me @ "" ooc_color_1 ooc1 !
     me @ "" ooc_color_2 ooc2 !
+    me @ "" ooc_name_color oocn !
     me @ "" option_color_1 option1 !
     me @ "" option_color_2 option2 !
     me @ "" ic_color_1 ic1 !
     me @ "" ic_color_2 ic2 !
+    me @ "" ic_name_color icn !
     me @ "" title_color title !
     me @ "" field_color field !
     me @ "" box_color box !
@@ -341,10 +345,12 @@ lvar submitted
     me @ "orig/prefs/color/tag2" tag2 @ setConfig
     me @ "orig/prefs/color/ooc1" ooc1 @ setConfig
     me @ "orig/prefs/color/ooc2" ooc2 @ setConfig
+    me @ "orig/prefs/color/oocn" oocn @ setConfig
     me @ "orig/prefs/color/opt1" option1 @ setConfig
     me @ "orig/prefs/color/opt2" option2 @ setConfig
     me @ "orig/prefs/color/ic1" ic1 @ setConfig
     me @ "orig/prefs/color/ic2" ic2 @ setConfig
+    me @ "orig/prefs/color/icn" icn @ setConfig
     me @ "orig/prefs/color/title" title @ setConfig
     me @ "orig/prefs/color/field" field @ setConfig
     me @ "orig/prefs/color/box" box @ setConfig
@@ -362,10 +368,12 @@ lvar submitted
         me @ "" tag_color_2 tag2 !
         me @ "" ooc_color_1 ooc1 !
         me @ "" ooc_color_2 ooc2 !
+        me @ "" ooc_name_color oocn !
         me @ "" option_color_1 option1 !
         me @ "" option_color_2 option2 !
         me @ "" ic_color_1 ic1 !
         me @ "" ic_color_2 ic2 !
+        me @ "" ic_name_color icn !
         me @ "" title_color title !
         me @ "" field_color field !
         me @ "" box_color box !
@@ -417,18 +425,20 @@ lvar submitted
         12 me @ "Outer Tag Color" tag_color_2 me @ "" content_color strcat 12
         13 me @ "OOC Description Color" ooc_color_1 me @ "" content_color strcat 13
         14 me @ "OOC Message Color" ooc_color_2 me @ "" content_color strcat 14
-        15 me @ "IC Description Color" ic_color_1 me @ "" content_color strcat 15
-        16 me @ "IC Message Color" ic_color_2 me @ "" content_color strcat 16
-        17 me @ "Option Number Color" option_color_1 me @ "" content_color strcat 17
-        18 me @ "Option Text Color" option_color_2 me @ "" content_color strcat 18
-        19 me @ "Title Color" title_color me @ "" content_color strcat 19
-        20 me @ "Field Color" field_color me @ "" content_color strcat 20
-        21 me @ "Box Color" box_color me @ "" content_color strcat 21
-        22 me @ "Content Color" content_color me @ "" content_color strcat 22
+        15 me @ "OOC Name Color" ooc_name_color me @ "" content_color strcat 15
+        16 me @ "IC Description Color" ic_color_1 me @ "" content_color strcat 16
+        17 me @ "IC Message Color" ic_color_2 me @ "" content_color strcat 17
+        18 me @ "IC Name Color" ic_name_color me @ "" content_color strcat 18
+        19 me @ "Option Number Color" option_color_1 me @ "" content_color strcat 19
+        20 me @ "Option Text Color" option_color_2 me @ "" content_color strcat 20
+        21 me @ "Title Color" title_color me @ "" content_color strcat 21
+        22 me @ "Field Color" field_color me @ "" content_color strcat 22
+        23 me @ "Box Color" box_color me @ "" content_color strcat 23
+        24 me @ "Content Color" content_color me @ "" content_color strcat 24
         77 "Reset to Defaults" 77
         88 "Save" 88
         99 "Quit" 99
-    25 width @ doMenu dup 99 = not while
+    27 width @ doMenu dup 99 = not while
         case
             1 = when
                 me @ "Please enter a single character. Any extra will be truncated."
@@ -470,14 +480,16 @@ lvar submitted
             12 = when me @ color_menu dup if dup tag2 ! me @ swap "prefs/color/tag2" swap setConfig 0 set_defaults ! else pop then end
             13 = when me @ color_menu dup if dup ooc1 ! me @ swap "prefs/color/ooc1" swap setConfig 0 set_defaults ! else pop then end
             14 = when me @ color_menu dup if dup ooc2 ! me @ swap "prefs/color/ooc2" swap setConfig 0 set_defaults ! else pop then end
-            15 = when me @ color_menu dup if dup ic1 ! me @ swap "prefs/color/ic1" swap setConfig 0 set_defaults ! else pop then end
-            16 = when me @ color_menu dup if dup ic2 ! me @ swap "prefs/color/ic2" swap setConfig 0 set_defaults ! else pop then end
-            17 = when me @ color_menu dup if dup option1 ! me @ swap "prefs/color/opt1" swap setConfig 0 set_defaults ! else pop then end
-            18 = when me @ color_menu dup if dup option2 ! me @ swap "prefs/color/opt2" swap setConfig 0 set_defaults ! else pop then end
-            19 = when me @ color_menu dup if dup title ! me @ swap "prefs/color/title" swap setConfig 0 set_defaults ! else pop then end
-            20 = when me @ color_menu dup if dup field ! me @ swap "prefs/color/field" swap setConfig 0 set_defaults ! else pop then end
-            21 = when me @ color_menu dup if dup box ! me @ swap "prefs/color/box" swap setConfig 0 set_defaults ! else pop then end
-            22 = when me @ color_menu dup if dup content ! me @ swap "prefs/color/content" swap setConfig 0 set_defaults ! else pop then end
+            15 = when me @ color_menu dup if dup oocn ! me @ swap "prefs/color/oocn" swap setConfig 0 set_defaults ! else pop then end
+            16 = when me @ color_menu dup if dup ic1 ! me @ swap "prefs/color/ic1" swap setConfig 0 set_defaults ! else pop then end
+            17 = when me @ color_menu dup if dup ic2 ! me @ swap "prefs/color/ic2" swap setConfig 0 set_defaults ! else pop then end
+            18 = when me @ color_menu dup if dup icn ! me @ swap "prefs/color/icn" swap setConfig 0 set_defaults ! else pop then end
+            19 = when me @ color_menu dup if dup option1 ! me @ swap "prefs/color/opt1" swap setConfig 0 set_defaults ! else pop then end
+            20 = when me @ color_menu dup if dup option2 ! me @ swap "prefs/color/opt2" swap setConfig 0 set_defaults ! else pop then end
+            21 = when me @ color_menu dup if dup title ! me @ swap "prefs/color/title" swap setConfig 0 set_defaults ! else pop then end
+            22 = when me @ color_menu dup if dup field ! me @ swap "prefs/color/field" swap setConfig 0 set_defaults ! else pop then end
+            23 = when me @ color_menu dup if dup box ! me @ swap "prefs/color/box" swap setConfig 0 set_defaults ! else pop then end
+            24 = when me @ color_menu dup if dup content ! me @ swap "prefs/color/content" swap setConfig 0 set_defaults ! else pop then end
             77 = when
                 me @ "prefs/line" 0 setConfig
                 me @ "prefs/vline" 0 setConfig
