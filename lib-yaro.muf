@@ -173,8 +173,8 @@ lvar cache
  
 : error_color ( d s -- s )
     var cache_key 
-    over "color/error_color" make_cache_key cache_key !
-    over "color/error_color" getConfig dup if
+    over "prefs/color/error_color" make_cache_key cache_key !
+    over "prefs/color/error_color" getConfig dup if
         swap strcat
     else
         pop "^CFAIL^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -186,8 +186,8 @@ lvar cache
  
 : success_color ( d s -- s )
     var cache_key 
-    over "color/success_color" make_cache_key cache_key !
-    over "color/success_color" getConfig dup if
+    over "prefs/color/success_color" make_cache_key cache_key !
+    over "prefs/color/success_color" getConfig dup if
         swap strcat
     else
         pop "^CSUCC^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -199,8 +199,8 @@ lvar cache
  
 : info_color ( d s -- s )
     var cache_key 
-    over "color/info_color" make_cache_key cache_key !
-    over "color/info_color" getConfig dup if
+    over "prefs/color/info_color" make_cache_key cache_key !
+    over "prefs/color/info_color" getConfig dup if
         swap strcat
     else
         pop "^CINFO^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -212,8 +212,8 @@ lvar cache
  
 : note_color ( d s -- s )
     var cache_key 
-    over "color/note_color" make_cache_key cache_key !
-    over "color/note_color" getConfig dup if
+    over "prefs/color/note_color" make_cache_key cache_key !
+    over "prefs/color/note_color" getConfig dup if
         swap strcat
     else
         pop "^CNOTE^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -225,8 +225,8 @@ lvar cache
  
 : tag_color_1 ( d s -- s )
     var cache_key 
-    over "color/tag1" make_cache_key cache_key !
-    over "color/tag1" getConfig dup if
+    over "prefs/color/tag1" make_cache_key cache_key !
+    over "prefs/color/tag1" getConfig dup if
         swap strcat
     else
         pop "^WHITE^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -238,8 +238,8 @@ lvar cache
  
 : tag_color_2 ( d s -- s )
     var cache_key 
-    over "color/tag2" make_cache_key cache_key !
-    over "color/tag2" getConfig dup if
+    over "prefs/color/tag2" make_cache_key cache_key !
+    over "prefs/color/tag2" getConfig dup if
         swap strcat
     else
         pop "^FOREST^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -251,8 +251,8 @@ lvar cache
  
 : ooc_color_1 ( d s -- s )
     var cache_key 
-    over "color/ooc1" make_cache_key cache_key !
-    over "color/ooc1" getConfig dup if
+    over "prefs/color/ooc1" make_cache_key cache_key !
+    over "prefs/color/ooc1" getConfig dup if
         swap strcat
     else
         pop "^AQUA^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -264,8 +264,8 @@ lvar cache
  
 : ooc_color_2 ( d s -- s )
     var cache_key 
-    over "color/ooc2" make_cache_key cache_key !
-    over "color/ooc2" getConfig dup if
+    over "prefs/color/ooc2" make_cache_key cache_key !
+    over "prefs/color/ooc2" getConfig dup if
         swap strcat
     else
         pop "^GRAY^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -274,11 +274,24 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
+
+: ooc_name_color ( d s -- s )
+    var cache_key 
+    over "prefs/color/oocn" make_cache_key cache_key !
+    over "prefs/color/oocn" getConfig dup if
+        swap strcat
+    else
+        pop "^OOC_COLOR_1^" dup cache_key @ swap cache_write
+        swap strcat
+    then
+    swap pop
+    "\[[0m" swap strcat
+;
  
 : ic_color_1 ( d s -- s )
     var cache_key 
-    over "color/ic1" make_cache_key cache_key !
-    over "color/ic1" getConfig dup if
+    over "prefs/color/ic1" make_cache_key cache_key !
+    over "prefs/color/ic1" getConfig dup if
         swap strcat
     else
         pop "^WHITE^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -290,8 +303,8 @@ lvar cache
   
 : ic_color_2 ( d s -- s )
     var cache_key 
-    over "color/ic2" make_cache_key cache_key !
-    over "color/ic2" getConfig dup if
+    over "prefs/color/ic2" make_cache_key cache_key !
+    over "prefs/color/ic2" getConfig dup if
         swap strcat
     else
         pop "^WHITE^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -301,10 +314,23 @@ lvar cache
     "\[[0m" swap strcat
 ;
 
+: ic_name_color ( d s -- s )
+    var cache_key 
+    over "prefs/color/icn" make_cache_key cache_key !
+    over "prefs/color/icn" getConfig dup if
+        swap strcat
+    else
+        pop "^IC_COLOR_1^" dup cache_key @ swap cache_write
+        swap strcat
+    then
+    swap pop
+    "\[[0m" swap strcat
+;
+
 : title_color ( d s -- s )
     var cache_key 
-    over "color/title" make_cache_key cache_key !
-    over "color/title" getConfig dup if
+    over "prefs/color/title" make_cache_key cache_key !
+    over "prefs/color/title" getConfig dup if
         swap strcat
     else
         pop "^WHITE^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -316,8 +342,8 @@ lvar cache
  
 : option_color_1 ( d s -- s )
     var cache_key 
-    over "color/opt1" make_cache_key cache_key !
-    over "color/opt1" getConfig dup if
+    over "prefs/color/opt1" make_cache_key cache_key !
+    over "prefs/color/opt1" getConfig dup if
         swap strcat
     else
         pop "^GREEN^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -329,8 +355,8 @@ lvar cache
  
 : option_color_2 ( d s -- s )
     var cache_key 
-    over "color/opt2" make_cache_key cache_key !
-    over "color/opt2" getConfig dup if
+    over "prefs/color/opt2" make_cache_key cache_key !
+    over "prefs/color/opt2" getConfig dup if
         swap strcat
     else
         pop "^GRAY^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -342,8 +368,8 @@ lvar cache
  
 : box_color ( d s -- s )
     var cache_key 
-    over "color/box" make_cache_key cache_key !
-    over "color/box" getConfig dup if
+    over "prefs/color/box" make_cache_key cache_key !
+    over "prefs/color/box" getConfig dup if
         swap strcat
     else
         pop "^AQUA^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -355,8 +381,8 @@ lvar cache
  
 : content_color ( d s -- s )
     var cache_key 
-    over "color/content" make_cache_key cache_key !
-    over "color/content" getConfig dup if
+    over "prefs/color/content" make_cache_key cache_key !
+    over "prefs/color/content" getConfig dup if
         swap strcat
     else
         pop "^GRAY^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -368,8 +394,8 @@ lvar cache
  
 : field_color ( d s -- s )
     var cache_key 
-    over "color/field" make_cache_key cache_key !
-    over "color/field" getConfig dup if
+    over "prefs/color/field" make_cache_key cache_key !
+    over "prefs/color/field" getConfig dup if
         swap strcat
     else
         pop "^WHITE^" 1 parse_ansi dup cache_key @ swap cache_write
@@ -385,9 +411,9 @@ lvar cache
     var length
     var cache_key 
 
-    over "line" make_cache_key cache_key !
+    over "prefs/line" make_cache_key cache_key !
 
-    swap "line" getConfig dup not if
+    swap "prefs/line" getConfig dup not if
         pop "-------------------------------------------------------------------" dup cache_key @ swap cache_write
     then
     myLine !
@@ -432,32 +458,32 @@ lvar cache
  
 : open_tag ( d -- s )
     var cache_key
-    dup "open_tag" make_cache_key cache_key !
-    "open_tag" getConfig dup not if
+    dup "prefs/open_tag" make_cache_key cache_key !
+    "prefs/open_tag" getConfig dup not if
         pop "[" dup cache_key @ swap cache_write
     then
 ;
  
 : close_tag ( d -- s )
     var cache_key
-    dup "close_tag" make_cache_key cache_key !
-    "close_tag" getConfig dup not if
+    dup "prefs/close_tag" make_cache_key cache_key !
+    "prefs/close_tag" getConfig dup not if
         pop "]" dup cache_key @ swap cache_write
     then
 ;
  
 : option_tag ( -- s )
     var cache_key
-    dup "option_tag" make_cache_key cache_key !
-    "option_tag" getConfig dup not if
+    dup "prefs/option_tag" make_cache_key cache_key !
+    "prefs/option_tag" getConfig dup not if
         pop ")" dup cache_key @ swap cache_write
     then
 ;
  
 : vline ( -- s )
     var cache_key
-    dup "vline" make_cache_key cache_key !
-    "vline" getConfig dup not if
+    dup "prefs/vline" make_cache_key cache_key !
+    "prefs/vline" getConfig dup not if
         pop "|" dup cache_key @ swap cache_write
     then
 ;
@@ -492,10 +518,12 @@ lvar cache
             dup toupper "^TAG_COLOR_2^" instr if ref @ "" tag_color_2    "^TAG_COLOR_2^" subst then
             dup toupper "^OOC_COLOR_1^" instr if ref @ "" ooc_color_1    "^OOC_COLOR_1^" subst then
             dup toupper "^OOC_COLOR_2^" instr if ref @ "" ooc_color_2    "^OOC_COLOR_2^" subst then
+            dup toupper "^OOC_NAME_COLOR^" instr if ref @ "" ooc_name_color "^OOC_NAME_COLOR^" subst then
             dup toupper "^OPTION_COLOR_1^" instr if ref @ "" option_color_1 "^OPTION_COLOR_1^" subst then
             dup toupper "^OPTION_COLOR_2^" instr if ref @ "" option_color_2 "^OPTION_COLOR_2^" subst then
             dup toupper "^IC_COLOR_1^" instr if ref @ "" ic_color_1       "^IC_COLOR_1^" subst then
             dup toupper "^IC_COLOR_2^" instr if ref @ "" ic_color_2       "^IC_COLOR_2^" subst then
+            dup toupper "^IC_NAME_COLOR^" instr if ref @ "" ic_name_color "^IC_NAME_COLOR^" subst then
             dup toupper "^TITLE_COLOR^" instr if ref @ "" title_color    "^TITLE_COLOR^" subst then
             dup toupper "^FIELD_COLOR^" instr if ref @ "" field_color    "^FIELD_COLOR^" subst then
             dup toupper "^BOX_COLOR^" instr if ref @ "" box_color      "^BOX_COLOR^" subst then
@@ -1158,10 +1186,12 @@ public tag_color_1
 public tag_color_2
 public ooc_color_1
 public ooc_color_2
+public ooc_name_color
 public option_color_1
 public option_color_2
 public ic_color_1
 public ic_color_2
+public ic_name_color
 public title_color
 public field_color
 public box_color
@@ -1220,10 +1250,12 @@ q
 @set lib-yaro=_defs/tag_color_2:"$lib/yaro" match "tag_color_2" call
 @set lib-yaro=_defs/ooc_color_1:"$lib/yaro" match "ooc_color_1" call
 @set lib-yaro=_defs/ooc_color_2:"$lib/yaro" match "ooc_color_2" call
+@set lib-yaro=_defs/ooc_name_color:"$lib/yaro" match "ooc_name_color" call
 @set lib-yaro=_defs/option_color_1:"$lib/yaro" match "option_color_1" call
 @set lib-yaro=_defs/option_color_2:"$lib/yaro" match "option_color_2" call
 @set lib-yaro=_defs/ic_color_1:"$lib/yaro" match "ic_color_1" call
 @set lib-yaro=_defs/ic_color_2:"$lib/yaro" match "ic_color_2" call
+@set lib-yaro=_defs/ic_name_color:"$lib/yaro" match "ic_name_color" call
 @set lib-yaro=_defs/title_color:"$lib/yaro" match "title_color" call
 @set lib-yaro=_defs/box_color:"$lib/yaro" match "box_color" call
 @set lib-yaro=_defs/field_color:"$lib/yaro" match "field_color" call

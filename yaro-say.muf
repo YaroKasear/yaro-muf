@@ -49,17 +49,11 @@ var timeout
     then
 ;
 
-: makeOOC ( d -- s )
-    dup open_tag over swap tag_color_2
-    over "OOC" tag_color_1 strcat
-    swap dup close_tag tag_color_2 strcat
-;
-
 : doPose ( s -- )
     strip loc @ getPlayers pop pop foreach swap pop
-        over me @ name " " strcat swap strcat
-        "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes
-        over swap process_tags otell
+        over "^IC_NAME_COLOR^" me @ name strcat 
+        "^IC_COLOR_1^ " strcat swap strcat "^IC_COLOR_1^" "^IC_COLOR_2^" 
+        color_quotes over swap process_tags otell
     repeat pop
     updatePo
 ;
@@ -85,12 +79,12 @@ var timeout
 ;
 
 : doSay ( s -- )
-    strip dup "You " me @ say strcat ", \"" strcat swap strcat "\"" strcat 
+    strip dup "^IC_NAME_COLOR^You^IC_COLOR_1^ " me @ say strcat ", \"" strcat swap strcat "\"" strcat 
     "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes
     me @ swap process_tags tell
     loc @ getPlayers pop pop me @ 1 array_make swap array_diff 
     foreach swap pop
-        over me @ name " " strcat me @ says strcat ", \"" strcat
+        over "^IC_NAME_COLOR^" me @ name strcat " " strcat me @ says strcat ", \"" strcat
         swap strcat "\"" strcat 
         "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes
         over swap process_tags otell 
@@ -99,15 +93,17 @@ var timeout
 ;
 
 : doOsay ( s -- )
-    strip dup "You " me @ say strcat ", \"" strcat swap strcat "\"" strcat 
+    strip dup "^OOC_NAME_COLOR^You^OOC_COLOR_1^ " me @ say strcat ", \"" strcat swap strcat "\"" strcat 
     "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
-    me @ makeOOC " " strcat swap strcat me @ swap process_tags tell
+    "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^OOC^TAG_COLOR_2^^CLOSE_TAG^ " 
+    swap strcat me @ swap process_tags tell
     loc @ getPlayers pop pop me @ 1 array_make swap array_diff 
     foreach swap pop
-        over me @ name " " strcat me @ says strcat ", \"" strcat
+        over "^OOC_NAME_COLOR^" me @ name strcat " " strcat me @ says strcat ", \"" strcat
         swap strcat "\"" strcat 
         "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
-        over makeOOC " " strcat swap strcat over swap process_tags otell 
+        "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^OOC^TAG_COLOR_2^^CLOSE_TAG^ " 
+        swap strcat over swap process_tags otell 
     repeat pop
 ;
 
@@ -116,10 +112,10 @@ var timeout
         ":" split swap pop
     then strip
     loc @ getPlayers pop pop foreach swap pop
-        over me @ name " " strcat swap strcat
+        over "^OOC_NAME_COLOR^" me @ name strcat "^OOC_COLOR_1^ " strcat swap strcat
         "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
-        over makeOOC " " strcat swap strcat 
-        over swap process_tags otell
+        "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^OOC^TAG_COLOR_2^^CLOSE_TAG^ " 
+        swap strcat over swap process_tags otell    
     repeat pop
 ;
 
@@ -127,7 +123,8 @@ var timeout
     strip loc @ getPlayers pop pop foreach swap pop
         over dup me @ name instr if
             "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
-            over makeOOC " " strcat swap strcat over swap process_tags otell
+            "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^OOC^TAG_COLOR_2^^CLOSE_TAG^ " 
+            swap strcat over swap process_tags otell
         else
             "( " swap strcat " )" strcat 
             "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
@@ -137,8 +134,8 @@ var timeout
                 over me @ name tag_color_1 strcat
                 over dup close_tag tag_color_2 strcat 
             then
-            over makeOOC " " strcat swap strcat 
-            over swap process_tags otell
+            "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^OOC^TAG_COLOR_2^^CLOSE_TAG^ " 
+            swap strcat over swap process_tags otell
         then
     repeat pop
 ;

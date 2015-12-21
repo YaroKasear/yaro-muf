@@ -218,7 +218,7 @@ $include $cmd/status
             over "O" flag? or not if pop else
                 dup name ";" split ";" split pop dup if
                     toupper "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^" swap strcat
-                    "^TAG_COLOR_2^^CLOSE_TAG^ " strcat swap strcat
+                    "^TAG_COLOR_2^^CLOSE_TAG^^CONTENT_COLOR^ " strcat swap strcat
                 else pop then
                 swap dup me @ control? see_refs @ and if
                     dtos " ^OPEN_TAG^" swap strcat "^CLOSE_TAG^" strcat strcat
@@ -234,7 +234,7 @@ $include $cmd/status
                     get_status pop 
                 else pop "ZZZ" then
                 "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^" swap strcat
-                "^TAG_COLOR_2^^CLOSE_TAG^ " strcat swap strcat
+                "^TAG_COLOR_2^^CLOSE_TAG^^CONTENT_COLOR^ " strcat swap strcat
                 swap dup me @ control? see_refs @ and if
                     dtos " ^OPEN_TAG^" swap strcat "^CLOSE_TAG^" strcat strcat
                 else pop then

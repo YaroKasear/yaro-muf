@@ -329,26 +329,26 @@ lvar submitted
     me @ say s1 !
     me @ says s2 !
 
-    me @ "orig/line" l @ setConfig
-    me @ "orig/vline" vl @ setConfig
-    me @ "orig/open_tag" open @ setConfig
-    me @ "orig/close_tag" close @ setConfig
-    me @ "orig/color/error_color" error @ setConfig
-    me @ "orig/color/success_color" success @ setConfig
-    me @ "orig/color/info_color" info @ setConfig
-    me @ "orig/color/note_color" note @ setConfig
-    me @ "orig/color/tag1" tag1 @ setConfig
-    me @ "orig/color/tag2" tag2 @ setConfig
-    me @ "orig/color/ooc1" ooc1 @ setConfig
-    me @ "orig/color/ooc2" ooc2 @ setConfig
-    me @ "orig/color/opt1" option1 @ setConfig
-    me @ "orig/color/opt2" option2 @ setConfig
-    me @ "orig/color/ic1" ic1 @ setConfig
-    me @ "orig/color/ic2" ic2 @ setConfig
-    me @ "orig/color/title" title @ setConfig
-    me @ "orig/color/field" field @ setConfig
-    me @ "orig/color/box" box @ setConfig
-    me @ "orig/color/content" content @ setConfig
+    me @ "orig/prefs/line" l @ setConfig
+    me @ "orig/prefs/vline" vl @ setConfig
+    me @ "orig/prefs/open_tag" open @ setConfig
+    me @ "orig/prefs/close_tag" close @ setConfig
+    me @ "orig/prefs/color/error_color" error @ setConfig
+    me @ "orig/prefs/color/success_color" success @ setConfig
+    me @ "orig/prefs/color/info_color" info @ setConfig
+    me @ "orig/prefs/color/note_color" note @ setConfig
+    me @ "orig/prefs/color/tag1" tag1 @ setConfig
+    me @ "orig/prefs/color/tag2" tag2 @ setConfig
+    me @ "orig/prefs/color/ooc1" ooc1 @ setConfig
+    me @ "orig/prefs/color/ooc2" ooc2 @ setConfig
+    me @ "orig/prefs/color/opt1" option1 @ setConfig
+    me @ "orig/prefs/color/opt2" option2 @ setConfig
+    me @ "orig/prefs/color/ic1" ic1 @ setConfig
+    me @ "orig/prefs/color/ic2" ic2 @ setConfig
+    me @ "orig/prefs/color/title" title @ setConfig
+    me @ "orig/prefs/color/field" field @ setConfig
+    me @ "orig/prefs/color/box" box @ setConfig
+    me @ "orig/prefs/color/content" content @ setConfig
     me @ "orig/prefs/say" s1 @ setConfig
     me @ "orig/prefs/says" s2 @ setConfig
     begin
@@ -389,11 +389,12 @@ lvar submitted
         me @ me @ me @ open_tag tag_color_2
         me @ "TAG" tag_color_1 strcat
         me @ me @ close_tag tag_color_2 strcat " " strcat
-        me @ "OOC/You " me @ says strcat "/" strcat me @ say strcat ", \"" strcat ooc_color_1
+        me @ me @ "^OOC_NAME_COLOR^OOC/You^OOC_COLOR_1^ " process_tags 
+        me @ says strcat "/" strcat me @ say strcat ", \"" strcat ooc_color_1
         me @ "This is a test message." ooc_color_2
         me @ "\"" ooc_color_1 strcat strcat strcat
         80 boxContent
-        me @ me @ "IC poses and says, \"Who is a superhero?!\"" "^IC_COLOR_1^" "^IC_COLOR_2^" 
+        me @ me @ "^IC_NAME_COLOR^IC^IC_COLOR_1^ poses and says, \"Who is a superhero?!\"" "^IC_COLOR_1^" "^IC_COLOR_2^" 
         color_quotes process_tags 80 boxContent 
         me @ me @ "You have looked at this message successfully!" success_color 80 boxContent
         me @ me @ "Somewhere an error has probably occured!" error_color 80 boxContent
@@ -432,25 +433,25 @@ lvar submitted
             1 = when
                 me @ "Please enter a single character. Any extra will be truncated."
                 note_color tell read cleanString 1 ansi_strcut pop
-                dup l ! me @ swap "line" swap setConfig
+                dup l ! me @ swap "prefs/line" swap setConfig
                 0 set_defaults !
             end
             2 = when
                 me @ "Please enter a single character. Any extra will be truncated."
                 note_color tell read cleanString 1 ansi_strcut pop
-                dup vl ! me @ swap "vline" swap setConfig
+                dup vl ! me @ swap "prefs/vline" swap setConfig
                 0 set_defaults !
             end
             3 = when
                 me @ "Please enter a single character. Any extra will be truncated."
                 note_color tell read cleanString 1 ansi_strcut pop
-                dup open ! me @ swap "open_tag" swap setConfig
+                dup open ! me @ swap "prefs/open_tag" swap setConfig
                 0 set_defaults !
             end
             4 = when
                 me @ "Please enter a single character. Any extra will be truncated."
                 note_color tell read cleanString 1 ansi_strcut pop
-                dup close ! me @ swap "close_tag" swap setConfig
+                dup close ! me @ swap "prefs/close_tag" swap setConfig
                 0 set_defaults !
             end
             5 = when
@@ -461,68 +462,68 @@ lvar submitted
                 "^NOTE_COLOR^Please enter a third-person present tense verb (e.g. \"says/chirrs/roars/giggles\")" tell
                 read s2 ! me @ "prefs/says" s2 @ setConfig
             end
-            7 = when me @ color_menu dup if dup error ! me @ swap "color/error_color" swap setConfig 0 set_defaults ! else pop then end
-            8 = when me @ color_menu dup if dup success ! me @ swap "color/success_color" swap setConfig 0 set_defaults ! else pop then end
-            9 = when me @ color_menu dup if dup info ! me @ swap "color/info_color" swap setConfig 0 set_defaults ! else pop then end
-            10 = when me @ color_menu dup if dup note ! me @ swap "color/note_color" swap setConfig 0 set_defaults ! else pop then end
-            11 = when me @ color_menu dup if dup tag1 ! me @ swap "color/tag1" swap setConfig 0 set_defaults ! else pop then end
-            12 = when me @ color_menu dup if dup tag2 ! me @ swap "color/tag2" swap setConfig 0 set_defaults ! else pop then end
-            13 = when me @ color_menu dup if dup ooc1 ! me @ swap "color/ooc1" swap setConfig 0 set_defaults ! else pop then end
-            14 = when me @ color_menu dup if dup ooc2 ! me @ swap "color/ooc2" swap setConfig 0 set_defaults ! else pop then end
-            15 = when me @ color_menu dup if dup ic1 ! me @ swap "color/ic1" swap setConfig 0 set_defaults ! else pop then end
-            16 = when me @ color_menu dup if dup ic2 ! me @ swap "color/ic2" swap setConfig 0 set_defaults ! else pop then end
-            17 = when me @ color_menu dup if dup option1 ! me @ swap "color/opt1" swap setConfig 0 set_defaults ! else pop then end
-            18 = when me @ color_menu dup if dup option2 ! me @ swap "color/opt2" swap setConfig 0 set_defaults ! else pop then end
-            19 = when me @ color_menu dup if dup title ! me @ swap "color/title" swap setConfig 0 set_defaults ! else pop then end
-            20 = when me @ color_menu dup if dup field ! me @ swap "color/field" swap setConfig 0 set_defaults ! else pop then end
-            21 = when me @ color_menu dup if dup box ! me @ swap "color/box" swap setConfig 0 set_defaults ! else pop then end
-            22 = when me @ color_menu dup if dup content ! me @ swap "color/content" swap setConfig 0 set_defaults ! else pop then end
+            7 = when me @ color_menu dup if dup error ! me @ swap "prefs/color/error_color" swap setConfig 0 set_defaults ! else pop then end
+            8 = when me @ color_menu dup if dup success ! me @ swap "prefs/color/success_color" swap setConfig 0 set_defaults ! else pop then end
+            9 = when me @ color_menu dup if dup info ! me @ swap "prefs/color/info_color" swap setConfig 0 set_defaults ! else pop then end
+            10 = when me @ color_menu dup if dup note ! me @ swap "prefs/color/note_color" swap setConfig 0 set_defaults ! else pop then end
+            11 = when me @ color_menu dup if dup tag1 ! me @ swap "prefs/color/tag1" swap setConfig 0 set_defaults ! else pop then end
+            12 = when me @ color_menu dup if dup tag2 ! me @ swap "prefs/color/tag2" swap setConfig 0 set_defaults ! else pop then end
+            13 = when me @ color_menu dup if dup ooc1 ! me @ swap "prefs/color/ooc1" swap setConfig 0 set_defaults ! else pop then end
+            14 = when me @ color_menu dup if dup ooc2 ! me @ swap "prefs/color/ooc2" swap setConfig 0 set_defaults ! else pop then end
+            15 = when me @ color_menu dup if dup ic1 ! me @ swap "prefs/color/ic1" swap setConfig 0 set_defaults ! else pop then end
+            16 = when me @ color_menu dup if dup ic2 ! me @ swap "prefs/color/ic2" swap setConfig 0 set_defaults ! else pop then end
+            17 = when me @ color_menu dup if dup option1 ! me @ swap "prefs/color/opt1" swap setConfig 0 set_defaults ! else pop then end
+            18 = when me @ color_menu dup if dup option2 ! me @ swap "prefs/color/opt2" swap setConfig 0 set_defaults ! else pop then end
+            19 = when me @ color_menu dup if dup title ! me @ swap "prefs/color/title" swap setConfig 0 set_defaults ! else pop then end
+            20 = when me @ color_menu dup if dup field ! me @ swap "prefs/color/field" swap setConfig 0 set_defaults ! else pop then end
+            21 = when me @ color_menu dup if dup box ! me @ swap "prefs/color/box" swap setConfig 0 set_defaults ! else pop then end
+            22 = when me @ color_menu dup if dup content ! me @ swap "prefs/color/content" swap setConfig 0 set_defaults ! else pop then end
             77 = when
-                me @ "line" 0 setConfig
-                me @ "vline" 0 setConfig
-                me @ "open_tag" 0 setConfig
-                me @ "close_tag" 0 setConfig
-                me @ "color/error_color" 0 setConfig
-                me @ "color/success_color" 0 setConfig
-                me @ "color/info_color" 0 setConfig
-                me @ "color/note_color" 0 setConfig
-                me @ "color/tag1" 0 setConfig
-                me @ "color/tag2" 0 setConfig
-                me @ "color/ooc1" 0 setConfig
-                me @ "color/ooc2" 0 setConfig
-                me @ "color/opt1" 0 setConfig
-                me @ "color/opt2" 0 setConfig
-                me @ "color/ic1" 0 setConfig
-                me @ "color/ic2" 0 setConfig
-                me @ "color/title" 0 setConfig
-                me @ "color/field" 0 setConfig
-                me @ "color/box" 0 setConfig
-                me @ "color/content" 0 setConfig
+                me @ "prefs/line" 0 setConfig
+                me @ "prefs/vline" 0 setConfig
+                me @ "prefs/open_tag" 0 setConfig
+                me @ "prefs/close_tag" 0 setConfig
+                me @ "prefs/color/error_color" 0 setConfig
+                me @ "prefs/color/success_color" 0 setConfig
+                me @ "prefs/color/info_color" 0 setConfig
+                me @ "prefs/color/note_color" 0 setConfig
+                me @ "prefs/color/tag1" 0 setConfig
+                me @ "prefs/color/tag2" 0 setConfig
+                me @ "prefs/color/ooc1" 0 setConfig
+                me @ "prefs/color/ooc2" 0 setConfig
+                me @ "prefs/color/opt1" 0 setConfig
+                me @ "prefs/color/opt2" 0 setConfig
+                me @ "prefs/color/ic1" 0 setConfig
+                me @ "prefs/color/ic2" 0 setConfig
+                me @ "prefs/color/title" 0 setConfig
+                me @ "prefs/color/field" 0 setConfig
+                me @ "prefs/color/box" 0 setConfig
+                me @ "prefs/color/content" 0 setConfig
                 me @ "prefs/say" 0 setConfig
                 me @ "prefs/says" 0 setConfig
                 1 set_defaults !
             end
             88 = when
-                me @ "orig/line" l @ setConfig
-                me @ "orig/vline" vl @ setConfig
-                me @ "orig/open_tag" open @ setConfig
-                me @ "orig/close_tag" close @ setConfig
-                me @ "orig/color/error_color" error @ setConfig
-                me @ "orig/color/success_color" success @ setConfig
-                me @ "orig/color/info_color" info @ setConfig
-                me @ "orig/color/note_color" note @ setConfig
-                me @ "orig/color/tag1" tag1 @ setConfig
-                me @ "orig/color/tag2" tag2 @ setConfig
-                me @ "orig/color/ooc1" ooc1 @ setConfig
-                me @ "orig/color/ooc2" ooc2 @ setConfig
-                me @ "orig/color/opt1" option1 @ setConfig
-                me @ "orig/color/opt2" option2 @ setConfig
-                me @ "orig/color/ic1" ic1 @ setConfig
-                me @ "orig/color/ic2" ic2 @ setConfig
-                me @ "orig/color/title" title @ setConfig
-                me @ "orig/color/field" field @ setConfig
-                me @ "orig/color/box" box @ setConfig
-                me @ "orig/color/content" content @ setConfig
+                me @ "orig/prefs/line" l @ setConfig
+                me @ "orig/prefs/vline" vl @ setConfig
+                me @ "orig/prefs/open_tag" open @ setConfig
+                me @ "orig/prefs/close_tag" close @ setConfig
+                me @ "orig/prefs/color/error_color" error @ setConfig
+                me @ "orig/prefs/color/success_color" success @ setConfig
+                me @ "orig/prefs/color/info_color" info @ setConfig
+                me @ "orig/prefs/color/note_color" note @ setConfig
+                me @ "orig/prefs/color/tag1" tag1 @ setConfig
+                me @ "orig/prefs/color/tag2" tag2 @ setConfig
+                me @ "orig/prefs/color/ooc1" ooc1 @ setConfig
+                me @ "orig/prefs/color/ooc2" ooc2 @ setConfig
+                me @ "orig/prefs/color/opt1" option1 @ setConfig
+                me @ "orig/prefs/color/opt2" option2 @ setConfig
+                me @ "orig/prefs/color/ic1" ic1 @ setConfig
+                me @ "orig/prefs/color/ic2" ic2 @ setConfig
+                me @ "orig/prefs/color/title" title @ setConfig
+                me @ "orig/prefs/color/field" field @ setConfig
+                me @ "orig/prefs/color/box" box @ setConfig
+                me @ "orig/prefs/color/content" content @ setConfig
                 me @ "orig/prefs/say" s1 @ setConfig
                 me @ "orig/prefs/says" s2 @ setConfig
                 set_defaults @ if
@@ -533,51 +534,31 @@ lvar submitted
             end
         endcase
     repeat
-    me @ me @ "orig/line" getConfig "line" swap setConfig
-    me @ me @ "orig/vline" getConfig "vline" swap setConfig
-    me @ me @ "orig/open_tag" getConfig "open_tag" swap setConfig
-    me @ me @ "orig/close_tag" getConfig "close_tag" swap setConfig
-    me @ me @ "orig/color/error_color" getConfig "color/error_color" swap setConfig
-    me @ me @ "orig/color/success_color" getConfig "color/success_color" swap setConfig
-    me @ me @ "orig/color/info_color" getConfig "color/info_color" swap setConfig
-    me @ me @ "orig/color/note_color" getConfig "color/note_color" swap setConfig
-    me @ me @ "orig/color/tag1" getConfig "color/tag1" swap setConfig
-    me @ me @ "orig/color/tag2" getConfig "color/tag2" swap setConfig
-    me @ me @ "orig/color/ooc1" getConfig "color/ooc1" swap setConfig
-    me @ me @ "orig/color/ooc2" getConfig "color/ooc2" swap setConfig
-    me @ me @ "orig/color/opt1" getConfig "color/opt1" swap setConfig
-    me @ me @ "orig/color/opt2" getConfig "color/opt2" swap setConfig
-    me @ me @ "orig/color/ic1" getConfig "color/ic1" swap setConfig
-    me @ me @ "orig/color/ic2" getConfig "color/ic2" swap setConfig
-    me @ me @ "orig/color/title" getConfig "color/title" swap setConfig
-    me @ me @ "orig/color/field" getConfig "color/field" swap setConfig
-    me @ me @ "orig/color/box" getConfig "color/box" swap setConfig
-    me @ me @ "orig/color/content" getConfig "color/content" swap setConfig
+    me @ me @ "orig/prefs/line" getConfig "prefs/line" swap setConfig
+    me @ me @ "orig/prefs/vline" getConfig "prefs/vline" swap setConfig
+    me @ me @ "orig/prefs/open_tag" getConfig "prefs/open_tag" swap setConfig
+    me @ me @ "orig/prefs/close_tag" getConfig "prefs/close_tag" swap setConfig
+    me @ me @ "orig/prefs/color/error_color" getConfig "prefs/color/error_color" swap setConfig
+    me @ me @ "orig/prefs/color/success_color" getConfig "prefs/color/success_color" swap setConfig
+    me @ me @ "orig/prefs/color/info_color" getConfig "prefs/color/info_color" swap setConfig
+    me @ me @ "orig/prefs/color/note_color" getConfig "prefs/color/note_color" swap setConfig
+    me @ me @ "orig/prefs/color/tag1" getConfig "prefs/color/tag1" swap setConfig
+    me @ me @ "orig/prefs/color/tag2" getConfig "prefs/color/tag2" swap setConfig
+    me @ me @ "orig/prefs/color/ooc1" getConfig "prefs/color/ooc1" swap setConfig
+    me @ me @ "orig/prefs/color/ooc2" getConfig "prefs/color/ooc2" swap setConfig
+    me @ me @ "orig/prefs/color/opt1" getConfig "prefs/color/opt1" swap setConfig
+    me @ me @ "orig/prefs/color/opt2" getConfig "prefs/color/opt2" swap setConfig
+    me @ me @ "orig/prefs/color/ic1" getConfig "prefs/color/ic1" swap setConfig
+    me @ me @ "orig/prefs/color/ic2" getConfig "prefs/color/ic2" swap setConfig
+    me @ me @ "orig/prefs/color/title" getConfig "prefs/color/title" swap setConfig
+    me @ me @ "orig/prefs/color/field" getConfig "prefs/color/field" swap setConfig
+    me @ me @ "orig/prefs/color/box" getConfig "prefs/color/box" swap setConfig
+    me @ me @ "orig/prefs/color/content" getConfig "prefs/color/content" swap setConfig
     me @ me @ "orig/prefs/say" getConfig "prefs/say" swap setConfig
     me @ me @ "orig/prefs/says" getConfig "prefs/says" swap setConfig
     me @ "_config/orig" remove_prop
     save_defaults @ if
-        me @ "line" 0 setConfig
-        me @ "vline" 0 setConfig
-        me @ "open_tag" 0 setConfig
-        me @ "close_tag" 0 setConfig
-        me @ "color/error_color" 0 setConfig
-        me @ "color/success_color" 0 setConfig
-        me @ "color/info_color" 0 setConfig
-        me @ "color/note_color" 0 setConfig
-        me @ "color/tag1" 0 setConfig
-        me @ "color/tag2" 0 setConfig
-        me @ "color/ooc1" 0 setConfig
-        me @ "color/ooc2" 0 setConfig
-        me @ "color/opt1" 0 setConfig
-        me @ "color/opt2" 0 setConfig
-        me @ "color/ic" 0 setConfig
-        me @ "color/title" 0 setConfig
-        me @ "color/field" 0 setConfig
-        me @ "color/box" 0 setConfig
-        me @ "color/content" 0 setConfig
-        me @ "prefs/say" 0 setConfig
-        me @ "prefs/says" 0 setConfig
+        me @ "_config/prefs/" remove_prop
     then
 ;
 
