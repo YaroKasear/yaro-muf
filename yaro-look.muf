@@ -202,7 +202,7 @@ $include $cmd/status
     endcase
     look_ref @ me @ control? see_refs @ and if
         look_name @ " ^OPEN_TAG^" look_ref @ dtos strcat "^CLOSE_TAG^"
-        strcat strcat look_name !
+        strcat strcat me @ swap process_tags look_name !
     then
     me @ look_name @ 80 boxTitle
     look_ref @ "_/de" "(MUF)" 1 parseprop dup not if
