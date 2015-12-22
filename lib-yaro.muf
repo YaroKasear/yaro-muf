@@ -158,8 +158,8 @@ lvar cache
         ref @ myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
     repeat
     loc @ begin dup while
-        dup myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-        dup myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
+        dup myProgKey @ readConf dup if dup cache_key @ swap cache_write nip exit else pop then
+        dup myKey @ readConf dup if dup cache_key @ swap cache_write nip exit else pop then
         location
     repeat pop
     trigger @ ok? if    
