@@ -209,6 +209,7 @@ $include $lib/yaro
     var tc2
     var o1
     var o2
+    var nc
     var ot
     var ct
 
@@ -220,6 +221,7 @@ $include $lib/yaro
     ref @ channel_name @ "/prefs/color/tag2" strcat getConfig tc2 !
     ref @ channel_name @ "/prefs/color/ooc1" strcat getConfig o1 ! 
     ref @ channel_name @ "/prefs/color/ooc2" strcat getConfig o2 ! 
+    ref @ channel_name @ "/prefs/color/oocn" strcat getConfig nc !
     ref @ channel_name @ "/prefs/open_tag" strcat getConfig ot ! 
     ref @ channel_name @ "/prefs/close_tag" strcat getConfig ct ! 
 
@@ -227,14 +229,16 @@ $include $lib/yaro
     tc2 @ not if ref @ "" tag_color_2 tc2 ! then
     o1 @ not if ref @ "" ooc_color_1 o1 ! then
     o2 @ not if ref @ "" ooc_color_2 o2 ! then
+    o2 @ not if ref @ "" ooc_color_2 o2 ! then
+    nc @ not if ref @ "" ooc_name_color nc ! then
     ot @ not if ref @ open_tag ot ! then
     ct @ not if ref @ close_tag ct ! then
 
     channel_name @ get_channel_alias toupper tc1 @ swap strcat
     ot @ tc2 @ swap strcat " " strcat swap strcat
     "^RESET^ " ct @ tc2 @ swap strcat strcat strcat
-    ref @ message @ o1 @ "^REPLACE_ME^" subst 
-    o1 @ o2 @ color_quotes process_tags " " swap strcat strcat
+    ref @ message @ o1 @ "^+1+^" subst nc @ "^+2+^" subst 
+    o1 @ o2 @ color_quotes process_tags " " swap strcat strcat 
 ;
 
 : alert_members ( s s -- )
@@ -260,13 +264,13 @@ $include $lib/yaro
     strip message !
     command @ get_channel_name channel_name !
     me @ channel_name @ on_channel? if
-        "You " me @ say strcat ", \"" strcat message @ strcat "\"" strcat 
+        "^+2+^You^+1+^ " me @ say strcat ", \"" strcat message @ strcat "\"" strcat 
         me @ swap channel_name @ swap channel_decorate tell
         command @ match channel_name @ "/members" strcat getConfig foreach swap pop
             dup me @ = if pop
             else
                 dup me @ channel_name @ is_gagged? over me @ swap channel_name @ is_gagged? or not if
-                    dup me @ channel_name @ get_nickname "^REPLACE_ME^" strcat " " strcat 
+                    dup me @ channel_name @ get_nickname "^+2+^" swap strcat "^+1+^" strcat " " strcat 
                     me @ says strcat ", \"" strcat message @ strcat "\"" strcat
                     channel_name @ swap channel_decorate otell
                 else pop then
@@ -287,7 +291,7 @@ $include $lib/yaro
     me @ channel_name @ on_channel? if
         command @ match channel_name @ "/members" strcat getConfig foreach swap pop
             dup me @ channel_name @ is_gagged? over me @ swap channel_name @ is_gagged? or not if
-                dup me @ channel_name @ get_nickname "^REPLACE_ME^" strcat 
+                dup me @ channel_name @ get_nickname "^+2+^" swap strcat "^+1+^" strcat 
                 message @ case
                     ":" instr 1 = when "" end
                     "," instr 1 = when "" end
@@ -658,17 +662,22 @@ $include $lib/yaro
                 "/prefs/color/ooc2" swap dup
             else pop 9 9 then
         end
+        5 = when 
+            me @ color_menu dup if
+                "/prefs/color/oocn" swap dup
+            else pop 9 9 then
+        end
     endcase
 ;
 
 : channel_decoration_setting ( n -- s s )
     case
-        5 = when
+        6 = when
             "^NOTE_COLOR^Please enter a single character." tell read dup if
                 1 ansi_strcut pop "/prefs/open_tag" swap dup
             else pop 9 9 then
         end
-        6 = when
+        7 = when
             "^NOTE_COLOR^Please enter a single character." tell read dup if
                 1 ansi_strcut pop "/prefs/close_tag" swap dup
             else pop 9 9 then
@@ -684,28 +693,29 @@ $include $lib/yaro
         copyprops pop
         begin 
             clear_cache
-            me @ command @ me @ name " " strcat me @ says strcat
-            ", \"This is a test message.\"" strcat channel_decorate tell
+            me @ command @ me @ command @ get_nickname "^+2+^" swap strcat "^+1+^ " strcat me @ says strcat
+            ", \"This is a test message.\"" strcat channel_decorate tell 
             " " tell
             me @ "Channel Settings"
             1 "Inner Tag Color" 'channel_color_setting
             2 "Outer Tag Color" 'channel_color_setting
             3 "Message Description Color" 'channel_color_setting
             4 "Message Color" 'channel_color_setting
-            5 "Open Tag" 'channel_decoration_setting
-            6 "Close Tag" 'channel_decoration_setting
-            7 "Defaults" 7
-            8 "Save" 8
-            9 "Quit" 0
-            9 50 doMenu
+            5 "Name Color" 'channel_color_setting
+            6 "Open Tag" 'channel_decoration_setting
+            7 "Close Tag" 'channel_decoration_setting
+            77 "Defaults" 77
+            88 "Save" 88
+            99 "Quit" 0
+            10 50 doMenu
         dup while
             dup int? if 
                 case
-                    7 = when 
+                    77 = when 
                         command @ match "_config/" command @ get_channel_name strcat
                         "/prefs" strcat remove_prop
                     end
-                    8 = when 
+                    88 = when 
                         command @ match "_config/" command @ get_channel_name strcat "/orig" strcat remove_prop
                         command @ match "_config/" command @ get_channel_name strcat "/prefs" strcat
                         command @ match "_config/" command @ get_channel_name strcat "/orig/prefs" strcat 1
@@ -715,7 +725,7 @@ $include $lib/yaro
                 endcase
             else
                 pop 3 pick case
-                    6 <= when
+                    7 <= when
                         rot pop command @ get_channel_name rot strcat 
                         swap command @ match rot rot setConfig
                     end
