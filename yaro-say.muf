@@ -4,50 +4,7 @@
 i
 $include $lib/yaro
 $include $cmd/status
-
-var timeout
-
-: updatePo ( -- )
-    var current_turn
-
-    loc @ "poseorder/order" getConfig dup if
-        var newPO
-        { }dict newPO ! foreach
-            dup systime swap - timeout @ -1 = swap timeout @ < or if
-                swap me @ name over stringcmp not if
-                    pop pop
-                else
-                    swap newPO @ rot array_insertitem newPO !
-                then
-            else
-                pop pop
-            then
-        repeat
-        systime newPO @ me @ name array_insertitem
-    else
-        pop { me @ name systime }dict
-    then
-    dup loc @ swap "poseorder/order" swap setconfig
-    foreach
-        systime swap - timeout @ > not if
-            pmatch dup get_status swap pop "I" stringcmp not over awake? and if
-                current_turn ! break
-            else pop then
-        else pop then
-    repeat
-    current_turn @ if
-        loc @ getPlayers pop pop foreach swap pop
-            dup "poseorder/notify" getConfig if
-                dup current_turn @ = if
-                    dup "It is now currently your pose." info_color otell
-                else
-                    dup "It is now currently " current_turn @ name "'s pose." strcat strcat
-                    info_color otell
-                then
-            else pop then
-        repeat
-    then
-;
+$include $cmd/poseorder
 
 : doPose ( s -- )
     strip loc @ getPlayers pop pop foreach swap pop
@@ -55,7 +12,7 @@ var timeout
         "^IC_COLOR_1^ " strcat swap strcat "^IC_COLOR_1^" "^IC_COLOR_2^" 
         color_quotes over swap process_tags otell
     repeat pop
-    updatePo
+    update_po
 ;
 
 : doSpoof ( s -- )
@@ -75,7 +32,7 @@ var timeout
             over swap process_tags otell
         then
     repeat pop
-    updatePo
+    update_po
 ;
 
 : doSay ( s -- )
@@ -89,7 +46,7 @@ var timeout
         "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes
         over swap process_tags otell 
     repeat pop
-    updatePo
+    update_po
 ;
 
 : doOsay ( s -- )
@@ -149,10 +106,6 @@ var timeout
 ;
 
 : main ( s -- )
-    loc @ "poseorder/timeout" getConfig atoi dup not if 
-        pop 1800
-    then
-    timeout !
     strip
     command @ tolower case
         "say" swap instr 1 = when doSay end

@@ -5,132 +5,188 @@ i
 $include $lib/yaro
 $include $cmd/status
 
-var timeout
+lvar timeout
 
-: displayPo ( -- )
-    var names
-    var n
-    "" names !
-    "" n !
+: get_order ( -- a )
+    var order
 
-    loc @ "poseorder/order" getConfig dup if
-        dup array_vals array_make
-        SORTTYPE_CASE_ASCEND array_sort foreach swap pop
-            dup systime swap - timeout @ -1 = swap timeout @ < or if
-                over swap array_findval 0 array_getitem
-                dup pmatch awake? over pmatch location loc @ = and 
-                over pmatch get_status swap pop "I" stringcmp not and if
-                    " " strcat names @ swap strcat names !
-                else
-                    pop
-                then
-            else
-                pop
-            then
+    loc @ "poseorder/order" getConfig dup array? if
+        dup order !
+        array_vals array_make { swap foreach nip
+            dup systime swap - timeout @ >= timeout @ -1 != and if pop then
         repeat
-        names @ " " swap strcat dup " " stringcmp not if
-            me @ "There is no established pose order!" info_color tell
-        else
-            names @ dup " " instr strcut pop strip match me @ = if
-                me @ "poseorder/notify" getConfig if
-                    me @ " <-- " tag_color_2 me @ "It is currently your pose." note_color strcat n !
-                then
-            then
-            me @ swap tag_color_1
-            me @ open_tag me @ swap tag_color_2 swap strcat
-            me @ close_tag me @ swap tag_color_2 strcat 
-            n @ strcat tell pop
+        } array_make SORTTYPE_CASE_ASCEND array_sort { swap foreach nip
+            order @ swap array_findval 0 array_getitem 
+            dup pmatch dup ok? over get_status nip "I" 
+            stringcmp not and swap location loc @ = and 
+            not if pop then
+        repeat } array_make
+    else
+        0 array_make
+    then
+;
+
+: get_turn ( -- d )
+    get_order dup if
+        0 array_getitem pmatch dup ok? not if pop #-1 then
+    else #-1 then
+;
+
+: update_po ( -- )
+    var order
+
+    loc @ "poseorder/timeout" getConfig dup not over int? not or if pop 1800 then timeout !
+    loc @ "poseorder/order" getConfig dup array? not if
+        pop { }dict
+    then
+    order !
+    loc @ "_config/poseorder/order" remove_prop
+    order @ me @ name array_delitem systime swap
+    me @ name array_insertitem loc @ swap "poseorder/order"
+    swap setConfig 
+    get_turn dup if dup "poseorder/notify" getConfig if
+        "^INFO_COLOR^It is now your pose." otell
+    else pop then else pop then
+;
+
+: show_order ( -- )
+    "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^ " "" get_order dup if foreach nip
+        ", " strcat strcat
+    repeat strcat "," rsplit pop " ^TAG_COLOR_2^^CLOSE_TAG^" strcat 
+    me @ "poseorder/notify" getConfig if
+        get_turn me @ = if
+            " ^INFO_COLOR^<-- It is currently your pose." strcat
         then
+    then tell
     else
-        me @ "There is no established pose order!" info_color tell
+        pop pop pop "^INFO_COLOR^There is no established pose order." tell
     then
 ;
 
-: doSkip ( -- )
-       loc @ "poseorder/order" getConfig dup if
-        var newPO
-        { }dict newPO ! foreach
-            dup systime swap - timeout @ -1 = swap timeout @ < or if
-                swap me @ name over stringcmp not if
-                    pop pop
-                else
-                    swap newPO @ rot array_insertitem newPO !
-                then
-            else
-                pop pop
-            then
-        repeat
-        systime newPO @ me @ name array_insertitem
-    else
-        pop { me @ name systime }dict
+: remove_player ( d -- )
+    var order
+    
+    loc @ "poseorder/order" getConfig dup array? not if
+        pop { }dict
     then
-    dup loc @ swap "poseorder/order" swap setconfig 
-    loc @ getPlayers pop pop foreach swap pop
-        dup me @ name " is skipping their turn." strcat info_color otell
+    order !
+
+    loc @ "_config/poseorder/order" remove_prop
+    order @ swap name array_delitem loc @ swap "poseorder/order" swap setConfig
+;
+
+: toggle_notify ( -- )
+    me @ "poseorder/notify" getConfig if
+        me @ "poseorder/notify" 0 setConfig
+        "^SUCCESS_COLOR^No longer being notified when it is your pose." tell
+    else
+        me @ "poseorder/notify" 1 setConfig
+        "^SUCCESS_COLOR^Now being notified when it is your pose." tell
+    then
+;
+
+: do_nuke ( -- )
+    loc @ "_config/poseorder/order" remove_prop
+    loc @ getPlayers pop pop foreach nip
+        "^INFO_COLOR^" me @ name strcat " has nuked the pose order!" strcat otell
     repeat
-    dup array_vals array_make SORTTYPE_CASE_ASCEND array_sort 0 array_getitem
-    array_findval 0 array_getitem dup match swap
-    loc @ getPlayers pop pop over { swap match } array_make swap array_diff 
-    foreach swap pop
-        dup "poseorder/notify" getConfig if
-            over "It is now " swap strcat "'s pose." strcat over swap info_color otell
-        else pop then
-    repeat pop
-    dup "poseorder/notify" getConfig if
-        dup "It is now your pose!" info_color otell
-    else pop then
 ;
 
-: rmPlayer ( d -- )
-    name "_config/poseorder/order/" swap strcat loc @ swap remove_prop
+: show_help ( -- )
+    var command_name
+    trigger @ name ";" split pop command_name !
+    me @ command_name @ " Help" strcat 80 boxTitle
+    me @ "^FIELD_COLOR^" command_name @ strcat 
+    "^CONTENT_COLOR^Get current pose order." 80 boxinfo 
+    me @ "^FIELD_COLOR^" command_name @ strcat " #skip" strcat
+    "^CONTENT_COLOR^Put yourself on the end of the pose order." 80 boxinfo 
+    me @ "^FIELD_COLOR^" command_name @ strcat " #drop" strcat
+    "^CONTENT_COLOR^Take yourself out of the pose order." 80 boxinfo 
+    me @ "^FIELD_COLOR^" command_name @ strcat " #kick <PLAYER>" strcat
+    "^CONTENT_COLOR^Kick PLAYER out of the pose order." 80 boxinfo 
+    me @ "^FIELD_COLOR^" command_name @ strcat " #notify" strcat
+    "^CONTENT_COLOR^Toggle whether to be told when it's your pose." 80 boxinfo 
+    me @ "^FIELD_COLOR^" command_name @ strcat " #nuke" strcat
+    "^CONTENT_COLOR^Completely destroy the pose order." 80 boxinfo 
+    loc @ me @ control? if
+        me @ "^FIELD_COLOR^" command_name @ strcat " #set-timeout <N>" strcat
+        "^CONTENT_COLOR^Set how long a player stays in pose order." 
+        " -1 disables timeout. 0 resets to default." strcat 80 boxinfo 
+    then
+    me @ "^FIELD_COLOR^" command_name @ strcat " #help" strcat
+    "^CONTENT_COLOR^Show this box." 80 boxinfo 
+    "^BOX_COLOR^" me @ 80 line strcat tell
+    " " tell
 ;
 
 : main ( s -- )
-    loc @ "poseorder/timeout" getConfig atoi dup not if 
-        pop 1800
+    strip loc @ "poseorder/timeout" getConfig dup not over int? not or if pop 1800 then timeout !
+    dup "#" instr 1 = if
+        dup case
+            "skip" paramTest when 
+                pop update_po loc @ getPlayers pop pop foreach nip
+                    pop "^INFO_COLOR^" me @ name strcat me @ " has skipped %p pose." pronoun_sub
+                    strcat otell
+                repeat
+                exit 
+            end
+            "drop" paramTest when " " split nip pop me @ remove_player 
+                loc @ getPlayers pop pop foreach nip
+                    "^INFO_COLOR^" me @ name strcat " has dropped from the pose order." strcat otell
+                repeat
+            exit end
+            "kick" paramTest when " " split nip dup if pmatch dup if remove_player else
+                pop "^ERROR_COLOR^I can't tell who you want to kick." tell
+            then else
+                pop "^ERROR_COLOR^Who do you want to kick?" tell
+            then
+            exit end
+            "notify" paramTest when " " split nip pop toggle_notify exit end
+            "nuke" paramTest when " " split nip pop do_nuke exit end
+            "set-timeout" paramTest when
+                loc @ me @ control? if
+                    " " split nip dup not if 
+                        loc @ "poseorder/timeout" 0 setConfig
+                        "^SUCCESS_COLOR^Reset timeout to default (1800 seconds.)." tell
+                    else
+                        dup number? if
+                            atoi dup -2 > if
+                                dup case
+                                    -1 = when
+                                        "^SUCCESS_COLOR^Disabled timeout for this location." tell
+                                    end
+                                    0 = when
+                                        "^SUCCESS_COLOR^Reset timeout to default (1800 seconds.)." tell
+                                    end
+                                    default
+                                        intostr "^SUCCESS_COLOR^Set timeout to " swap strcat "." strcat tell
+                                    end
+                                endcase
+                                loc @ swap "poseorder/timeout" swap setConfig
+                            else
+                                pop "^ERROR_COLOR^Invalid value for timeout time." tell
+                            then
+                        else
+                            pop "^ERROR_COLOR^Invalid value for timeout time." tell
+                        then
+                    then
+                else
+                    "^ERROR_COLOR^You do not have authority to change timeout for this location." tell
+                then
+                exit
+            end
+            "help" paramTest when " " split nip pop show_help exit end
+        endcase
     then
-    timeout !
-    dup "skip" paramTest if pop doSkip exit then
-    dup "drop" paramTest if 
-        pop me @ rmPlayer 
-        loc @ getPlayers pop pop foreach swap pop
-            dup me @ name " has dropped from the pose order!" strcat info_color otell
-        repeat exit 
-    then
-    dup "kick" paramTest if " " split swap pop dup if
-        pmatch dup player? if 
-            dup rmPlayer 
-            loc @ getPlayers pop pop foreach swap pop
-                dup 3 pick me @ name " has kicked " strcat
-                swap name strcat " out of the pose order!" strcat info_color otell
-            repeat
-        else
-            me @ "I do not recognize who you want me to #kick." error_color tell
-        then
-        exit
-    else
-        pop me @ "Please tell me what player to #kick." error_color tell exit
-    then then
-    dup "notify" paramTest if
-        me @ "poseorder/notify" getConfig if
-            me @ "poseorder/notify" 0 setConfig
-            me @ "You will no longer be notified on current pose." note_color tell
-        else
-            me @ "poseorder/notify" 1 setConfig
-            me @ "You will now be notified on current pose." note_color tell
-        then
-        exit
-    then
-    dup "nuke" paramTest if
-        loc @ "_config/poseorder/order" remove_prop
-        loc @ getPlayers pop pop foreach swap pop
-            dup me @ name " has dropped a bomb on the pose order and blown it to smithereens!" strcat info_color otell
-        repeat
-        exit
-    then
-    displayPo
+    pop show_order
 ;
+
+public update_po
+public get_turn
 .
 c
 q
+@reg yaro-poseorder=cmd/poseorder
+@set yaro-poseorder=_defs/update_po:"$cmd/poseorder" match "update_po" call
+@set yaro-poseorder=_defs/get_turn:"$cmd/poseorder" match "get_turn" call
 
