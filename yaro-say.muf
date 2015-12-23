@@ -41,7 +41,7 @@ $include $cmd/poseorder
     me @ swap process_tags tell
     loc @ getPlayers pop pop me @ 1 array_make swap array_diff 
     foreach swap pop
-        over "^IC_NAME_COLOR^" me @ name strcat " " strcat me @ says strcat ", \"" strcat
+        over "^IC_NAME_COLOR^" me @ name strcat "^IC_COLOR_1^ " strcat me @ says strcat ", \"" strcat
         swap strcat "\"" strcat 
         "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes
         over swap process_tags otell 
@@ -56,7 +56,7 @@ $include $cmd/poseorder
     swap strcat me @ swap process_tags tell
     loc @ getPlayers pop pop me @ 1 array_make swap array_diff 
     foreach swap pop
-        over "^OOC_NAME_COLOR^" me @ name strcat " " strcat me @ says strcat ", \"" strcat
+        over "^OOC_NAME_COLOR^" me @ name strcat "^OOC_COLOR_1^ " strcat me @ says strcat ", \"" strcat
         swap strcat "\"" strcat 
         "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes
         "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^OOC^TAG_COLOR_2^^CLOSE_TAG^ " 
