@@ -225,6 +225,7 @@ $include $cmd/status
                 else pop then
             then
         repeat } array_make dup if
+            0 array_sort
             me @ "OBVIOUS EXITS" 80 boxTitle
             me @ swap 80 boxList
         else pop then
@@ -240,6 +241,7 @@ $include $cmd/status
                 else pop then
             then
         repeat } array_make dup if
+            0 array_sort
             me @ "VISIBLE PLAYERS" 80 boxTitle
             me @ swap 80 boxList
         else pop then
@@ -251,6 +253,7 @@ $include $cmd/status
                 else pop then
             then
         repeat look_ref @ room? if look_ref @ get_looktraps then } array_make dup if
+            0 array_sort
             me @ "VISIBLE CONTENTS" 80 boxTitle
             me @ swap 80 boxList
         else pop then
