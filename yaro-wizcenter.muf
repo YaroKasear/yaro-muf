@@ -44,6 +44,7 @@ $include $cmd/status
         repeat
     } array_make 80 boxTable
     me @ me @ 80 line box_color tell
+    me @ " " tell
 ;
 
 : show_help
@@ -84,6 +85,7 @@ $include $cmd/status
                 me @ "Please post bug reports and feature requests for Yaro's programs to "
                 "https://github.com/YaroKasear/yaro-muf/issues" strcat 80 boxContent
                 me @ version 80 boxTitle
+                me @ " " tell
             then 
         end
         default 
