@@ -530,6 +530,7 @@ lvar cache
             dup toupper "^CONTENT_COLOR^" instr if ref @ "" content_color  "^CONTENT_COLOR^" subst then
             dup toupper "^OPEN_TAG^" instr if ref @ open_tag  "^OPEN_TAG^" subst then
             dup toupper "^CLOSE_TAG^" instr if ref @ close_tag  "^CLOSE_TAG^" subst then
+            dup toupper "^VLINE^" instr if ref @ vline  "^VLINE^" subst then
             dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
             dup toupper "^BOLD^" instr if "\[[1m" "^BOLD^" subst then
             dup toupper "^DARK^" instr if "\[[2m" "^DARK^" subst then
@@ -827,40 +828,52 @@ lvar cache
     then
 ;
  
-: boxInfo ( ref string1 string2 width -- )
-    var ref
-    var string1
-    var string2
+: boxInfo ( d a n -- )
     var width
- 
-    var t
-    
+    var content
+    var ref
+
+    var right_longest
+    var left_longest
+    var wrap_point
+
     width !
-    rot ref !
-    ref @ swap process_tags cleanString string2 !
-    ref @ swap process_tags cleanString string1 !
- 
-    { string2 @ string1 @ ansi_strlen 1 + width @ 4 - swap - format_wrap dup array_count t ! foreach swap pop
-        string1 @ ansi_strlen 1 + width @ 4 - swap - t @ 1 > if 
-            format_left
-        else
-            format_right
-        then
-    repeat } array_make 
-    0 array_extract string1 @ " " strcat swap strcat
-    ref @ swap content_color
-    ref @ ref @ vline " " strcat box_color swap strcat
-    ref @ ref @ vline " " swap strcat box_color strcat
-    ref @ swap otell
-    foreach swap pop
-        string1 @ ansi_strlen 1 + space swap strcat
-        ref @ swap content_color
-        ref @ ref @ vline " " strcat box_color swap strcat
-        ref @ ref @ vline " " swap strcat box_color strcat
-        ref @ swap otell
+    content !
+    ref !
+
+    content @ foreach nip
+        array_vals pop 
+        ref @ swap process_tags ansi_strlen dup 
+        right_longest @ > if right_longest ! else pop then
+        ref @ swap process_tags ansi_strlen dup 
+        left_longest @ > if left_longest ! else pop then
     repeat
-;
- 
+    width @ 4 - right_longest @ - wrap_point !
+    left_longest @ wrap_point @ > if left_longest @ ++ wrap_point ! then
+    content @ foreach nip
+        array_vals pop ref @ swap process_tags width @ 4 - wrap_point @ - format_wrap
+        swap ref @ swap process_tags wrap_point @ format_wrap swap
+        over over array_count swap array_count swap over over > if
+            - 1 swap 1 for pop
+                "" swap array_appenditem
+            repeat
+        else over over < if
+            swap - rot rot swap rot 1 swap 1 for pop
+                "" swap array_appenditem
+            repeat
+            swap
+        else pop pop then then
+        dup array_count 1 swap 1 for pop
+            0 array_extract dup ansi_strlen 
+            width @ 4 - wrap_point @ - swap - space strcat
+            rot 0 array_extract dup ansi_strlen 
+            wrap_point @ swap - space strcat 
+            rot strcat "^BOX_COLOR^^VLINE^^RESET^ " swap strcat
+            " ^BOX_COLOR^^VLINE^" strcat ref @ swap otell swap
+        repeat
+    repeat
+; 
+
 : boxTitle ( d s n -- )
     var ref
     var length
