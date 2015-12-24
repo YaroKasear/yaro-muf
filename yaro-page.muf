@@ -130,14 +130,14 @@ $include $cmd/status
 
 : show_help
     me @ trigger @ name ";" split pop " Command Usage" strcat 80 boxTitle
-    me @ me @ command @ " [players]=<message>" strcat field_color 
-    me @ "Send a private message to players." content_color 80 boxInfo
-    me @ me @ command @ " players" strcat field_color 
-    me @ "Send a summon message to players" content_color 80 boxInfo
-    me @ me @ command @ " #mail [players]=<message>" strcat field_color 
-    me @ "Send a private mail to players." content_color 80 boxInfo
-    me @ me @ command @ " #help" strcat field_color 
-    me @ "Show this dialog." content_color 80 boxInfo
+    me @ { { me @ command @ " [players]=<message>" strcat field_color 
+    me @ "Send a private message to players." content_color } array_make
+    { me @ command @ " players" strcat field_color 
+    me @ "Send a summon message to players" content_color } array_make
+    { me @ command @ " #mail [players]=<message>" strcat field_color 
+    me @ "Send a private mail to players." content_color } array_make
+    { me @ command @ " #help" strcat field_color 
+    me @ "Show this dialog." content_color } array_make } array_make 80 boxInfo
     me @ me @ 80 line box_color tell
 ; 
 

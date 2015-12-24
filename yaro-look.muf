@@ -123,18 +123,19 @@ $include $cmd/status
 
 : show_help
     me @ trigger @ name ";" split pop " Help" strcat 80 boxTitle
-    me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " [OBJECT]" strcat
-    "^CONTENT_COLOR^Show description, contents, and exits for [OBJECT]." 80 boxInfo
+    me @ { 
+    { "^FIELD_COLOR^" trigger @ name ";" split pop strcat " [OBJECT]" strcat
+    "^CONTENT_COLOR^Show description, contents, and exits for [OBJECT]." } array_make
     loc @ me @ control? if
-        me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #set-looktrap" strcat
-        "^CONTENT_COLOR^Set up looktraps in the current room." 80 boxInfo
+        { "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #set-looktrap" strcat
+        "^CONTENT_COLOR^Set up looktraps in the current room." } array_make
     then
-    me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #show-refs" strcat
-    "^CONTENT_COLOR^Toggle if dbrefs are shown for objects you control." 80 boxInfo
-    me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #hide-sleepers" strcat
-    "^CONTENT_COLOR^Toggle if you see sleeping players or not." 80 boxInfo
-    me @ "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #help" strcat
-    "^CONTENT_COLOR^Show this box" 80 boxInfo
+    { "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #show-refs" strcat
+    "^CONTENT_COLOR^Toggle if dbrefs are shown for objects you control." } array_make
+    { "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #hide-sleepers" strcat
+    "^CONTENT_COLOR^Toggle if you see sleeping players or not." } array_make
+    { "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #help" strcat
+    "^CONTENT_COLOR^Show this box" } array_make } array_make 80 boxInfo
     "^BOX_COLOR^" me @ 80 line strcat tell
     " " tell
 ;
@@ -147,25 +148,28 @@ $include $cmd/status
     var hide_sleepers
 
     "" look_name !
-    dup "set-looktrap" paramTest if
-        " " split swap pop dup if 
-            dup "=" instr if
-                loc @ me @ control? if
-                    "=" split set_looktrap
+    strip
+    dup "#" instr 1 = if
+        dup "set-looktrap" paramTest if
+            " " split swap pop dup if 
+                dup "=" instr if
+                    loc @ me @ control? if
+                        "=" split set_looktrap
+                    else
+                        "^ERROR_COLOR^You do not have permissions to create a looktrap here." tell
+                    then
                 else
-                    "^ERROR_COLOR^You do not have permissions to create a looktrap here." tell
+                    looktrap_usage
                 then
-            else
+            else 
                 looktrap_usage
             then
-        else 
-            looktrap_usage
+            exit
         then
-        exit
+        dup "show-refs" paramTest if toggle_refs exit then
+        dup "hide-sleepers" paramTest if toggle_sleepers exit then
+        dup "help" paramTest if show_help exit then
     then
-    dup "show-refs" paramTest if toggle_refs exit then
-    dup "hide-sleepers" paramTest if toggle_sleepers exit then
-    dup "help" paramTest if show_help exit then
     me @ "look/see_refs" getConfig see_refs !
     me @ "look/hide_sleepers" getConfig hide_sleepers !
     case
@@ -216,18 +220,20 @@ $include $cmd/status
             look_ref @ player? not and
             look_ref @ "O" flag? or
             over "O" flag? or not if pop else
+                { swap
                 dup name ";" split ";" split pop dup if
                     toupper "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^" swap strcat
-                    "^TAG_COLOR_2^^CLOSE_TAG^^CONTENT_COLOR^ " strcat swap strcat
-                else pop then
-                swap dup me @ control? see_refs @ and if
+                    "^TAG_COLOR_2^^CLOSE_TAG^^CONTENT_COLOR^" strcat
+                else pop "" swap then swap
+                rot dup me @ control? see_refs @ and if
                     dtos " ^OPEN_TAG^" swap strcat "^CLOSE_TAG^" strcat strcat
-                else pop then
-            then
+                else pop then } array_make
+            then 
         repeat } array_make dup if
-            0 array_sort
+            0 1 array_sort_indexed
+            0 0 array_sort_indexed
             me @ "OBVIOUS EXITS" 80 boxTitle
-            me @ swap 80 boxList
+            me @ swap 80 boxInfo
         else pop then
         look_ref @ getPlayers nip hide_sleepers @ not if swap array_merge else pop then { swap foreach nip 
             dup visible? not if pop else

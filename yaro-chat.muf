@@ -560,36 +560,37 @@ $include $lib/yaro
 : show_help
     me @ command @ get_channel_name get_channel_alias " Command Help" strcat 80 boxTitle
     me @ "W" flag? command @ match command @ get_channel_name "/restricted" strcat getConfig not or if
+        me @ { 
         me @ "W" flag? if
-            me @ me @ command @ " #create <NAME>" strcat field_color 
-            me @ "Create a new channel <NAME>" content_color 80 boxInfo
-            me @ me @ command @ " #delete <NAME>" strcat field_color 
-            me @ "Delete channel <NAME>" content_color 80 boxInfo
-            me @ me @ command @ " #restrict" strcat field_color 
-            me @ "Toggle if " command @ strcat " is accessible only to wizards" strcat content_color 80 boxInfo
-            me @ me @ command @ " #alias" strcat field_color 
-            me @ "Set an alias for " command @ strcat ". Leave alias out to clear." strcat content_color 80 boxInfo
-            me @ me @ command @ " #kick" strcat field_color 
-            me @ "Throw a user out of " command @ strcat "." strcat content_color 80 boxInfo
-            me @ me @ command @ " #ban" strcat field_color 
-            me @ "Toggle a user ban on " command @ strcat "." strcat content_color 80 boxInfo
-            me @ me @ command @ " #add-command <COMMAND>" strcat field_color 
-            me @ "Add a new command to use " command @ strcat "." strcat content_color 80 boxInfo
-            me @ me @ command @ " #channel-settings" strcat field_color 
-            me @ "Set configurations for " command @ strcat "." strcat content_color 80 boxInfo
+            { me @ command @ " #create <NAME>" strcat field_color 
+            me @ "Create a new channel <NAME>" content_color } array_make
+            { me @ command @ " #delete <NAME>" strcat field_color 
+            me @ "Delete channel <NAME>" content_color } array_make
+            { me @ command @ " #restrict" strcat field_color 
+            me @ "Toggle if " command @ strcat " is accessible only to wizards" strcat content_color } array_make
+            { me @ command @ " #alias" strcat field_color 
+            me @ "Set an alias for " command @ strcat ". Leave alias out to clear." strcat content_color } array_make
+            { me @ command @ " #kick" strcat field_color 
+            me @ "Throw a user out of " command @ strcat "." strcat content_color } array_make
+            { me @ command @ " #ban" strcat field_color 
+            me @ "Toggle a user ban on " command @ strcat "." strcat content_color } array_make
+            { me @ command @ " #add-command <COMMAND>" strcat field_color 
+            me @ "Add a new command to use " command @ strcat "." strcat content_color } array_make
+            { me @ command @ " #channel-settings" strcat field_color 
+            me @ "Set configurations for " command @ strcat "." strcat content_color } array_make
         then
-        me @ me @ command @ " #on" strcat field_color 
-        me @ "Join the " command @ strcat " channel" strcat content_color 80 boxInfo
-        me @ me @ command @ " #off" strcat field_color 
-        me @ "Leave the " command @ strcat " channel" strcat content_color 80 boxInfo
-        me @ me @ command @ " #who" strcat field_color 
-        me @ "Get a list of users listening on " command @ strcat content_color 80 boxInfo
-        me @ me @ command @ " #nick" strcat field_color 
-        me @ "Give yourself a nickname on " command @ strcat ". Leave nickname blank to clear." strcat content_color 80 boxInfo
-        me @ me @ command @ " #gag" strcat field_color 
-        me @ "Stop a user from sending or recieving messages from you on " command @ strcat content_color 80 boxInfo
-        me @ me @ command @ " #help" strcat field_color 
-        me @ "Display this message." content_color 80 boxInfo
+        { me @ command @ " #on" strcat field_color 
+        me @ "Join the " command @ strcat " channel" strcat content_color } array_make
+        { me @ command @ " #off" strcat field_color 
+        me @ "Leave the " command @ strcat " channel" strcat content_color } array_make
+        { me @ command @ " #who" strcat field_color 
+        me @ "Get a list of users listening on " command @ strcat content_color } array_make
+        { me @ command @ " #nick" strcat field_color 
+        me @ "Give yourself a nickname on " command @ strcat ". Leave nickname blank to clear." strcat content_color } array_make
+        { me @ command @ " #gag" strcat field_color 
+        me @ "Stop a user from sending or recieving messages from you on " command @ strcat content_color } array_make
+        { me @ command @ " #help" strcat field_color 
+        me @ "Display this message." content_color } array_make } array_make 80 boxInfo
     else
         me @ me @ "This channel is accessible only to wizards!" error_color 80 boxContent
     then
