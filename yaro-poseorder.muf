@@ -96,25 +96,25 @@ lvar timeout
     var command_name
     trigger @ name ";" split pop command_name !
     me @ command_name @ " Help" strcat 80 boxTitle
-    me @ "^FIELD_COLOR^" command_name @ strcat 
-    "^CONTENT_COLOR^Get current pose order." 80 boxinfo 
-    me @ "^FIELD_COLOR^" command_name @ strcat " #skip" strcat
-    "^CONTENT_COLOR^Put yourself on the end of the pose order." 80 boxinfo 
-    me @ "^FIELD_COLOR^" command_name @ strcat " #drop" strcat
-    "^CONTENT_COLOR^Take yourself out of the pose order." 80 boxinfo 
-    me @ "^FIELD_COLOR^" command_name @ strcat " #kick <PLAYER>" strcat
-    "^CONTENT_COLOR^Kick PLAYER out of the pose order." 80 boxinfo 
-    me @ "^FIELD_COLOR^" command_name @ strcat " #notify" strcat
-    "^CONTENT_COLOR^Toggle whether to be told when it's your pose." 80 boxinfo 
-    me @ "^FIELD_COLOR^" command_name @ strcat " #nuke" strcat
-    "^CONTENT_COLOR^Completely destroy the pose order." 80 boxinfo 
+    me @ { { "^FIELD_COLOR^" command_name @ strcat 
+    "^CONTENT_COLOR^Get current pose order." } array_make
+    { "^FIELD_COLOR^" command_name @ strcat " #skip" strcat
+    "^CONTENT_COLOR^Put yourself on the end of the pose order." } array_make
+    { "^FIELD_COLOR^" command_name @ strcat " #drop" strcat
+    "^CONTENT_COLOR^Take yourself out of the pose order." } array_make
+    { "^FIELD_COLOR^" command_name @ strcat " #kick <PLAYER>" strcat
+    "^CONTENT_COLOR^Kick PLAYER out of the pose order." } array_make
+    { "^FIELD_COLOR^" command_name @ strcat " #notify" strcat
+    "^CONTENT_COLOR^Toggle whether to be told when it's your pose." } array_make
+    { "^FIELD_COLOR^" command_name @ strcat " #nuke" strcat
+    "^CONTENT_COLOR^Completely destroy the pose order." } array_make
     loc @ me @ control? if
-        me @ "^FIELD_COLOR^" command_name @ strcat " #set-timeout <N>" strcat
+        { "^FIELD_COLOR^" command_name @ strcat " #set-timeout <N>" strcat
         "^CONTENT_COLOR^Set how long a player stays in pose order." 
-        " -1 disables timeout. 0 resets to default." strcat 80 boxinfo 
+        " -1 disables timeout. 0 resets to default." strcat } array_make
     then
-    me @ "^FIELD_COLOR^" command_name @ strcat " #help" strcat
-    "^CONTENT_COLOR^Show this box." 80 boxinfo 
+    { "^FIELD_COLOR^" command_name @ strcat " #help" strcat
+    "^CONTENT_COLOR^Show this box." } array_make } array_make 80 boxinfo 
     "^BOX_COLOR^" me @ 80 line strcat tell
     " " tell
 ;

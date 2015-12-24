@@ -9,12 +9,12 @@ $include $lib/yaro
 
     trigger @ name ";" split pop command_name !
     me @ command_name @ " Help" strcat 80 boxTitle
-    me @ "^FIELD_COLOR^" command_name @ strcat 
-    "^CONTENT_COLOR^Send yourself home WITH inventory." 80 boxInfo
-    me @ "^FIELD_COLOR^" command_name @ strcat " #set-message" strcat 
-    "^CONTENT_COLOR^Set the message you see when you go home." 80 boxInfo
-    me @ "^FIELD_COLOR^" command_name @ strcat " #set-omessage" strcat 
-    "^CONTENT_COLOR^Set the message others see when you go home." 80 boxInfo
+    me @ { { "^FIELD_COLOR^" command_name @ strcat 
+    "^CONTENT_COLOR^Send yourself home WITH inventory." } array_make
+    { "^FIELD_COLOR^" command_name @ strcat " #set-message" strcat 
+    "^CONTENT_COLOR^Set the message you see when you go home." } array_make
+    { "^FIELD_COLOR^" command_name @ strcat " #set-omessage" strcat 
+    "^CONTENT_COLOR^Set the message others see when you go home." } array_make } array_make 80 boxInfo
     "^BOX_COLOR^" me @ 80 line strcat tell
     " " tell
 ;

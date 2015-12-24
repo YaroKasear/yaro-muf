@@ -49,9 +49,9 @@ $include $cmd/status
 
 : show_help
     me @ command @ " Help Listing " strcat 80 boxTitle
-    me @ me @ "wizzes" field_color me @ "Shows the online wizard staff and their information." content_color 80 boxInfo
-    me @ me @ "wizzes #set-role [WIZARDS ONLY]" field_color me @ "Set your role." content_color 80 boxInfo
-    me @ me @ "wcenter [WIZARDS ONLY]" field_color me @ "Show outstanding staff notifications." content_color 80 boxInfo
+    me @ { { me @ "wizzes" field_color me @ "Shows the online wizard staff and their information." content_color } array_make
+    { me @ "wizzes #set-role [WIZARDS ONLY]" field_color me @ "Set your role." content_color } array_make
+    { me @ "wcenter [WIZARDS ONLY]" field_color me @ "Show outstanding staff notifications." content_color } array_make } array_make 80 boxInfo
     me @ me @ 80 line box_color tell
 ;
 

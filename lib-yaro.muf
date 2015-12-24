@@ -607,7 +607,7 @@ lvar cache
     cleanString text !
  
     length @ text @ ansi_strlen -
-    space length @ text @ ansi_strlen - 2 / strcut
+    space length @ text @ ansi_strlen - 2 / ansi_strcut
     text @ swap strcat strcat
 ;
  
@@ -690,9 +690,9 @@ lvar cache
  
     strings @ foreach swap pop buffer !
         begin buffer @ ansi_strlen width @ > while
-            buffer @ width @ strcut swap
+            buffer @ width @ ansi_strcut swap
             dup " " rinstr dup if
-                strcut rot strcat buffer !
+                ansi_strcut rot strcat buffer !
             else
                 pop swap buffer !
             then
@@ -848,8 +848,21 @@ lvar cache
         ref @ swap process_tags ansi_strlen dup 
         left_longest @ > if left_longest ! else pop then
     repeat
-    width @ 4 - right_longest @ - wrap_point !
-    left_longest @ wrap_point @ > if left_longest @ ++ wrap_point ! then
+    ( width @ 4 - right_longest @ - wrap_point !
+    left_longest @ wrap_point @ > if left_longest @ ++ wrap_point ! then )
+    left_longest @ right_longest @ > if
+        left_longest @ ++ wrap_point !
+        wrap_point @ width @ 4 - right_longest @ - > if
+            width @ 4 - right_longest @ - wrap_point !
+        then
+    else left_longest @ right_longest @ < if
+        width @ 4 - right_longest @ - wrap_point !
+        wrap_point @ left_longest @ ++ < if
+            left_longest @ ++ wrap_point !
+        then
+    else
+        width @ 4 - 2 / wrap_point !
+    then then
     content @ foreach nip
         array_vals pop ref @ swap process_tags width @ 4 - wrap_point @ - format_wrap
         swap ref @ swap process_tags wrap_point @ format_wrap swap
@@ -870,7 +883,7 @@ lvar cache
             wrap_point @ swap - space strcat 
             rot strcat "^BOX_COLOR^^VLINE^^RESET^ " swap strcat
             " ^BOX_COLOR^^VLINE^" strcat ref @ swap otell swap
-        repeat
+        repeat 2 popn
     repeat
 ; 
 

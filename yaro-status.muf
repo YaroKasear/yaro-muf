@@ -51,30 +51,30 @@ $include $lib/yaro
 
 : show_help
     me @ trigger @ name ";" split pop " Usage Help" strcat 80 boxTitle
-    me @ me @ "status" field_color 
-    me @ "Pick from a menu of statuses." content_color 80 boxInfo
-    me @ me @ "status <STATUS>" field_color 
-    me @ "Change to STATUS." content_color 80 boxInfo
-    me @ me @ "go<STATUS>" field_color 
-    me @ "Change to STATUS." content_color 80 boxInfo
-    me @ me @ "status #add-ic" field_color
+    me @ { { me @ "status" field_color 
+    me @ "Pick from a menu of statuses." content_color } array_make
+    { me @ "status <STATUS>" field_color 
+    me @ "Change to STATUS." content_color } array_make
+    { me @ "go<STATUS>" field_color 
+    me @ "Change to STATUS." content_color } array_make
     me @ "W" flag? if
-        me @ "Add an IC status." content_color 80 boxInfo
-        me @ me @ "status #add-ooc" field_color
-        me @ "Add an OOC status." content_color 80 boxInfo
-        me @ me @ "status #add-away" field_color
-        me @ "Add an AWAY status." content_color 80 boxInfo
-        me @ me @ "status #add-onduty" field_color
-        me @ "Add an ON-DUTY status." content_color 80 boxInfo
-        me @ me @ "status #add-offduty" field_color
-        me @ "Add an OFF-DUTY status." content_color 80 boxInfo
-        me @ me @ "status #remove" field_color 
-        me @ "Remove a status." content_color 80 boxInfo
-        me @ me @ "status #set-custom <STATUS> [PLAYER]" field_color
-        me @ "Set a custom status STATUS on yourself or PLAYER." content_color 80 boxInfo
+        { me @ "status #add-ic" field_color
+        me @ "Add an IC status." content_color } array_make
+        { me @ "status #add-ooc" field_color
+        me @ "Add an OOC status." content_color } array_make
+        { me @ "status #add-away" field_color
+        me @ "Add an AWAY status." content_color } array_make
+        { me @ "status #add-onduty" field_color
+        me @ "Add an ON-DUTY status." content_color } array_make
+        { me @ "status #add-offduty" field_color
+        me @ "Add an OFF-DUTY status." content_color } array_make
+        { me @ "status #remove" field_color 
+        me @ "Remove a status." content_color } array_make
+        { me @ "status #set-custom <STATUS> [PLAYER]" field_color
+        me @ "Set a custom status STATUS on yourself or PLAYER." content_color } array_make
     then
-    me @ me @ "status #help" field_color
-    me @ "Show this dialog." content_color 80 boxInfo
+    { me @ "status #help" field_color
+    me @ "Show this dialog." content_color } array_make } array_make 80 boxInfo
     me @ me @ 80 line box_color tell
 ;
 

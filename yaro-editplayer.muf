@@ -68,36 +68,37 @@ lvar submitted
         me @ "An 'X' denotes information that is shared publically." 80 boxContent
         me @ "" 80 boxContent
     then
+    me @ {
     prname @ isme @ or if
-        me @ me @ "Real Name:" field_color
+        { me @ "Real Name:" field_color
         isme @ if prname @ me @ swap checkbox " " strcat swap strcat then
-        me @ rname @ content_color 80 boxInfo
+        me @ rname @ content_color } array_make
     then
     prsex @ isme @ or if
-        me @ me @ "Gender:" field_color
+        { me @ "Gender:" field_color
         isme @ if prsex @ me @ swap checkbox " " strcat swap strcat then
-        me @ rsex @ content_color 80 boxInfo
+        me @ rsex @ content_color } array_make
     then
     prbdate @ isme @ or if
-        me @ me @ "Birthdate:" field_color
+        { me @ "Birthdate:" field_color
         isme @ if prbdate @ me @ swap checkbox " " strcat swap strcat then
-        me @ rbdate @ content_color 80 boxInfo
+        me @ rbdate @ content_color } array_make
     then
     prloc @ isme @ or if
-        me @ me @ "Location:" field_color
+        { me @ "Location:" field_color
         isme @ if prloc @ me @ swap checkbox " " strcat swap strcat then
-        me @ rloc @ content_color 80 boxInfo
+        me @ rloc @ content_color } array_make
     then
     prutc @ isme @ or if
-        me @ me @ "UTC Offset (Time Zone):" field_color
+        { me @ "UTC Offset (Time Zone):" field_color
         isme @ if prutc @ me @ swap checkbox " " strcat swap strcat then
-        me @ rutc @ content_color 80 boxInfo
+        me @ rutc @ content_color } array_make
     then
     premail @ isme @ or if
-        me @ me @ "E-Mail Address:" field_color
+        { me @ "E-Mail Address:" field_color
         isme @ if premail @ me @ swap checkbox " " strcat swap strcat then
-        me @ remail @ content_color 80 boxInfo
-    then
+        me @ remail @ content_color } array_make
+    then } array_make 80 boxInfo
 ;
 
 : doPInfo ( d n -- )
@@ -183,17 +184,17 @@ lvar submitted
         me @ "An 'X' denotes that look-notify is enabled." 80 boxContent
         me @ "" 80 boxContent
     then
-    me @ me @ "Name:" field_color me @ ref @ name content_color 80 boxInfo
-    me @ me @ "Gender:" field_color me @ sex @ content_color 80 boxInfo
-    me @ me @ "Species:" field_color me @ species @ content_color 80 boxInfo
-    me @ me @ "Birth Date:" field_color me @ bdate @ content_color 80 boxInfo
-    me @ me @ "Job:" field_color me @ job @ content_color 80 boxInfo
-    me @ me @ "Family:" field_color me @ family @ content_color 80 boxInfo
-    me @ me @ "Cutie Mark:" field_color me @ special @ content_color 80 boxInfo
-    me @ me @ "Description:" field_color
+    me @ { { me @ "Name:" field_color me @ ref @ name content_color } array_make
+    { me @ "Gender:" field_color me @ sex @ content_color } array_make
+    { me @ "Species:" field_color me @ species @ content_color } array_make
+    { me @ "Birth Date:" field_color me @ bdate @ content_color } array_make
+    { me @ "Job:" field_color me @ job @ content_color } array_make
+    { me @ "Family:" field_color me @ family @ content_color } array_make
+    { me @ "Cutie Mark:" field_color me @ special @ content_color } array_make
+    { me @ "Description:" field_color
     isme @ if me @ look_notify @ checkbox " " strcat swap strcat then
-    me @ cdesc @ content_color 80 boxInfo
-    me @ me @ "Personality:" field_color me @ personality @ content_color 80 boxInfo
+    me @ cdesc @ content_color } array_make
+    { me @ "Personality:" field_color me @ personality @ content_color } array_make } array_make 80 boxInfo
 ;
 
 : loadCInfo ( d -- )
@@ -393,7 +394,7 @@ lvar submitted
              "interface elements." strcat
         width @ boxContent
         me @ "" width @ boxContent
-        me @ me @ "Sample Field:" field_color me @ "Sample Content" content_color 80 boxInfo
+        me @ { { "Sample Field:" field_color me @ "Sample Content" content_color } array_make } array_make 80 boxInfo
         me @ me @ me @ open_tag tag_color_2
         me @ "TAG" tag_color_1 strcat
         me @ me @ close_tag tag_color_2 strcat " " strcat
@@ -582,8 +583,8 @@ lvar submitted
     begin
         me @ ref @ name "'s Basic Information" strcat
         40 boxTitle
-        me @ me @ "Gender:" field_color me @ sex @ dup not if pop "NOT SET" then content_color 40 boxInfo
-        me @ me @ "Species:" field_color me @ species @ dup not if pop "NOT SET" then content_color 40 boxInfo
+        me @ { { me @ "Gender:" field_color me @ sex @ dup not if pop "NOT SET" then content_color } array_make
+        { me @ "Species:" field_color me @ species @ dup not if pop "NOT SET" then content_color } array_make } array_make 40 boxInfo
         me @ "Options"
         1 "Set Gender" 1
         2 "Set Species" 2
