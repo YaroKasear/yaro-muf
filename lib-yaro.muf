@@ -715,8 +715,8 @@ lvar cache
     strings @ foreach swap pop buffer !
         begin buffer @ ansi_strlen width @ > while
             buffer @ width @ ansi_strcut swap
-            dup " " rinstr dup if
-                ansi_strcut rot strcat buffer !
+            dup " " rinstr if
+                " " rsplit rot strcat buffer !
             else
                 pop swap buffer !
             then
