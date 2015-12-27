@@ -16,8 +16,8 @@ lvar cache
 ;
 
 : cache_read ( s -- x )
-    cache_gen    
-    cache @ swap array_getitem    
+    cache_gen
+    cache @ swap array_getitem
 ;
 
 : cache_write ( s x -- )
@@ -104,7 +104,7 @@ lvar cache
     var ref
 
     key !
-    ref ! 
+    ref !
 
     ref @ key @ "#" strcat propdir? if
         ref @ key @ "#" strcat array_get_proplist dup if
@@ -142,18 +142,18 @@ lvar cache
     then
     foreach nip
         ref !
-    
+
         ref @ key @ make_cache_key cache_key !
-    
+
         cache_key @ cache_read dup if exit else pop then
-    
+
         key @ "_config/" swap strcat myKey !
         command @ match ok? if
             "_config/" command @ match name ";" split pop strcat "/" strcat key @ strcat myProgKey !
         else
             myKey @ myProgKey !
         then
-    
+
         ref @ myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
         ref @ myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
     repeat
@@ -162,7 +162,7 @@ lvar cache
         dup myKey @ readConf dup if dup cache_key @ swap cache_write nip exit else pop then
         location
     repeat pop
-    trigger @ ok? if    
+    trigger @ ok? if
         trigger @ myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
         trigger @ myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
     then
@@ -170,9 +170,9 @@ lvar cache
     prog myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
     0
 ;
- 
+
 : error_color ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/error_color" make_cache_key cache_key !
     over "prefs/color/error_color" getConfig dup if
         swap strcat
@@ -183,9 +183,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : success_color ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/success_color" make_cache_key cache_key !
     over "prefs/color/success_color" getConfig dup if
         swap strcat
@@ -196,9 +196,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : info_color ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/info_color" make_cache_key cache_key !
     over "prefs/color/info_color" getConfig dup if
         swap strcat
@@ -209,9 +209,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : note_color ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/note_color" make_cache_key cache_key !
     over "prefs/color/note_color" getConfig dup if
         swap strcat
@@ -222,9 +222,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : tag_color_1 ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/tag1" make_cache_key cache_key !
     over "prefs/color/tag1" getConfig dup if
         swap strcat
@@ -235,9 +235,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : tag_color_2 ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/tag2" make_cache_key cache_key !
     over "prefs/color/tag2" getConfig dup if
         swap strcat
@@ -248,9 +248,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : ooc_color_1 ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/ooc1" make_cache_key cache_key !
     over "prefs/color/ooc1" getConfig dup if
         swap strcat
@@ -261,9 +261,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : ooc_color_2 ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/ooc2" make_cache_key cache_key !
     over "prefs/color/ooc2" getConfig dup if
         swap strcat
@@ -276,7 +276,7 @@ lvar cache
 ;
 
 : ooc_name_color ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/oocn" make_cache_key cache_key !
     over "prefs/color/oocn" getConfig dup if
         swap strcat
@@ -287,9 +287,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : ic_color_1 ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/ic1" make_cache_key cache_key !
     over "prefs/color/ic1" getConfig dup if
         swap strcat
@@ -300,9 +300,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
-  
+
 : ic_color_2 ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/ic2" make_cache_key cache_key !
     over "prefs/color/ic2" getConfig dup if
         swap strcat
@@ -315,7 +315,7 @@ lvar cache
 ;
 
 : ic_name_color ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/icn" make_cache_key cache_key !
     over "prefs/color/icn" getConfig dup if
         swap strcat
@@ -328,7 +328,7 @@ lvar cache
 ;
 
 : title_color ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/title" make_cache_key cache_key !
     over "prefs/color/title" getConfig dup if
         swap strcat
@@ -339,9 +339,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : option_color_1 ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/opt1" make_cache_key cache_key !
     over "prefs/color/opt1" getConfig dup if
         swap strcat
@@ -352,9 +352,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : option_color_2 ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/opt2" make_cache_key cache_key !
     over "prefs/color/opt2" getConfig dup if
         swap strcat
@@ -365,9 +365,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : box_color ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/box" make_cache_key cache_key !
     over "prefs/color/box" getConfig dup if
         swap strcat
@@ -378,9 +378,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : content_color ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/content" make_cache_key cache_key !
     over "prefs/color/content" getConfig dup if
         swap strcat
@@ -391,9 +391,9 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
- 
+
 : field_color ( d s -- s )
-    var cache_key 
+    var cache_key
     over "prefs/color/field" make_cache_key cache_key !
     over "prefs/color/field" getConfig dup if
         swap strcat
@@ -404,12 +404,12 @@ lvar cache
     swap pop
     "\[[0m" swap strcat
 ;
-   
+
 : line ( d n -- )
     var myLine
     var outputLine
     var length
-    var cache_key 
+    var cache_key
 
     over "prefs/line" make_cache_key cache_key !
 
@@ -421,9 +421,9 @@ lvar cache
         pop 0
     then
     length !
- 
+
     myLine @ cleanString outputLine !
- 
+
     begin outputLine @ ansi_strlen length @ = not while
         outputLine @ ansi_strlen length @ > if
             outputLine @ length @ ansi_strcut pop outputLine !
@@ -433,19 +433,19 @@ lvar cache
     repeat
     outputLine @
 ;
- 
+
 : space ( n -- )
     var length
     var outputLine
- 
+
     dup 0 < if
         pop 0
     then
     length !
- 
+
     "                                                                           "
     outputLine !
- 
+
     begin outputLine @ ansi_strlen length @ = not while
         outputLine @ ansi_strlen length @ > if
             outputLine @ length @ ansi_strcut pop outputLine !
@@ -455,7 +455,7 @@ lvar cache
     repeat
     outputLine @
 ;
- 
+
 : open_tag ( d -- s )
     var cache_key
     dup "prefs/open_tag" make_cache_key cache_key !
@@ -463,7 +463,7 @@ lvar cache
         pop "[" dup cache_key @ swap cache_write
     then
 ;
- 
+
 : close_tag ( d -- s )
     var cache_key
     dup "prefs/close_tag" make_cache_key cache_key !
@@ -471,7 +471,7 @@ lvar cache
         pop "]" dup cache_key @ swap cache_write
     then
 ;
- 
+
 : option_tag ( -- s )
     var cache_key
     dup "prefs/option_tag" make_cache_key cache_key !
@@ -479,7 +479,7 @@ lvar cache
         pop ")" dup cache_key @ swap cache_write
     then
 ;
- 
+
 : vline ( -- s )
     var cache_key
     dup "prefs/vline" make_cache_key cache_key !
@@ -538,113 +538,137 @@ lvar cache
             dup toupper "^FLASH^" instr if "\[[5m" "^FLASH^" subst then
             dup toupper "^INVERT^" instr if "\[[7m" "^INVERT^" subst then
             dup toupper "^RESET^" instr if "\[[0m" "^RESET^" subst then
+            dup toupper "^FRANDOM^" instr if
+                "\[[0;3" random 8 % intostr strcat
+                ";" strcat random 6 % case
+                    0 = when "0" end
+                    1 = when "1" end
+                    2 = when "2" end
+                    3 = when "4" end
+                    4 = when "5" end
+                    5 = when "7" end
+                endcase
+                strcat "m" strcat
+            "^FRANDOM^" subst then
+            dup toupper "^BRANDOM^" instr if
+                "\[[4" random 8 % intostr strcat
+                ";" strcat random 6 % case
+                    0 = when "0" end
+                    1 = when "1" end
+                    2 = when "2" end
+                    3 = when "4" end
+                    4 = when "5" end
+                    5 = when "7" end
+                endcase
+                strcat "m" strcat
+            "^BRANDOM^" subst then
             cleanString
         ( then )
     else s @ then
 ;
- 
+
 : tell ( s -- )
     me @ swap process_tags cleanString
     me @ swap notify
 ;
- 
+
 : otell ( d s -- )
     over swap process_tags cleanString
     notify
 ;
- 
+
 : array_append ( a x -- a )
     swap dup array_count array_insertitem
 ;
- 
+
 : array_extract ( a n -- a x )
     var arr
     var n
- 
+
     n !
     arr !
- 
+
     arr @ n @ array_getitem
     arr @ n @ array_delitem swap
 ;
- 
+
 : array_dedup ( a -- a )
     dup foreach
         swap pop 1 array_make array_union
     repeat
 ;
- 
+
 : array_merge ( a a -- a )
     var arr1
     var arr2
- 
+
     arr1 !
     arr2 !
- 
+
     arr1 @ arr1 @ array_count arr2 @ array_insertrange
 ;
 
 : array_to_menu ( a -- @ s ... @' s' n )
     { swap foreach swap 1 + swap over repeat } 3 /
 ;
- 
+
 : format_left ( s n -- s )
     var length
     var text
- 
+
     length !
     cleanString text !
- 
+
     length @ text @ ansi_strlen -
     space text @ swap strcat
 ;
- 
+
 : format_center ( s n -- s )
     var length
     var text
- 
+
     length !
     cleanString text !
- 
+
     length @ text @ ansi_strlen -
     space length @ text @ ansi_strlen - 2 / ansi_strcut
     text @ swap strcat strcat
 ;
- 
+
 : format_right ( s n -- s )
     var length
     var text
- 
+
     length !
     cleanString text !
- 
+
     length @ text @ ansi_strlen - space text @ strcat
 ;
- 
+
 : columns ( strings number width -- a )
     var width
     var number
     var strings
- 
+
     var full_rows
     var rows
     var extra_entries
     var per_row
- 
+
     var current_row
     var row_buffer
     var row_strings
- 
+
     "" row_buffer !
     { } array_make row_strings !
- 
-    width !     
+
+    width !
     number !
     { swap foreach swap pop
         cleanString
     repeat } array_make strings !
     number @ strings @ array_count > if strings @ array_count number ! then
-    strings @ array_count number @ / dup full_rows ! 
+    strings @ array_count number @ / dup full_rows !
     strings @ array_count number @ % dup if extra_entries ! 1 + else pop then rows !
     strings @ array_count full_rows @ / per_row !
     {
@@ -671,28 +695,28 @@ lvar cache
         "" row_buffer !
     repeat number @ popn row_strings @
 ;
- 
+
 : format_wrap ( string width -- formatted_output )
-    var content 
-    var width 
- 
+    var content
+    var width
+
     var strings
-    var output 
- 
+    var output
+
     var buffer
- 
+
     width !
     cleanString content !
- 
+
     content @ "\r" explode array_make array_reverse strings !
- 
+
     { } array_make output !
- 
+
     strings @ foreach swap pop buffer !
         begin buffer @ ansi_strlen width @ > while
             buffer @ width @ ansi_strcut swap
-            dup " " rinstr dup if
-                ansi_strcut rot strcat buffer !
+            dup " " rinstr if
+                " " rsplit rot strcat buffer !
             else
                 pop swap buffer !
             then
@@ -702,18 +726,18 @@ lvar cache
     repeat
     output @
 ;
- 
+
 : getPlayers ( x -- a a a )
     var validRefs
     var invalidRefs
     var asleepRefs
- 
+
     { } array_make
     dup validRefs !
     dup invalidRefs !
     asleepRefs !
- 
-    dup case 
+
+    dup case
         string? when
             " " explode array_make foreach swap pop
                 dup if dup pmatch dup player? over ok? and if
@@ -741,16 +765,16 @@ lvar cache
             repeat pop
         end
     endcase
- 
+
     validRefs @
     invalidRefs @
     asleepRefs @
 ;
- 
+
 : getThings ( d -- a )
     var thingRefs
     { } array_make thingRefs !
- 
+
     contents begin dup ok? while
         dup thing? over program? or if
             dup thingRefs @ swap array_append thingRefs !
@@ -759,25 +783,25 @@ lvar cache
     repeat
     pop thingRefs @
 ;
- 
+
 : getExits ( d -- a )
     var exitRefs
     { } array_make exitRefs !
- 
+
     exits begin dup ok? while
         dup exitRefs @ swap array_append exitRefs !
         next
     repeat
     pop exitRefs @
 ;
- 
+
 : showPreview
     me @ open_tag me @ swap tag_color_2 me @ "OOC" tag_color_1 strcat
     me @ close_tag " " strcat me @ swap tag_color_2 strcat
     me @ me @ name " says, \"" strcat ooc_color_1 strcat me @ "Test." ooc_color_2 strcat
     me @ "\"" ooc_color_1 strcat tell
 ;
- 
+
 : doTest
     me @ "This is what your current configuration looks like." info_color tell " " tell
     me @ "SUCCESS COLOR" success_color tell
@@ -791,13 +815,13 @@ lvar cache
     " " tell
     me @ "Preview of visual configuration." info_color tell " " tell showPreview
 ;
- 
+
 : setConfigCommand ( d s s s -- )
     match name ";" split pop
     "_config/" swap strcat "/" strcat
     rot strcat swap setprop
 ;
- 
+
 : setConfig ( d s x -- )
     var val
     var key
@@ -819,7 +843,7 @@ lvar cache
         setprop
     then
 ;
- 
+
 : control? ( d d -- )
     dup player? if
         dup rot owner = swap "W" flag? or
@@ -827,7 +851,7 @@ lvar cache
         pop pop 0
     then
 ;
- 
+
 : boxInfo ( d a n -- )
     var width
     var content
@@ -842,10 +866,10 @@ lvar cache
     ref !
 
     content @ foreach nip
-        array_vals pop 
-        ref @ swap process_tags ansi_strlen dup 
+        array_vals pop
+        ref @ swap process_tags ansi_strlen dup
         right_longest @ > if right_longest ! else pop then
-        ref @ swap process_tags ansi_strlen dup 
+        ref @ swap process_tags ansi_strlen dup
         left_longest @ > if left_longest ! else pop then
     repeat
     ( width @ 4 - right_longest @ - wrap_point !
@@ -877,24 +901,24 @@ lvar cache
             swap
         else pop pop then then
         dup array_count 1 swap 1 for pop
-            0 array_extract dup ansi_strlen 
+            0 array_extract dup ansi_strlen
             width @ 4 - wrap_point @ - swap - space strcat
-            rot 0 array_extract dup ansi_strlen 
-            wrap_point @ swap - space strcat 
+            rot 0 array_extract dup ansi_strlen
+            wrap_point @ swap - space strcat
             rot strcat "^BOX_COLOR^^VLINE^^RESET^ " swap strcat
             " ^BOX_COLOR^^VLINE^" strcat ref @ swap otell swap
         repeat 2 popn
     repeat
-; 
+;
 
 : boxTitle ( d s n -- )
     var ref
     var length
     var target
- 
+
     dup target !
     rot ref !
- 
+
     swap ref @ swap process_tags cleanString swap
     over ansi_strlen swap 2 /
     swap 2 / - 2 -
@@ -912,16 +936,16 @@ lvar cache
     then
     ref @ swap otell
 ;
- 
+
 : boxContent ( d s n -- )
     var ref
     var content
     var width
- 
+
     width !
     content !
     ref !
- 
+
     content @ width @ 4 - format_wrap foreach swap pop
         ref @ vline " " strcat
         ref @ swap box_color swap
@@ -932,21 +956,21 @@ lvar cache
         ref @ swap otell
     repeat
 ;
- 
+
 : boxList ( d a n -- )
     var width
     var strings
     var ref
- 
+
     var column_width
- 
+
     width !
     swap ref !
     { swap foreach swap pop
         ref @ swap process_tags cleanString ref @ swap content_color dup ansi_strlen column_width @ > if dup ansi_strlen column_width ! then
     repeat } array_make strings !
     column_width @ 1 + column_width !
- 
+
     strings @ width @ 4 - column_width @ / width @ 4 - columns foreach swap pop
         dup ansi_strlen width @ 4 - swap - space strcat
         ref @ swap content_color
@@ -961,7 +985,7 @@ lvar cache
     var content
     var header
     var ref
-    
+
     var num_columns
     var num_rows
     var longest
@@ -979,10 +1003,10 @@ lvar cache
 
     header @ array_count num_columns !
     content @ array_count num_rows !
-    
+
     header @ content @ array_vals pop 1 num_columns @ 1 for pop
         1 num_rows @ ++ 1 for pop
-            num_rows @ ++ rotate 0 array_extract 
+            num_rows @ ++ rotate 0 array_extract
             column_buffer @ swap array_append column_buffer !
         repeat
         cols @ column_buffer @ array_append cols !
@@ -999,14 +1023,14 @@ lvar cache
         longest @ ++
     repeat } array_make col_widths !
     col_widths @ array_sum width @ 4 - > if
-        col_widths @ dup array_count 1 - array_getitem 
-        col_widths @ array_sum  width @ 4 - - - 
-        col_widths @ array_count 1 - col_widths @ swap array_delitem 
+        col_widths @ dup array_count 1 - array_getitem
+        col_widths @ array_sum  width @ 4 - - -
+        col_widths @ array_count 1 - col_widths @ swap array_delitem
         swap array_append col_widths !
     then
     num_rows @ ++ popn
     "" header @ foreach swap
-        col_widths @ swap array_getitem 
+        col_widths @ swap array_getitem
         format_left strcat
     repeat
 
@@ -1023,12 +1047,12 @@ lvar cache
                 swap over 4 - ansi_strcut pop
                 " ..." strcat swap
             then
-            format_left strcat 
+            format_left strcat
         repeat
         ref @ swap width @ boxContent
-    repeat 
+    repeat
 ;
-  
+
 : doMenu ( ref title option_number' option' ... number_of_options width -- selection )
     var n_options
     var title
@@ -1039,8 +1063,8 @@ lvar cache
 
     width !
     n_options !
-    { }dict dup options ! addresses ! 
-    
+    { }dict dup options ! addresses !
+
     1 n_options @ 1 for pop
         3 pick addresses @ swap array_insertitem addresses !
         swap options @ swap array_insertitem options !
@@ -1050,7 +1074,7 @@ lvar cache
     ref !
     ref @ ref @ title @ process_tags cleanString width @ boxTitle
     ref @ { options @ foreach
-        swap intostr ") " strcat "^OPTION_COLOR_1^" 
+        swap intostr ") " strcat "^OPTION_COLOR_1^"
         swap strcat swap "^OPTION_COLOR_2^" swap strcat
         strcat ref @ swap process_tags cleanString
     repeat } array_make width @ boxList
@@ -1067,81 +1091,81 @@ lvar cache
 ;
 
 : checkbox ( ref value -- box )
-    var ref 
- 
+    var ref
+
     var ot
     var ct
     var tag1
     var tag2
- 
+
     swap
     dup open_tag ot !
     dup close_tag ct !
     dup "" tag_color_1 tag1 !
     "" tag_color_2 tag2 !
-    
+
     tag2 @ ot @ strcat
     swap if "X" else " " then
     tag1 @ swap strcat strcat
     tag2 @ ct @ strcat strcat
 ;
- 
+
 : color_menu ( d -- s )
     var ref
 
     dup ref ! "Please select a color."
-    1 "^RED^RED^RESET^"              "^RED^" 1 parse_ansi 
-    2 "^CRIMSON^CRIMSON^RESET^"      "^CRIMSON^" 1 parse_ansi 
-    3 "^CRED^CRED^RESET^"            "^CRED^" 1 parse_ansi 
-    4 "^BRED^BRED^RESET^"            "^BRED^" 1 parse_ansi 
-    5 "^GREEN^GREEN^RESET^"          "^GREEN^" 1 parse_ansi 
-    6 "^FOREST^FOREST^RESET^"        "^FOREST^" 1 parse_ansi 
-    7 "^CGREEN^CGREEN^RESET^"        "^CGREEN^" 1 parse_ansi 
-    8 "^BGREEN^BGREEN^RESET^"        "^BGREEN^" 1 parse_ansi 
-    9 "^YELLOW^YELLOW^RESET^"        "^YELLOW^" 1 parse_ansi 
-    10 "^BROWN^BROWN^RESET^"          "^BROWN^" 1 parse_ansi 
-    11 "^CYELLOW^CYELLOW^RESET^"      "^CYELLOW^" 1 parse_ansi 
-    12 "^BYELLOW^BYELLOW^RESET^"      "^BYELLOW^" 1 parse_ansi 
-    13 "^BLUE^BLUE^RESET^"            "^BLUE^" 1 parse_ansi 
-    14 "^NAVY^NAVY^RESET^"            "^NAVY^" 1 parse_ansi 
-    15 "^CBLUE^CBLUE^RESET^"          "^CBLUE^" 1 parse_ansi 
-    16 "^BBLUE^BBLUE^RESET^"          "^BBLUE^" 1 parse_ansi 
-    17 "^PURPLE^PURPLE^RESET^"        "^PURPLE^" 1 parse_ansi 
-    18 "^VIOLET^VIOLET^RESET^"        "^VIOLET^" 1 parse_ansi 
-    19 "^CPURPLE^CPURPLE^RESET^"      "^CPURPLE^" 1 parse_ansi 
-    20 "^BPURPLE^BPURPLE^RESET^"      "^BPURPLE^" 1 parse_ansi 
-    21 "^CYAN^CYAN^RESET^"            "^CYAN^" 1 parse_ansi 
-    22 "^AQUA^AQUA^RESET^"            "^AQUA^" 1 parse_ansi 
-    23 "^CCYAN^CCYAN^RESET^"          "^CCYAN^" 1 parse_ansi 
-    24 "^BCYAN^BCYAN^RESET^"          "^BCYAN^" 1 parse_ansi 
-    25 "^WHITE^WHITE^RESET^"          "^WHITE^" 1 parse_ansi 
-    26 "^GRAY^GRAY^RESET^"            "^GRAY^" 1 parse_ansi 
-    27 "^CWHITE^CWHITE^RESET^"        "^CWHITE^" 1 parse_ansi 
-    28 "^BWHITE^BWHITE^RESET^"        "^BWHITE^" 1 parse_ansi 
-    29 "^BLACK^BLACK^RESET^"          "^BLACK^" 1 parse_ansi 
-    30 "^GLOOM^GLOOM^RESET^"          "^GLOOM^" 1 parse_ansi 
-    31 "^CBLACK^CBLACK^RESET^"        "^CBLACK^" 1 parse_ansi 
-    32 "^BBLACK^BBLACK^RESET^"        "^BBLACK^" 1 parse_ansi 
-    33 "^CFAIL^CFAIL^RESET^"          "^CFAIL^" 1 parse_ansi 
-    34 "^CSUCC^CSUCC^RESET^"          "^CSUCC^" 1 parse_ansi 
-    35 "^CINFO^CINFO^RESET^"          "^CINFO^" 1 parse_ansi 
-    36 "^CNOTE^CNOTE^RESET^"          "^CNOTE^" 1 parse_ansi 
-    37 "^CMOVE^CMOVE^RESET^"          "^CMOVE^" 1 parse_ansi 
-    99 "Cancel"                                              "" 
-    38 80 doMenu 
+    1 "^RED^RED^RESET^"              "^RED^" 1 parse_ansi
+    2 "^CRIMSON^CRIMSON^RESET^"      "^CRIMSON^" 1 parse_ansi
+    3 "^CRED^CRED^RESET^"            "^CRED^" 1 parse_ansi
+    4 "^BRED^BRED^RESET^"            "^BRED^" 1 parse_ansi
+    5 "^GREEN^GREEN^RESET^"          "^GREEN^" 1 parse_ansi
+    6 "^FOREST^FOREST^RESET^"        "^FOREST^" 1 parse_ansi
+    7 "^CGREEN^CGREEN^RESET^"        "^CGREEN^" 1 parse_ansi
+    8 "^BGREEN^BGREEN^RESET^"        "^BGREEN^" 1 parse_ansi
+    9 "^YELLOW^YELLOW^RESET^"        "^YELLOW^" 1 parse_ansi
+    10 "^BROWN^BROWN^RESET^"          "^BROWN^" 1 parse_ansi
+    11 "^CYELLOW^CYELLOW^RESET^"      "^CYELLOW^" 1 parse_ansi
+    12 "^BYELLOW^BYELLOW^RESET^"      "^BYELLOW^" 1 parse_ansi
+    13 "^BLUE^BLUE^RESET^"            "^BLUE^" 1 parse_ansi
+    14 "^NAVY^NAVY^RESET^"            "^NAVY^" 1 parse_ansi
+    15 "^CBLUE^CBLUE^RESET^"          "^CBLUE^" 1 parse_ansi
+    16 "^BBLUE^BBLUE^RESET^"          "^BBLUE^" 1 parse_ansi
+    17 "^PURPLE^PURPLE^RESET^"        "^PURPLE^" 1 parse_ansi
+    18 "^VIOLET^VIOLET^RESET^"        "^VIOLET^" 1 parse_ansi
+    19 "^CPURPLE^CPURPLE^RESET^"      "^CPURPLE^" 1 parse_ansi
+    20 "^BPURPLE^BPURPLE^RESET^"      "^BPURPLE^" 1 parse_ansi
+    21 "^CYAN^CYAN^RESET^"            "^CYAN^" 1 parse_ansi
+    22 "^AQUA^AQUA^RESET^"            "^AQUA^" 1 parse_ansi
+    23 "^CCYAN^CCYAN^RESET^"          "^CCYAN^" 1 parse_ansi
+    24 "^BCYAN^BCYAN^RESET^"          "^BCYAN^" 1 parse_ansi
+    25 "^WHITE^WHITE^RESET^"          "^WHITE^" 1 parse_ansi
+    26 "^GRAY^GRAY^RESET^"            "^GRAY^" 1 parse_ansi
+    27 "^CWHITE^CWHITE^RESET^"        "^CWHITE^" 1 parse_ansi
+    28 "^BWHITE^BWHITE^RESET^"        "^BWHITE^" 1 parse_ansi
+    29 "^BLACK^BLACK^RESET^"          "^BLACK^" 1 parse_ansi
+    30 "^GLOOM^GLOOM^RESET^"          "^GLOOM^" 1 parse_ansi
+    31 "^CBLACK^CBLACK^RESET^"        "^CBLACK^" 1 parse_ansi
+    32 "^BBLACK^BBLACK^RESET^"        "^BBLACK^" 1 parse_ansi
+    33 "^CFAIL^CFAIL^RESET^"          "^CFAIL^" 1 parse_ansi
+    34 "^CSUCC^CSUCC^RESET^"          "^CSUCC^" 1 parse_ansi
+    35 "^CINFO^CINFO^RESET^"          "^CINFO^" 1 parse_ansi
+    36 "^CNOTE^CNOTE^RESET^"          "^CNOTE^" 1 parse_ansi
+    37 "^CMOVE^CMOVE^RESET^"          "^CMOVE^" 1 parse_ansi
+    99 "Cancel"                                              ""
+    38 80 doMenu
 ;
- 
+
 : make_temp ( -- d )
     me @ dup name "_temp" strcat "_" strcat systime intostr strcat newobject
 ;
- 
+
 : command_color_menu ( -- s )
     color_menu
 ;
 
 : paramTest ( s1 s2 -- n )
     var arg
-    var parm 
+    var parm
 
     "#" swap strcat parm !
     " " split pop strip arg !
@@ -1164,7 +1188,7 @@ lvar cache
     outside_color @ s @ strcat s !
     begin s @ "\"" instr while
         s @ "\"" split "\"" split
-        swap "^QUOTE^" inside_color @ strcat swap strcat "^QUOTE^" 
+        swap "^QUOTE^" inside_color @ strcat swap strcat "^QUOTE^"
         outside_color @ swap strcat strcat swap strcat strcat s !
     repeat
     s @ "\"" "^QUOTE^" subst
@@ -1198,7 +1222,7 @@ lvar cache
         command @ strcat "." strcat error_color tell
     then
 ;
- 
+
 public line
 public vline
 public tell
