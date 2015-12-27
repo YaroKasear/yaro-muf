@@ -1,5 +1,5 @@
 @q
-@edit yaro-poseorder.muf
+@program yaro-poseorder.muf
 1 999999 del
 i
 $include $lib/yaro
@@ -92,6 +92,47 @@ lvar timeout
     repeat
 ;
 
+: show_last ( d -- )
+    var player_name
+
+    name player_name !
+    loc @ "poseorder/order" getConfig dup array? if
+        player_name @ array_getitem systime swap -
+        time_format ":" explode pop atoi dup if
+            dup 1 = if " hour, " else " hours, " then swap intostr swap strcat
+        else pop "" then
+        rot atoi dup if
+            dup 1 = if " second, " else " seconds, " then swap intostr swap strcat
+        else pop "" then
+        rot atoi dup if
+            dup 1 = if " minute, " else " minutes, " then swap intostr swap strcat
+        else pop "" then
+        rot 3 reverse strcat strcat "," rsplit pop
+        "^INFO_COLOR^" player_name @ strcat " last posed " strcat swap strcat
+        " ago in " strcat loc @ name strcat "." strcat
+        player_name @ pmatch dup location loc @ != if
+            "not present, "
+        else "" then
+        over get_status nip "I" stringcmp if
+            "not in character, "
+        else "" then
+        rot awake? not if
+            "not connected, "
+        else "" then
+        strcat strcat dup if
+            "," rsplit pop "," rsplit dup if
+                ", and" swap strcat strcat
+            else pop then
+            " This player is also " swap strcat strcat
+            "." strcat 
+        else pop then
+        tell
+    else
+        pop "^INFO_COLOR^" player_name @ strcat 
+        " has not posed here before as far as I can tell." strcat tell
+    then
+;
+
 : show_help ( -- )
     var command_name
     trigger @ name ";" split pop command_name !
@@ -104,6 +145,8 @@ lvar timeout
     "^CONTENT_COLOR^Take yourself out of the pose order." } array_make
     { "^FIELD_COLOR^" command_name @ strcat " #kick <PLAYER>" strcat
     "^CONTENT_COLOR^Kick PLAYER out of the pose order." } array_make
+    { "^FIELD_COLOR^" command_name @ strcat " #last-posed <PLAYER>" strcat
+    "^CONTENT_COLOR^Check when a player last posed in this room." } array_make
     { "^FIELD_COLOR^" command_name @ strcat " #notify" strcat
     "^CONTENT_COLOR^Toggle whether to be told when it's your pose." } array_make
     { "^FIELD_COLOR^" command_name @ strcat " #nuke" strcat
@@ -143,6 +186,10 @@ lvar timeout
             exit end
             "notify" paramTest when " " split nip pop toggle_notify exit end
             "nuke" paramTest when " " split nip pop do_nuke exit end
+            "last-posed" paramTest when " " split nip pmatch dup ok? if show_last
+            else
+                "^ERROR_COLOR^I do not know that player." tell
+            then exit end
             "set-timeout" paramTest when
                 loc @ me @ control? if
                     " " split nip dup not if 
