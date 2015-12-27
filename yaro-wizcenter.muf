@@ -57,8 +57,8 @@ $include $cmd/status
 
 : get_sysinfo
     me @ "System Information" 80 boxTitle
-    me @ "^FIELD_COLOR^Server Time:" "^CONTENT_COLOR^%C %r" systime timefmt 80 boxInfo
-    me @ "^FIELD_COLOR^Connected Players:" "^CONTENT_COLOR^" concount intostr strcat 80 boxInfo
+    me @ { { "^FIELD_COLOR^Server Time:" "^CONTENT_COLOR^%C %r" systime timefmt } array_make
+    { "^FIELD_COLOR^Connected Players:" "^CONTENT_COLOR^" concount intostr strcat } array_make } array_make 80 boxInfo
 ;
 
 : main
