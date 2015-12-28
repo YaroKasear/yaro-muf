@@ -1,4 +1,4 @@
-@VG
+@q
 @program yaro-wizcenter.muf
 1 99999 del
 i
@@ -71,11 +71,11 @@ $include $cmd/status
         dup 3600 / 24 % hours !
         dup 3600 24 * / 7 % days !
         3600 24 * 7 * / weeks !
-        weeks @ dup if dup 1 = if " week, " else " weeks, " then swap intostr swap else pop "" then
-        days @ dup if dup 1 = if " day, " else " days, " then swap intostr swap else pop "" then
-        hours @ dup if dup 1 = if " hour, " else " hours, " then swap intostr swap else pop "" then
-        minutes @ dup if dup 1 = if " minute, " else " minutes, " then swap intostr swap else pop "" then 
-        seconds @ dup if dup 1 = if " second, " else " seconds, " then swap intostr swap else pop "" then
+        weeks @ dup if dup 1 = if " week, " else " weeks, " then swap intostr swap else pop "" "" then
+        days @ dup if dup 1 = if " day, " else " days, " then swap intostr swap else pop "" "" then
+        hours @ dup if dup 1 = if " hour, " else " hours, " then swap intostr swap else pop "" "" then
+        minutes @ dup if dup 1 = if " minute, " else " minutes, " then swap intostr swap else pop "" "" then 
+        seconds @ dup if dup 1 = if " second, " else " seconds, " then swap intostr swap else pop "" "" then
         strcat strcat strcat strcat strcat strcat strcat strcat strcat strcat "," rsplit pop
     } array_make
     { "^FIELD_COLOR^Server Time Offset:" "^CONTENT_COLOR^" 
