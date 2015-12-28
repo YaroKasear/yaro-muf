@@ -1,4 +1,4 @@
-@q
+@VG
 @program yaro-wizcenter.muf
 1 99999 del
 i
@@ -56,8 +56,31 @@ $include $cmd/status
 ;
 
 : get_sysinfo
+    var weeks
+    var days
+    var hours
+    var minutes
+    var seconds
+
     me @ "System Information" 80 boxTitle
     me @ { { "^FIELD_COLOR^Server Time:" "^CONTENT_COLOR^%C %r" systime timefmt } array_make
+    { "^FIELD_COLOR^Server Uptime:" "^CONTENT_COLOR^" 
+        #0 "_sys/startuptime" getprop systime swap -
+        dup time_format ":" explode reverse 
+        atoi seconds ! atoi minutes ! pop
+        dup 3600 / 24 % hours !
+        dup 3600 24 * / 7 % days !
+        3600 24 * 7 * / weeks !
+        weeks @ dup if dup 1 = if " week, " else " weeks, " then swap intostr swap else pop "" then
+        days @ dup if dup 1 = if " day, " else " days, " then swap intostr swap else pop "" then
+        hours @ dup if dup 1 = if " hour, " else " hours, " then swap intostr swap else pop "" then
+        minutes @ dup if dup 1 = if " minute, " else " minutes, " then swap intostr swap else pop "" then 
+        seconds @ dup if dup 1 = if " second, " else " seconds, " then swap intostr swap else pop "" then
+        strcat strcat strcat strcat strcat strcat strcat strcat strcat strcat "," rsplit pop
+    } array_make
+    { "^FIELD_COLOR^Server Time Offset:" "^CONTENT_COLOR^" 
+        0 timesplit -5 rotate 4 popn 178 > if 24 - then intostr nip nip strcat 
+    } array_make
     { "^FIELD_COLOR^Connected Players:" "^CONTENT_COLOR^" concount intostr strcat } array_make } array_make 80 boxInfo
 ;
 
