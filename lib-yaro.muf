@@ -1196,14 +1196,53 @@ lvar cache
 
 : set_color
     case
-        1 = when me @ debug_off color_menu debug_on dup if "prefs/error_color" swap else pop then end
+        1 = when me @ color_menu dup if "prefs/color/error_color" swap else pop then end
+        2 = when me @ color_menu dup if "prefs/color/success_color" swap else pop then end
+        3 = when me @ color_menu dup if "prefs/color/info_color" swap else pop then end
+        4 = when me @ color_menu dup if "prefs/color/note_color" swap else pop then end
+        5 = when me @ color_menu dup if "prefs/color/field" swap else pop then end
+        6 = when me @ color_menu dup if "prefs/color/content" swap else pop then end
+        7 = when me @ color_menu dup if "prefs/color/tag1" swap else pop then end
+        8 = when me @ color_menu dup if "prefs/color/tag2" swap else pop then end
+        9 = when me @ color_menu dup if "prefs/color/ooc1" swap else pop then end
+        10 = when me @ color_menu dup if "prefs/color/ooc2" swap else pop then end
+        11 = when me @ color_menu dup if "prefs/color/oocn" swap else pop then end
+        12 = when me @ color_menu dup if "prefs/color/ic1" swap else pop then end
+        13 = when me @ color_menu dup if "prefs/color/ic2" swap else pop then end
+        14 = when me @ color_menu dup if "prefs/color/icn" swap else pop then end
+        15 = when me @ color_menu dup if "prefs/color/opt1" swap else pop then end
+        16 = when me @ color_menu dup if "prefs/color/opt2" swap else pop then end
+        17 = when me @ color_menu dup if "prefs/color/title" swap else pop then end
+        18 = when me @ color_menu dup if "prefs/color/box" swap else pop then end
     endcase
 ;
 
 : set_character
+    case
+        19 = when
+            "^NOTE_COLOR^Please enter a single character." tell read 1 strcut pop "prefs/open_tag" swap
+        end
+        20 = when
+            "^NOTE_COLOR^Please enter a single character." tell read 1 strcut pop "prefs/close_tag" swap
+        end
+        22 = when
+            "^NOTE_COLOR^Please enter a single character." tell read 1 strcut pop "prefs/vline" swap
+        end
+    endcase
 ;
 
 : set_line
+    case
+        21 = when
+            "^NOTE_COLOR^Please enter a string of characters." tell read "prefs/line" swap
+        end
+        23 = when
+            "^NOTE_COLOR^Please enter a string of characters." tell read "prefs/say" swap
+        end
+        24 = when
+            "^NOTE_COLOR^Please enter a string of characters." tell read "prefs/says" swap
+        end
+    endcase
 ;
 
 : set_look_feel ( d s s -- )
@@ -1215,7 +1254,7 @@ lvar cache
     title !
     ref !
 
-    ref @ "_config/orig" remove_prop
+    { ref @ "_config/orig" remove_prop
     ref @ "_config/prefs" ref @ "_config/orig/prefs" 1 copyprops pop
     begin me @ title @ 80 boxTitle
     me @ message @ 80 boxContent me @ "" 80 boxContent
@@ -1223,17 +1262,17 @@ lvar cache
         { "^ERROR_COLOR^ERROR COLOR" "^SUCCESS_COLOR^SUCCESS COLOR" } array_make
         { "^INFO_COLOR^INFO COLOR" "^NOTE_COLOR^NOTE COLOR" } array_make
         { "^FIELD_COLOR^FIELD COLOR" "^CONTENT_COLOR^CONTENT_COLOR" } array_make
-        { "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^TAG^TAG_COLOR_2^^CLOSE_TAG^" 
+        { "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^TAG^TAG_COLOR_2^^CLOSE_TAG^"
         "^CONTENT_COLOR^CONTENT COLOR" } array_make
-        { ref @ "^OOC_NAME_COLOR^(You/" me @ name strcat 
-        ")^OOC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat 
+        { ref @ "^OOC_NAME_COLOR^(You/" me @ name strcat
+        ")^OOC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat
         ") \"Hello\" in an OOC manner." strcat strcat strcat process_tags
         "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes "" } array_make
-        { ref @ "^IC_NAME_COLOR^(You/" me @ name strcat 
-        ")^IC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat 
+        { ref @ "^IC_NAME_COLOR^(You/" me @ name strcat
+        ")^IC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat
         ") \"Hello\" in an IC manner." strcat strcat strcat process_tags
         "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes "" } array_make
-        { "^OPTION_COLOR_1^1) ^OPTION_COLOR_2^FAKE OPTION 1" 
+        { "^OPTION_COLOR_1^1) ^OPTION_COLOR_2^FAKE OPTION 1"
         "^OPTION_COLOR_1^2) ^OPTION_COLOR_2^FAKE OPTION 2"  } array_make
     } array_make 80 boxInfo
     me @ "Options" {
@@ -1265,16 +1304,23 @@ lvar cache
     88 "Save" 88
     99 "Quit" 0
     } 3 / 80 doMenu dup while
-        debug_on
-        rot case
-            77 = when end
-            88 = when end
-            default end
-        endcase
-        debug_off
+            dup string? if
+                ref @ rot rot setConfig clear_cache
+            else
+                dup case
+                    77 = when 
+                        ref @ "_config/prefs" remove_prop clear_cache
+                    end
+                    88 = when 
+                        ref @ "_config/orig" remove_prop
+                        ref @ "_config/prefs" ref @ "_config/orig/prefs" 1 copyprops pop
+                    end
+                endcase
+            then pop
     repeat
+    ref @ "_config/prefs" remove_prop
     ref @ "_config/orig/prefs" ref @ "_config/prefs" 1 copyprops pop
-    ref @ "_config/orig" remove_prop
+    ref @ "_config/orig" remove_prop clear_cache } popn
 ;
 
 : main ( s -- )
