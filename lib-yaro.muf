@@ -1194,6 +1194,83 @@ lvar cache
     s @ "\"" "^QUOTE^" subst
 ;
 
+: set_color
+
+    debug_on
+    case
+        1 = when me @ color_menu dup if "prefs/error_color" swap else pop then end
+    endcase
+    debug_off
+;
+
+: set_character
+;
+
+: set_line
+;
+
+: set_look_feel ( d -- )
+    var ref
+
+    ref !
+
+    ref @ "_config/orig" remove_prop
+    ref @ "_config/prefs" ref @ "_config/orig/prefs" 1 copyprops pop
+    begin me @ "Room Preferences" 80 boxTitle
+    me @ "This is the tool for setting room-wide preferences. "
+    "PROTIP: Running this in a parent room can apply preferences across the environment."
+    strcat 80 boxContent me @ "" 80 boxContent
+    me @ {
+        { "^ERROR_COLOR^ERROR COLOR" "^SUCCESS_COLOR^SUCCESS COLOR" } array_make
+        { "^INFO_COLOR^INFO COLOR" "^NOTE_COLOR^NOTE COLOR" } array_make
+        { "^FIELD_COLOR^FIELD COLOR" "^CONTENT_COLOR^CONTENT_COLOR" } array_make
+        { "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^TAG^TAG_COLOR_2^^CLOSE_TAG^" 
+        "^CONTENT_COLOR^CONTENT COLOR" } array_make
+        { ref @ "^OOC_NAME_COLOR^(You/" me @ name strcat 
+        ")^OOC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat 
+        ") \"Hello\" in an OOC manner." strcat strcat strcat process_tags
+        "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes "" } array_make
+        { ref @ "^IC_NAME_COLOR^(You/" me @ name strcat 
+        ")^IC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat 
+        ") \"Hello\" in an IC manner." strcat strcat strcat process_tags
+        "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes "" } array_make
+        { "^OPTION_COLOR_1^1) ^OPTION_COLOR_2^FAKE OPTION 1" 
+        "^OPTION_COLOR_1^2) ^OPTION_COLOR_2^FAKE OPTION 2"  } array_make
+    } array_make 80 boxInfo
+    me @ "Options" {
+    1 "^ERROR_COLOR^Error Color^RESET^" 'set_color
+    2 "^SUCCESS_COLOR^Success Color^RESET^" 'set_color
+    3 "^INFO_COLOR^Info Color^RESET^" 'set_color
+    4 "^NOTE_COLOR^Note Color^RESET^" 'set_color
+    5 "^FIELD_COLOR^Field Color^RESET^" 'set_color
+    6 "^CONTENT_COLOR^Content Color^RESET^" 'set_color
+    7 "^TAG_COLOR_1^Inner Tag Color^RESET^" 'set_color
+    8 "^TAG_COLOR_2^Outer Tag Color^RESET^" 'set_color
+    9 "^OOC_COLOR_1^OOC Message Descriptor Color^RESET^" 'set_color
+    10 "^OOC_COLOR_2^OOC Message Color^RESET^" 'set_color
+    11 "^OOC_NAME_COLOR^OOC Name Color^RESET^" 'set_color
+    12 "^IC_COLOR_1^IC Message Descriptor Color^RESET^" 'set_color
+    13 "^IC_COLOR_2^IC Message Color^RESET^" 'set_color
+    14 "^IC_NAME_COLOR^IC Name Color^RESET^" 'set_color
+    15 "^OPTION_COLOR_1^Option Number Color^RESET^" 'set_color
+    16 "^OPTION_COLOR_2^Option Text Color^RESET^" 'set_color
+    17 "^TITLE_COLOR^Title Color^RESET^" 'set_color
+    18 "^BOX_COLOR^Box Color^RESET^" 'set_color
+    19 "Opening Tag (^OPEN_TAG^)" 'set_character
+    20 "Closing Tag (^CLOSE_TAG^)" 'set_character
+    21 "Line (" me @ 3 line strcat ")" strcat 'set_line
+    22 "Vertical Line (^VLINE^)" 'set_character
+    23 "Second Person Say Verb (" me @ say strcat ")" strcat 'set_line
+    24 "Third Person Say Verb (" me @ says strcat ")" strcat 'set_line
+    77 "Default Settings" 77
+    88 "Save" 88
+    99 "Quit" 0
+    } 3 / 80 doMenu while
+    repeat
+    ref @ "_config/orig/prefs" ref @ "_config/prefs" 1 copyprops pop
+    ref @ "_config/orig" remove_prop
+;
+
 : main ( s -- )
     command @ "yaroconf" strcmp not if
         dup "test" paramTest if pop doTest exit then
@@ -1282,6 +1359,7 @@ public array_to_menu
 public clear_cache
 public say
 public says
+public set_look_feel
 .
 c
 q
@@ -1346,4 +1424,5 @@ q
 @set lib-yaro=_defs/clear_cache:"$lib/yaro" match "clear_cache" call
 @set lib-yaro=_defs/say:"$lib/yaro" match "say" call
 @set lib-yaro=_defs/says:"$lib/yaro" match "says" call
+@set lib-yaro=_defs/set_look_feel:"$lib/yaro" match "set_look_feel" call
 
