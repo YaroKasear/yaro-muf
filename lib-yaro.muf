@@ -1195,12 +1195,9 @@ lvar cache
 ;
 
 : set_color
-
-    debug_on
     case
-        1 = when me @ color_menu dup if "prefs/error_color" swap else pop then end
+        1 = when me @ debug_off color_menu debug_on dup if "prefs/error_color" swap else pop then end
     endcase
-    debug_off
 ;
 
 : set_character
@@ -1209,17 +1206,19 @@ lvar cache
 : set_line
 ;
 
-: set_look_feel ( d -- )
+: set_look_feel ( d s s -- )
     var ref
+    var title
+    var message
 
+    message !
+    title !
     ref !
 
     ref @ "_config/orig" remove_prop
     ref @ "_config/prefs" ref @ "_config/orig/prefs" 1 copyprops pop
-    begin me @ "Room Preferences" 80 boxTitle
-    me @ "This is the tool for setting room-wide preferences. "
-    "PROTIP: Running this in a parent room can apply preferences across the environment."
-    strcat 80 boxContent me @ "" 80 boxContent
+    begin me @ title @ 80 boxTitle
+    me @ message @ 80 boxContent me @ "" 80 boxContent
     me @ {
         { "^ERROR_COLOR^ERROR COLOR" "^SUCCESS_COLOR^SUCCESS COLOR" } array_make
         { "^INFO_COLOR^INFO COLOR" "^NOTE_COLOR^NOTE COLOR" } array_make
@@ -1265,7 +1264,14 @@ lvar cache
     77 "Default Settings" 77
     88 "Save" 88
     99 "Quit" 0
-    } 3 / 80 doMenu while
+    } 3 / 80 doMenu dup while
+        debug_on
+        rot case
+            77 = when end
+            88 = when end
+            default end
+        endcase
+        debug_off
     repeat
     ref @ "_config/orig/prefs" ref @ "_config/prefs" 1 copyprops pop
     ref @ "_config/orig" remove_prop
