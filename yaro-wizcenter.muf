@@ -88,8 +88,8 @@ $include $cmd/status
     var ref
     var d
 
-    me @ "Connections" 80 boxTitle
-    me @ { "Name" "REF" "Contime" "Port" "Host" } array_make 
+    me @ "Connections" 55 boxTitle
+    me @ { "Name" "REF" "Contime" "Port" "IP Address" } array_make 
     { online array_make foreach nip
         dup ref ! descriptors array_make { swap foreach nip
             d !
@@ -97,10 +97,10 @@ $include $cmd/status
             "^CONTENT_COLOR^" ref @ dtos strcat "^RESET^" strcat
             "^FIELD_COLOR^" d @ descrcon contime time_format strcat "^RESET^" strcat
             "^CONTENT_COLOR^" d @ descrconport intostr strcat "^RESET^" strcat
-            "^FIELD_COLOR^" d @ descrhost strcat "^RESET^" strcat
+            "^FIELD_COLOR^" d @ descrcon conipnum strcat "^RESET^" strcat
         repeat } array_make
-    repeat } array_make 80 boxTable
-    "^BOX_COLOR^" me @ 80 line strcat tell
+    repeat } array_make 55 boxTable
+    "^BOX_COLOR^" me @ 55 line strcat tell
     " " tell
 ;
 
