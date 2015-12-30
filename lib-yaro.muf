@@ -36,6 +36,24 @@ lvar cache
     0 cache ! cache_gen
 ;
 
+: time_explode ( i -- i i i i i i )
+    var time_value
+    var moons
+    var weeks
+    var days
+    var hours
+    var minutes
+    var seconds
+
+    time_value ! time_value @ 2419200 / moons !
+    time_value @ 604800 / 4 % weeks !
+    time_value @ 86400 / 7 % days !
+    time_value @ 3600 / 24 % hours !
+    time_value @ 60 / 60 % minutes !
+    time_value @ 60 % seconds !
+    moons @ weeks @ days @ hours @ minutes @ seconds @
+;
+
 : time_format ( i -- s )
     var t
 
@@ -1405,6 +1423,7 @@ public columns
 public checkbox
 public cleanString
 public time_format
+public time_explode
 public process_tags
 public color_quotes
 public array_to_menu
@@ -1471,6 +1490,7 @@ q
 @set lib-yaro=_defs/checkbox:"$lib/yaro" match "checkbox" call
 @set lib-yaro=_defs/cleanString:"$lib/yaro" match "cleanString" call
 @set lib-yaro=_defs/time_format:"$lib/yaro" match "time_format" call
+@set lib-yaro=_defs/time_explode:"$lib/yaro" match "time_explode" call
 @set lib-yaro=_defs/process_tags:"$lib/yaro" match "process_tags" call
 @set lib-yaro=_defs/color_quotes:"$lib/yaro" match "color_quotes" call
 @set lib-yaro=_defs/clear_cache:"$lib/yaro" match "clear_cache" call
