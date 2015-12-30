@@ -4,7 +4,7 @@
 i
 $include $lib/yaro
 $include $lib/editor
-
+ 
 : set_description
     var description
     
@@ -26,22 +26,21 @@ $include $lib/editor
         loc @ "{list:_config/desc," loc @ dtos strcat "}" strcat setdesc
     then
 ;
-
+ 
 : edit_menu
     begin
         me @ "Room Editor"
         1 "Set Description" 'set_description
         2 "Look And Feel" 2
         9 "Quit" 0
-        3 30 doMenu while 2 = if 
-            begin me @ "Room Preferences" 80 boxTitle
-            me @ "This is the tool for setting room-wide preferences. "
+        3 30 doMenu dup while 2 = if 
+            loc @ "Room Preferences" "This is the tool for setting room-wide preferences.\r\r"
             "PROTIP: Running this in a parent room can apply preferences across the environment."
-            loc @ set_look_feel 
+            strcat set_look_feel 
         then repeat
     "^NOTE_COLOR^Thank you for using the Room Editor!" tell
 ;
-
+ 
 : main
     strip dup "#" instr 1 = if
     else pop then

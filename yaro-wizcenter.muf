@@ -86,6 +86,11 @@ $include $cmd/status
 
 : main
     dup "help" paramTest if show_help exit then
+    dup "Connect" stringcmp not me @ "W" flag? and if
+        getAlerts "^BOX_COLOR^" me @ 80 line strcat tell 
+        me @ " " tell
+        exit
+    then
     command @ case
         "wizzes" stringcmp not when 
             dup "set-role" paramTest if
@@ -100,7 +105,7 @@ $include $cmd/status
             then
             list_wizards 
         end
-        "wcenter" stringcmp not rot "Connect" stringcmp not or when 
+        "wcenter" stringcmp not when 
             me @ "W" flag? if 
                 getAlerts 
                 get_sysinfo
