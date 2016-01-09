@@ -530,6 +530,9 @@ lvar cache
             dup toupper "^CONTENT_COLOR^" instr if ref @ "" content_color  "^CONTENT_COLOR^" subst then
             dup toupper "^OPEN_TAG^" instr if ref @ open_tag  "^OPEN_TAG^" subst then
             dup toupper "^CLOSE_TAG^" instr if ref @ close_tag  "^CLOSE_TAG^" subst then
+            begin dup toupper "\\^LINE:([0-9]+)\\^" 4 regexp while
+                array_vals pop atoi ref @ swap line swap subst
+            repeat pop
             dup toupper "^VLINE^" instr if ref @ vline  "^VLINE^" subst then
             dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
             dup toupper "^BOLD^" instr if "\[[1m" "^BOLD^" subst then
@@ -852,6 +855,21 @@ lvar cache
     then
 ;
 
+: boxify ( s n -- s )
+    var width
+    var string
+
+    4 - width !
+    string !
+    
+    width @ string @ ansi_strlen > if
+        string @ width @ format_left
+    else width @ string @ ansi_strlen < if
+        string @ width @ 4 - rsplit pop " ..." strcat
+    then then
+    "^BOX_COLOR^^VLINE^^RESET^ " swap strcat " ^RESET^^BOX_COLOR^^VLINE^" strcat
+;
+
 : boxInfo ( d a n -- )
     var width
     var content
@@ -905,8 +923,7 @@ lvar cache
             width @ 4 - wrap_point @ - swap - space strcat
             rot 0 array_extract dup ansi_strlen
             wrap_point @ swap - space strcat
-            rot strcat "^BOX_COLOR^^VLINE^^RESET^ " swap strcat
-            " ^BOX_COLOR^^VLINE^" strcat ref @ swap otell swap
+            rot strcat width @ boxify ref @ swap otell swap
         repeat 2 popn
     repeat
 ;
@@ -915,21 +932,17 @@ lvar cache
     var ref
     var length
     var target
-
     dup target !
     rot ref !
 
     swap ref @ swap process_tags cleanString swap
     over ansi_strlen swap 2 /
     swap 2 / - 2 -
-    dup length !
-    ref @ swap line
-    ref @ open_tag strcat
-    ref @ swap " " strcat box_color swap
-    ref @ swap title_color strcat
-    ref @ close_tag " " swap strcat
-    ref @ length @ line strcat
-    ref @ swap box_color strcat
+    length !
+    length @ intostr "^BOX_COLOR^^LINE:" swap strcat 
+    "^^OPEN_TAG^ ^TITLE_COLOR^" strcat swap strcat
+    " ^BOX_COLOR^^CLOSE_TAG^^LINE:" length @ intostr 
+    strcat "^" strcat strcat 
     ref @ swap process_tags cleanString dup ansi_strlen
     target @ > if
         target @ ansi_strcut pop
@@ -947,13 +960,7 @@ lvar cache
     ref !
 
     content @ width @ 4 - format_wrap foreach swap pop
-        ref @ vline " " strcat
-        ref @ swap box_color swap
-        ref @ swap content_color strcat
-        ref @ swap process_tags cleanString dup ansi_strlen width @ 1 - swap - space strcat
-        ref @ vline
-        ref @ swap box_color strcat
-        ref @ swap otell
+        width @ boxify ref @ swap otell
     repeat
 ;
 
