@@ -1263,6 +1263,32 @@ lvar cache
     endcase
 ;
 
+: show_look_feel ( d -- )
+    var ref
+
+    ref !
+    me @ {
+        { ref @ "^ERROR_COLOR^ERROR COLOR" process_tags 
+          ref @ "^SUCCESS_COLOR^SUCCESS COLOR" process_tags } array_make
+        { ref @ "^INFO_COLOR^INFO COLOR" process_tags 
+          ref @ "^NOTE_COLOR^NOTE COLOR" process_tags } array_make
+        { ref @ "^FIELD_COLOR^FIELD COLOR" process_tags
+          ref @ "^CONTENT_COLOR^CONTENT_COLOR" process_tags } array_make
+        { ref @ "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^TAG^TAG_COLOR_2^^CLOSE_TAG^" process_tags
+          ref @ "^CONTENT_COLOR^CONTENT COLOR" process_tags } array_make
+        { ref @ ref @ "^OOC_NAME_COLOR^(You/" me @ name strcat
+        ")^OOC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat
+        ") \"Hello\" in an OOC manner." strcat strcat strcat process_tags
+        "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes process_tags "" } array_make
+        { ref @ ref @ "^IC_NAME_COLOR^(You/" me @ name strcat
+        ")^IC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat
+        ") \"Hello\" in an IC manner." strcat strcat strcat process_tags
+        "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes process_tags "" } array_make
+        { ref @ "^OPTION_COLOR_1^1) ^OPTION_COLOR_2^FAKE OPTION 1" process_tags
+          ref @ "^OPTION_COLOR_1^2) ^OPTION_COLOR_2^FAKE OPTION 2" process_tags } array_make
+    } array_make 80 boxInfo
+;
+
 : set_look_feel ( d s s -- )
     var ref
     var title
@@ -1276,23 +1302,7 @@ lvar cache
     ref @ "_config/prefs" ref @ "_config/orig/prefs" 1 copyprops pop
     begin me @ title @ 80 boxTitle
     me @ message @ 80 boxContent me @ "" 80 boxContent
-    me @ {
-        { "^ERROR_COLOR^ERROR COLOR" "^SUCCESS_COLOR^SUCCESS COLOR" } array_make
-        { "^INFO_COLOR^INFO COLOR" "^NOTE_COLOR^NOTE COLOR" } array_make
-        { "^FIELD_COLOR^FIELD COLOR" "^CONTENT_COLOR^CONTENT_COLOR" } array_make
-        { "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^TAG^TAG_COLOR_2^^CLOSE_TAG^"
-        "^CONTENT_COLOR^CONTENT COLOR" } array_make
-        { ref @ "^OOC_NAME_COLOR^(You/" me @ name strcat
-        ")^OOC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat
-        ") \"Hello\" in an OOC manner." strcat strcat strcat process_tags
-        "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes "" } array_make
-        { ref @ "^IC_NAME_COLOR^(You/" me @ name strcat
-        ")^IC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat
-        ") \"Hello\" in an IC manner." strcat strcat strcat process_tags
-        "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes "" } array_make
-        { "^OPTION_COLOR_1^1) ^OPTION_COLOR_2^FAKE OPTION 1"
-        "^OPTION_COLOR_1^2) ^OPTION_COLOR_2^FAKE OPTION 2"  } array_make
-    } array_make 80 boxInfo
+    ref @ show_look_feel
     me @ "Options" {
     1 "^ERROR_COLOR^Error Color^RESET^" 'set_color
     2 "^SUCCESS_COLOR^Success Color^RESET^" 'set_color
