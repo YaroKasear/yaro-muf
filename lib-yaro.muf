@@ -56,46 +56,74 @@ lvar cache
 
 : cleanString ( s -- s )
     dup "^" instr if
-        ( dup "^^" instr not if )
-            "^RED^" dup 1 parse_ansi swap subst
-            "^CRIMSON^" dup 1 parse_ansi swap subst
-            "^CRED^" dup 1 parse_ansi swap subst
-            "^BRED^" dup 1 parse_ansi swap subst
-            "^GREEN^" dup 1 parse_ansi swap subst
-            "^FOREST^" dup 1 parse_ansi swap subst
-            "^CGREEN^" dup 1 parse_ansi swap subst
-            "^BGREEN^" dup 1 parse_ansi swap subst
-            "^YELLOW^" dup 1 parse_ansi swap subst
-            "^BROWN^" dup 1 parse_ansi swap subst
-            "^CYELLOW^" dup 1 parse_ansi swap subst
-            "^BYELLOW^" dup 1 parse_ansi swap subst
-            "^BLUE^" dup 1 parse_ansi swap subst
-            "^NAVY^" dup 1 parse_ansi swap subst
-            "^CBLUE^" dup 1 parse_ansi swap subst
-            "^BBLUE^" dup 1 parse_ansi swap subst
-            "^PURPLE^" dup 1 parse_ansi swap subst
-            "^VIOLET^" dup 1 parse_ansi swap subst
-            "^CPURPLE^" dup 1 parse_ansi swap subst
-            "^BPURPLE^" dup 1 parse_ansi swap subst
-            "^CYAN^" dup 1 parse_ansi swap subst
-            "^AQUA^" dup 1 parse_ansi swap subst
-            "^CCYAN^" dup 1 parse_ansi swap subst
-            "^BCYAN^" dup 1 parse_ansi swap subst
-            "^WHITE^" dup 1 parse_ansi swap subst
-            "^GRAY^" dup 1 parse_ansi swap subst
-            "^CWHITE^" dup 1 parse_ansi swap subst
-            "^BWHITE^" dup 1 parse_ansi swap subst
-            "^BLACK^" dup 1 parse_ansi swap subst
-            "^GLOOM^" dup 1 parse_ansi swap subst
-            "^CBLACK^" dup 1 parse_ansi swap subst
-            "^BBLACK^" dup 1 parse_ansi swap subst
-            "^CFAIL^" dup 1 parse_ansi swap subst
-            "^CSUCC^" dup 1 parse_ansi swap subst
-            "^CINFO^" dup 1 parse_ansi swap subst
-            "^CNOTE^" dup 1 parse_ansi swap subst
-            "^CMOVE^" dup 1 parse_ansi swap subst
-            ( "^^" "^" subst )
-        ( then )
+        "^RED^" dup 1 parse_ansi swap subst
+        "^CRIMSON^" dup 1 parse_ansi swap subst
+        "^CRED^" dup 1 parse_ansi swap subst
+        "^BRED^" dup 1 parse_ansi swap subst
+        "^GREEN^" dup 1 parse_ansi swap subst
+        "^FOREST^" dup 1 parse_ansi swap subst
+        "^CGREEN^" dup 1 parse_ansi swap subst
+        "^BGREEN^" dup 1 parse_ansi swap subst
+        "^YELLOW^" dup 1 parse_ansi swap subst
+        "^BROWN^" dup 1 parse_ansi swap subst
+        "^CYELLOW^" dup 1 parse_ansi swap subst
+        "^BYELLOW^" dup 1 parse_ansi swap subst
+        "^BLUE^" dup 1 parse_ansi swap subst
+        "^NAVY^" dup 1 parse_ansi swap subst
+        "^CBLUE^" dup 1 parse_ansi swap subst
+        "^BBLUE^" dup 1 parse_ansi swap subst
+        "^PURPLE^" dup 1 parse_ansi swap subst
+        "^VIOLET^" dup 1 parse_ansi swap subst
+        "^CPURPLE^" dup 1 parse_ansi swap subst
+        "^BPURPLE^" dup 1 parse_ansi swap subst
+        "^CYAN^" dup 1 parse_ansi swap subst
+        "^AQUA^" dup 1 parse_ansi swap subst
+        "^CCYAN^" dup 1 parse_ansi swap subst
+        "^BCYAN^" dup 1 parse_ansi swap subst
+        "^WHITE^" dup 1 parse_ansi swap subst
+        "^GRAY^" dup 1 parse_ansi swap subst
+        "^CWHITE^" dup 1 parse_ansi swap subst
+        "^BWHITE^" dup 1 parse_ansi swap subst
+        "^BLACK^" dup 1 parse_ansi swap subst
+        "^GLOOM^" dup 1 parse_ansi swap subst
+        "^CBLACK^" dup 1 parse_ansi swap subst
+        "^BBLACK^" dup 1 parse_ansi swap subst
+        "^CFAIL^" dup 1 parse_ansi swap subst
+        "^CSUCC^" dup 1 parse_ansi swap subst
+        "^CINFO^" dup 1 parse_ansi swap subst
+        "^CNOTE^" dup 1 parse_ansi swap subst
+        "^CMOVE^" dup 1 parse_ansi swap subst
+        dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
+        dup toupper "^BOLD^" instr if "\[[1m" "^BOLD^" subst then
+        dup toupper "^DARK^" instr if "\[[2m" "^DARK^" subst then
+        dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
+        dup toupper "^FLASH^" instr if "\[[5m" "^FLASH^" subst then
+        dup toupper "^INVERT^" instr if "\[[7m" "^INVERT^" subst then
+        dup toupper "^RESET^" instr if "\[[0m" "^RESET^" subst then
+        dup toupper "^FRANDOM^" instr if
+            "\[[0;3" random 8 % intostr strcat
+            ";" strcat random 6 % case
+                0 = when "0" end
+                1 = when "1" end
+                2 = when "2" end
+                3 = when "4" end
+                4 = when "5" end
+                5 = when "7" end
+            endcase
+            strcat "m" strcat
+        "^FRANDOM^" subst then
+        dup toupper "^BRANDOM^" instr if
+            "\[[4" random 8 % intostr strcat
+            ";" strcat random 6 % case
+                0 = when "0" end
+                1 = when "1" end
+                2 = when "2" end
+                3 = when "4" end
+                4 = when "5" end
+                5 = when "7" end
+            endcase
+            strcat "m" strcat
+        "^BRANDOM^" subst then
     then
 ;
 
@@ -119,13 +147,8 @@ lvar cache
             pop
         then
     else
-        ref @ key @ getprop dup if
-            exit
-        else
-            pop
-        then
+        ref @ key @ getprop
     then then
-    0
 ;
 
 : getConfig ( x s -- x )
@@ -167,242 +190,113 @@ lvar cache
         trigger @ myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
     then
     prog myProgKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-    prog myKey @ readConf dup if dup cache_key @ swap cache_write exit else pop then
-    0
+    prog myKey @ readConf dup if dup cache_key @ swap cache_write exit then
+;
+
+: get_color ( d s s -- )
+    var df
+    var key
+    var ref
+    var cache_key
+
+    df !
+    key !
+    ref !
+
+    ref @ "prefs/color/" key @ strcat getConfig dup not if
+        pop ref @ "prefs/color/" key @ strcat make_cache_key 
+        df @ cache_write df @
+    then
 ;
 
 : error_color ( d s -- s )
-    var cache_key
-    over "prefs/color/error_color" make_cache_key cache_key !
-    over "prefs/color/error_color" getConfig dup if
-        swap strcat
-    else
-        pop "^CFAIL^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "error_color" "^CFAIL^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : success_color ( d s -- s )
-    var cache_key
-    over "prefs/color/success_color" make_cache_key cache_key !
-    over "prefs/color/success_color" getConfig dup if
-        swap strcat
-    else
-        pop "^CSUCC^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "success_color" "^CSUCC^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : info_color ( d s -- s )
-    var cache_key
-    over "prefs/color/info_color" make_cache_key cache_key !
-    over "prefs/color/info_color" getConfig dup if
-        swap strcat
-    else
-        pop "^CINFO^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "info_color" "^CINFO^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : note_color ( d s -- s )
-    var cache_key
-    over "prefs/color/note_color" make_cache_key cache_key !
-    over "prefs/color/note_color" getConfig dup if
-        swap strcat
-    else
-        pop "^CNOTE^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "note_color" "^CNOTE^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : tag_color_1 ( d s -- s )
-    var cache_key
-    over "prefs/color/tag1" make_cache_key cache_key !
-    over "prefs/color/tag1" getConfig dup if
-        swap strcat
-    else
-        pop "^WHITE^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "tag1" "^WHITE^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : tag_color_2 ( d s -- s )
-    var cache_key
-    over "prefs/color/tag2" make_cache_key cache_key !
-    over "prefs/color/tag2" getConfig dup if
-        swap strcat
-    else
-        pop "^FOREST^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "tag2" "^FOREST^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : ooc_color_1 ( d s -- s )
-    var cache_key
-    over "prefs/color/ooc1" make_cache_key cache_key !
-    over "prefs/color/ooc1" getConfig dup if
-        swap strcat
-    else
-        pop "^AQUA^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "ooc1" "^AQUA^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : ooc_color_2 ( d s -- s )
-    var cache_key
-    over "prefs/color/ooc2" make_cache_key cache_key !
-    over "prefs/color/ooc2" getConfig dup if
-        swap strcat
-    else
-        pop "^GRAY^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "ooc2" "^GRAY^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : ooc_name_color ( d s -- s )
-    var cache_key
-    over "prefs/color/oocn" make_cache_key cache_key !
-    over "prefs/color/oocn" getConfig dup if
-        swap strcat
-    else
-        pop "^OOC_COLOR_1^" dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "oocn" "^OOC_COLOR_1^" get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : ic_color_1 ( d s -- s )
-    var cache_key
-    over "prefs/color/ic1" make_cache_key cache_key !
-    over "prefs/color/ic1" getConfig dup if
-        swap strcat
-    else
-        pop "^WHITE^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "ic1" "^WHITE^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : ic_color_2 ( d s -- s )
-    var cache_key
-    over "prefs/color/ic2" make_cache_key cache_key !
-    over "prefs/color/ic2" getConfig dup if
-        swap strcat
-    else
-        pop "^WHITE^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "ic2" "^WHITE^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : ic_name_color ( d s -- s )
-    var cache_key
-    over "prefs/color/icn" make_cache_key cache_key !
-    over "prefs/color/icn" getConfig dup if
-        swap strcat
-    else
-        pop "^IC_COLOR_1^" dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "icn" "^IC_COLOR_1^" get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : title_color ( d s -- s )
-    var cache_key
-    over "prefs/color/title" make_cache_key cache_key !
-    over "prefs/color/title" getConfig dup if
-        swap strcat
-    else
-        pop "^WHITE^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "title" "^WHITE^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : option_color_1 ( d s -- s )
-    var cache_key
-    over "prefs/color/opt1" make_cache_key cache_key !
-    over "prefs/color/opt1" getConfig dup if
-        swap strcat
-    else
-        pop "^GREEN^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "opt1" "^GREEN^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : option_color_2 ( d s -- s )
-    var cache_key
-    over "prefs/color/opt2" make_cache_key cache_key !
-    over "prefs/color/opt2" getConfig dup if
-        swap strcat
-    else
-        pop "^GRAY^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "opt2" "^GRAY^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : box_color ( d s -- s )
-    var cache_key
-    over "prefs/color/box" make_cache_key cache_key !
-    over "prefs/color/box" getConfig dup if
-        swap strcat
-    else
-        pop "^AQUA^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "box" "^AQUA^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : content_color ( d s -- s )
-    var cache_key
-    over "prefs/color/content" make_cache_key cache_key !
-    over "prefs/color/content" getConfig dup if
-        swap strcat
-    else
-        pop "^GRAY^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "content" "^GRAY^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : field_color ( d s -- s )
-    var cache_key
-    over "prefs/color/field" make_cache_key cache_key !
-    over "prefs/color/field" getConfig dup if
-        swap strcat
-    else
-        pop "^WHITE^" 1 parse_ansi dup cache_key @ swap cache_write
-        swap strcat
-    then
-    swap pop
-    "\[[0m" swap strcat
+    swap "field" "^WHITE^" 1 parse_ansi get_color
+    swap strcat "\[[0m" swap strcat
 ;
 
 : line ( d n -- )
@@ -414,7 +308,9 @@ lvar cache
     over "prefs/line" make_cache_key cache_key !
 
     swap "prefs/line" getConfig dup not if
-        pop "-------------------------------------------------------------------" dup cache_key @ swap cache_write
+        pop 
+        "--------------------------------------------------------------------------------" 
+        dup cache_key @ swap cache_write
     then
     myLine !
     dup 0 < if
@@ -443,7 +339,7 @@ lvar cache
     then
     length !
 
-    "                                                                           "
+    "                                                                                "
     outputLine !
 
     begin outputLine @ ansi_strlen length @ = not while
@@ -489,14 +385,18 @@ lvar cache
 ;
 
 : say ( d -- s )
+    var cache_key
+    dup "prefs/say" make_cache_key cache_key !
     "prefs/say" getConfig dup not if
-        pop "say"
+        pop "say" dup cache_key @ swap cache_write
     then
 ;
 
 : says ( d -- s )
+    var cache_key
+    dup "prefs/says" make_cache_key cache_key !
     "prefs/says" getConfig dup not if
-        pop "says"
+        pop "says" dup cache_key @ swap cache_write
     then
 ;
 
@@ -508,80 +408,43 @@ lvar cache
     ref !
 
     s @ "^" instr if
-        ( s @ dup "^^" instr not if )
-            s @
-            dup toupper "^ERROR_COLOR^" instr if ref @ "" error_color    "^ERROR_COLOR^" subst then
-            dup toupper "^SUCCESS_COLOR^" instr if ref @ "" success_color  "^SUCCESS_COLOR^" subst then
-            dup toupper "^INFO_COLOR^" instr if ref @ "" info_color     "^INFO_COLOR^" subst then
-            dup toupper "^NOTE_COLOR^" instr if ref @ "" note_color     "^NOTE_COLOR^" subst then
-            dup toupper "^TAG_COLOR_1^" instr if ref @ "" tag_color_1    "^TAG_COLOR_1^" subst then
-            dup toupper "^TAG_COLOR_2^" instr if ref @ "" tag_color_2    "^TAG_COLOR_2^" subst then
-            dup toupper "^OOC_COLOR_1^" instr if ref @ "" ooc_color_1    "^OOC_COLOR_1^" subst then
-            dup toupper "^OOC_COLOR_2^" instr if ref @ "" ooc_color_2    "^OOC_COLOR_2^" subst then
-            dup toupper "^OOC_NAME_COLOR^" instr if ref @ "" ooc_name_color "^OOC_NAME_COLOR^" subst then
-            dup toupper "^OPTION_COLOR_1^" instr if ref @ "" option_color_1 "^OPTION_COLOR_1^" subst then
-            dup toupper "^OPTION_COLOR_2^" instr if ref @ "" option_color_2 "^OPTION_COLOR_2^" subst then
-            dup toupper "^IC_COLOR_1^" instr if ref @ "" ic_color_1       "^IC_COLOR_1^" subst then
-            dup toupper "^IC_COLOR_2^" instr if ref @ "" ic_color_2       "^IC_COLOR_2^" subst then
-            dup toupper "^IC_NAME_COLOR^" instr if ref @ "" ic_name_color "^IC_NAME_COLOR^" subst then
-            dup toupper "^TITLE_COLOR^" instr if ref @ "" title_color    "^TITLE_COLOR^" subst then
-            dup toupper "^FIELD_COLOR^" instr if ref @ "" field_color    "^FIELD_COLOR^" subst then
-            dup toupper "^BOX_COLOR^" instr if ref @ "" box_color      "^BOX_COLOR^" subst then
-            dup toupper "^CONTENT_COLOR^" instr if ref @ "" content_color  "^CONTENT_COLOR^" subst then
-            dup toupper "^OPEN_TAG^" instr if ref @ open_tag  "^OPEN_TAG^" subst then
-            dup toupper "^CLOSE_TAG^" instr if ref @ close_tag  "^CLOSE_TAG^" subst then
-            begin dup toupper "\\^LINE:([0-9]+)\\^" 4 regexp while
-                array_vals pop atoi ref @ swap line swap subst
-            repeat pop
-            dup toupper "^VLINE^" instr if ref @ vline  "^VLINE^" subst then
-            dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
-            dup toupper "^BOLD^" instr if "\[[1m" "^BOLD^" subst then
-            dup toupper "^DARK^" instr if "\[[2m" "^DARK^" subst then
-            dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
-            dup toupper "^FLASH^" instr if "\[[5m" "^FLASH^" subst then
-            dup toupper "^INVERT^" instr if "\[[7m" "^INVERT^" subst then
-            dup toupper "^RESET^" instr if "\[[0m" "^RESET^" subst then
-            dup toupper "^FRANDOM^" instr if
-                "\[[0;3" random 8 % intostr strcat
-                ";" strcat random 6 % case
-                    0 = when "0" end
-                    1 = when "1" end
-                    2 = when "2" end
-                    3 = when "4" end
-                    4 = when "5" end
-                    5 = when "7" end
-                endcase
-                strcat "m" strcat
-            "^FRANDOM^" subst then
-            dup toupper "^BRANDOM^" instr if
-                "\[[4" random 8 % intostr strcat
-                ";" strcat random 6 % case
-                    0 = when "0" end
-                    1 = when "1" end
-                    2 = when "2" end
-                    3 = when "4" end
-                    4 = when "5" end
-                    5 = when "7" end
-                endcase
-                strcat "m" strcat
-            "^BRANDOM^" subst then
-            cleanString
-        ( then )
+        s @
+        dup toupper "^ERROR_COLOR^" instr if ref @ "" error_color    "^ERROR_COLOR^" subst then
+        dup toupper "^SUCCESS_COLOR^" instr if ref @ "" success_color  "^SUCCESS_COLOR^" subst then
+        dup toupper "^INFO_COLOR^" instr if ref @ "" info_color     "^INFO_COLOR^" subst then
+        dup toupper "^NOTE_COLOR^" instr if ref @ "" note_color     "^NOTE_COLOR^" subst then
+        dup toupper "^TAG_COLOR_1^" instr if ref @ "" tag_color_1    "^TAG_COLOR_1^" subst then
+        dup toupper "^TAG_COLOR_2^" instr if ref @ "" tag_color_2    "^TAG_COLOR_2^" subst then
+        dup toupper "^OOC_COLOR_1^" instr if ref @ "" ooc_color_1    "^OOC_COLOR_1^" subst then
+        dup toupper "^OOC_COLOR_2^" instr if ref @ "" ooc_color_2    "^OOC_COLOR_2^" subst then
+        dup toupper "^OOC_NAME_COLOR^" instr if ref @ "" ooc_name_color "^OOC_NAME_COLOR^" subst then
+        dup toupper "^OPTION_COLOR_1^" instr if ref @ "" option_color_1 "^OPTION_COLOR_1^" subst then
+        dup toupper "^OPTION_COLOR_2^" instr if ref @ "" option_color_2 "^OPTION_COLOR_2^" subst then
+        dup toupper "^IC_COLOR_1^" instr if ref @ "" ic_color_1       "^IC_COLOR_1^" subst then
+        dup toupper "^IC_COLOR_2^" instr if ref @ "" ic_color_2       "^IC_COLOR_2^" subst then
+        dup toupper "^IC_NAME_COLOR^" instr if ref @ "" ic_name_color "^IC_NAME_COLOR^" subst then
+        dup toupper "^TITLE_COLOR^" instr if ref @ "" title_color    "^TITLE_COLOR^" subst then
+        dup toupper "^FIELD_COLOR^" instr if ref @ "" field_color    "^FIELD_COLOR^" subst then
+        dup toupper "^BOX_COLOR^" instr if ref @ "" box_color      "^BOX_COLOR^" subst then
+        dup toupper "^CONTENT_COLOR^" instr if ref @ "" content_color  "^CONTENT_COLOR^" subst then
+        dup toupper "^OPEN_TAG^" instr if ref @ open_tag  "^OPEN_TAG^" subst then
+        dup toupper "^CLOSE_TAG^" instr if ref @ close_tag  "^CLOSE_TAG^" subst then
+        begin dup toupper "\\^LINE:([0-9]+)\\^" 4 regexp while
+            array_vals pop atoi ref @ swap line swap subst
+        repeat pop
+        dup toupper "^VLINE^" instr if ref @ vline  "^VLINE^" subst then
+        cleanString
     else s @ then
 ;
 
 : tell ( s -- )
-    me @ swap process_tags cleanString
+    me @ swap process_tags 
     me @ swap notify
 ;
 
 : otell ( d s -- )
-    over swap process_tags cleanString
+    over swap process_tags 
     notify
-;
-
-: array_append ( a x -- a )
-    swap dup array_count array_insertitem
 ;
 
 : array_extract ( a n -- a x )
@@ -684,7 +547,7 @@ lvar cache
     } array_make foreach swap pop
         dup array_count rows @ < if
             dup array_count rows @ swap - 1 swap 1 for pop
-                " " array_append
+                " " swap array_appenditem
             repeat
         then
     repeat
@@ -694,7 +557,7 @@ lvar cache
             width @ number @ / format_left
             row_buffer @ swap strcat row_buffer !
         repeat
-        row_strings @ row_buffer @ array_append row_strings !
+        row_buffer @ row_strings @ array_appenditem row_strings !
         "" row_buffer !
     repeat number @ popn row_strings @
 ;
@@ -723,9 +586,9 @@ lvar cache
             else
                 pop swap buffer !
             then
-            output @ swap strip array_append output !
+            strip output @ array_appenditem output !
         repeat
-        output @ buffer @ strip array_append output !
+        buffer @ strip output @ array_appenditem output !
     repeat
     output @
 ;
@@ -745,12 +608,12 @@ lvar cache
             " " explode array_make foreach swap pop
                 dup if dup pmatch dup player? over ok? and if
                     swap pop dup awake? if
-                        validRefs @ swap array_append validRefs !
+                        validRefs @ array_appenditem validRefs !
                     else
-                        asleepRefs @ swap array_append asleepRefs !
+                        asleepRefs @ array_appenditem asleepRefs !
                     then
                 else
-                    pop invalidRefs @ swap array_append invalidRefs !
+                    pop invalidRefs @ array_appenditem invalidRefs !
                 then else pop then
             repeat
         end
@@ -758,9 +621,9 @@ lvar cache
             contents begin dup while
                 dup player? if
                     dup awake? if
-                        validRefs @ over array_append validRefs !
+                        dup validRefs @ array_appenditem validRefs !
                     else
-                        asleepRefs @ over array_append asleepRefs !
+                        dup asleepRefs @ array_appenditem asleepRefs !
                     then
                 else
                 then
@@ -772,30 +635,6 @@ lvar cache
     validRefs @
     invalidRefs @
     asleepRefs @
-;
-
-: getThings ( d -- a )
-    var thingRefs
-    { } array_make thingRefs !
-
-    contents begin dup ok? while
-        dup thing? over program? or if
-            dup thingRefs @ swap array_append thingRefs !
-        then
-        next
-    repeat
-    pop thingRefs @
-;
-
-: getExits ( d -- a )
-    var exitRefs
-    { } array_make exitRefs !
-
-    exits begin dup ok? while
-        dup exitRefs @ swap array_append exitRefs !
-        next
-    repeat
-    pop exitRefs @
 ;
 
 : showPreview
@@ -866,6 +705,8 @@ lvar cache
         string @ width @ format_left
     else width @ string @ ansi_strlen < if
         string @ width @ 4 - rsplit pop " ..." strcat
+    else
+        string @
     then then
     "^BOX_COLOR^^VLINE^^RESET^ " swap strcat " ^RESET^^BOX_COLOR^^VLINE^" strcat
 ;
@@ -1014,9 +855,9 @@ lvar cache
     header @ content @ array_vals pop 1 num_columns @ 1 for pop
         1 num_rows @ ++ 1 for pop
             num_rows @ ++ rotate 0 array_extract
-            column_buffer @ swap array_append column_buffer !
+            column_buffer @ array_appenditem column_buffer !
         repeat
-        cols @ column_buffer @ array_append cols !
+        column_buffer @ cols @ array_appenditem cols !
         { } array_make column_buffer !
     repeat
 
@@ -1033,7 +874,7 @@ lvar cache
         col_widths @ dup array_count 1 - array_getitem
         col_widths @ array_sum  width @ 4 - - -
         col_widths @ array_count 1 - col_widths @ swap array_delitem
-        swap array_append col_widths !
+        array_appenditem col_widths !
     then
     num_rows @ ++ popn
     "" header @ foreach swap
@@ -1258,9 +1099,6 @@ public close_tag
 public getConfig
 public setConfig
 public getPlayers
-public getThings
-public getExits
-public array_append
 public array_dedup
 public array_merge
 public array_extract
