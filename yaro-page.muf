@@ -83,7 +83,7 @@ $include $cmd/status
 
     strip message !
     array_dedup players !
-    "You page-pose, '" me @ name strcat " " strcat message @ strcat "' to " strcat me @ players @ listify_ref strcat "." strcat
+    "You page-pose, '" me @ name strcat " " strcat message @ strcat "^OOC_COLOR_1^' to " strcat me @ players @ listify_ref strcat "." strcat
     "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes tell
     players @ foreach swap pop
         "In a page-pose to " over players @ listify_ref strcat ", " strcat 

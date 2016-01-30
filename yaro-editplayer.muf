@@ -175,6 +175,10 @@ lvar submitted
     var isme
     var authorized_editor
 
+    var special_name
+
+    trigger @ "special_name" getConfig dup not if pop "Special" then special_name !
+
     authorized_editor !
     dup ref !
     me @ = me @ "W" flag? or authorized_editor @ or isme !
@@ -190,7 +194,7 @@ lvar submitted
     { me @ "Birth Date:" field_color me @ bdate @ content_color } array_make
     { me @ "Job:" field_color me @ job @ content_color } array_make
     { me @ "Family:" field_color me @ family @ content_color } array_make
-    { me @ "Cutie Mark:" field_color me @ special @ content_color } array_make
+    { me @ special_name @ ":" strcat field_color me @ special @ content_color } array_make
     { me @ "Description:" field_color
     isme @ if me @ look_notify @ checkbox " " strcat swap strcat then
     me @ cdesc @ content_color } array_make
@@ -221,7 +225,11 @@ lvar submitted
     var ref
     ref !
 
+    var special_name
+
     ref @ loadCInfo
+
+    trigger @ "special_name" getConfig dup not if pop "Special" then special_name !
 
     begin
         ref @ 1 showCInfo
@@ -229,7 +237,7 @@ lvar submitted
         1 "Set Birthdate" 1
         2 "Set Job" 2
         3 "Set Family" 3
-        4 "Set Cutie Mark" 4
+        4 "Set " special_name @ strcat 4
         5 "Set Description" 5
         6 "Toggle Look-Notify" 6
         7 "Set Personality" 7
@@ -277,302 +285,8 @@ lvar submitted
 ;
 
 : doPrefs
-    var width
-
-    var l
-    var vl
-    var error
-    var success
-    var info
-    var note
-    var tag1
-    var tag2
-    var ooc1
-    var ooc2
-    var oocn
-    var option1
-    var option2
-    var ic1
-    var ic2
-    var icn
-    var title
-    var field
-    var box
-    var content
-    var open
-    var close
-    var s1
-    var s2
-    var set_defaults
-    var save_defaults
-
-    0 set_defaults !
-    0 save_defaults !
-
-    me @ 1 line l !
-    me @ vline vl !
-    me @ "" error_color error !
-    me @ "" success_color success !
-    me @ "" info_color info !
-    me @ "" note_color note !
-    me @ "" tag_color_1 tag1 !
-    me @ "" tag_color_2 tag2 !
-    me @ "" ooc_color_1 ooc1 !
-    me @ "" ooc_color_2 ooc2 !
-    me @ "" ooc_name_color oocn !
-    me @ "" option_color_1 option1 !
-    me @ "" option_color_2 option2 !
-    me @ "" ic_color_1 ic1 !
-    me @ "" ic_color_2 ic2 !
-    me @ "" ic_name_color icn !
-    me @ "" title_color title !
-    me @ "" field_color field !
-    me @ "" box_color box !
-    me @ "" content_color content !
-    me @ open_tag open !
-    me @ close_tag close !
-    me @ say s1 !
-    me @ says s2 !
-
-    me @ "orig/prefs/line" l @ setConfig
-    me @ "orig/prefs/vline" vl @ setConfig
-    me @ "orig/prefs/open_tag" open @ setConfig
-    me @ "orig/prefs/close_tag" close @ setConfig
-    me @ "orig/prefs/color/error_color" error @ setConfig
-    me @ "orig/prefs/color/success_color" success @ setConfig
-    me @ "orig/prefs/color/info_color" info @ setConfig
-    me @ "orig/prefs/color/note_color" note @ setConfig
-    me @ "orig/prefs/color/tag1" tag1 @ setConfig
-    me @ "orig/prefs/color/tag2" tag2 @ setConfig
-    me @ "orig/prefs/color/ooc1" ooc1 @ setConfig
-    me @ "orig/prefs/color/ooc2" ooc2 @ setConfig
-    me @ "orig/prefs/color/oocn" oocn @ setConfig
-    me @ "orig/prefs/color/opt1" option1 @ setConfig
-    me @ "orig/prefs/color/opt2" option2 @ setConfig
-    me @ "orig/prefs/color/ic1" ic1 @ setConfig
-    me @ "orig/prefs/color/ic2" ic2 @ setConfig
-    me @ "orig/prefs/color/icn" icn @ setConfig
-    me @ "orig/prefs/color/title" title @ setConfig
-    me @ "orig/prefs/color/field" field @ setConfig
-    me @ "orig/prefs/color/box" box @ setConfig
-    me @ "orig/prefs/color/content" content @ setConfig
-    me @ "orig/prefs/say" s1 @ setConfig
-    me @ "orig/prefs/says" s2 @ setConfig
-    begin
-        me @ 1 line l !
-        me @ vline vl !
-        me @ "" error_color error !
-        me @ "" success_color success !
-        me @ "" info_color info !
-        me @ "" note_color note !
-        me @ "" tag_color_1 tag1 !
-        me @ "" tag_color_2 tag2 !
-        me @ "" ooc_color_1 ooc1 !
-        me @ "" ooc_color_2 ooc2 !
-        me @ "" ooc_name_color oocn !
-        me @ "" option_color_1 option1 !
-        me @ "" option_color_2 option2 !
-        me @ "" ic_color_1 ic1 !
-        me @ "" ic_color_2 ic2 !
-        me @ "" ic_name_color icn !
-        me @ "" title_color title !
-        me @ "" field_color field !
-        me @ "" box_color box !
-        me @ "" content_color content !
-        me @ open_tag open !
-        me @ close_tag close !
-        me @ say s1 !
-        me @ says s2 !
-        me @ "Preferences" 80 dup width ! boxTitle
-        me @ "This is the lib-yaro preferences dialog. In this box you will "
-             "be exposed to the various settings lib-yaro allows you to change "
-             "global preferences not specific to any given command. For that you "
-             "should see if the command has a #config parameter."
-        strcat strcat strcat width @ boxContent
-        me @ "" width @ boxContent
-        me @ "Select the options below to change colors and visual look of "
-             "interface elements." strcat
-        width @ boxContent
-        me @ "" width @ boxContent
-        me @ { { "Sample Field:" field_color me @ "Sample Content" content_color } array_make } array_make 80 boxInfo
-        me @ me @ me @ open_tag tag_color_2
-        me @ "TAG" tag_color_1 strcat
-        me @ me @ close_tag tag_color_2 strcat " " strcat
-        me @ me @ "^OOC_NAME_COLOR^OOC/You^OOC_COLOR_1^ " process_tags 
-        me @ says strcat "/" strcat me @ say strcat ", \"" strcat ooc_color_1
-        me @ "This is a test message." ooc_color_2
-        me @ "\"" ooc_color_1 strcat strcat strcat
-        80 boxContent
-        me @ me @ "^IC_NAME_COLOR^IC^IC_COLOR_1^ poses and says, \"Who is a superhero?!\"" "^IC_COLOR_1^" "^IC_COLOR_2^" 
-        color_quotes process_tags 80 boxContent 
-        me @ me @ "You have looked at this message successfully!" success_color 80 boxContent
-        me @ me @ "Somewhere an error has probably occured!" error_color 80 boxContent
-        me @ me @ "Here is some information!" info_color 80 boxContent
-        me @ me @ "Here is a note!" note_color 80 boxContent
-        me @ me @ "1) " option_color_1
-        me @ "Option Text" option_color_2 strcat 80 boxContent
-        me @ "Options"
-        1 "Horizontal Line Character (" me @ 1 line strcat ")" strcat 1
-        2 "Vertical Line Character (" me @ vline strcat ")" strcat 2
-        3 "Open Tag Character (" me @ open_tag strcat ")" strcat 3
-        4 "Close Tag Character (" me @ close_tag strcat ")" strcat 4
-        5 "Change 'say' text (" me @ say strcat ")" strcat 5
-        6 "Change 'says' text (" me @ says strcat ")" strcat 6
-        7 me @ "Error Color" error_color me @ "" content_color strcat 7
-        8 me @ "Success Color" success_color me @ "" content_color strcat 8
-        9 me @ "Information Color" info_color me @ "" content_color strcat 9
-        10 me @ "Note Color" note_color me @ "" content_color strcat 10
-        11 me @ "Inner Tag Color" tag_color_1 me @ "" content_color strcat 11
-        12 me @ "Outer Tag Color" tag_color_2 me @ "" content_color strcat 12
-        13 me @ "OOC Description Color" ooc_color_1 me @ "" content_color strcat 13
-        14 me @ "OOC Message Color" ooc_color_2 me @ "" content_color strcat 14
-        15 me @ "OOC Name Color" ooc_name_color me @ "" content_color strcat 15
-        16 me @ "IC Description Color" ic_color_1 me @ "" content_color strcat 16
-        17 me @ "IC Message Color" ic_color_2 me @ "" content_color strcat 17
-        18 me @ "IC Name Color" ic_name_color me @ "" content_color strcat 18
-        19 me @ "Option Number Color" option_color_1 me @ "" content_color strcat 19
-        20 me @ "Option Text Color" option_color_2 me @ "" content_color strcat 20
-        21 me @ "Title Color" title_color me @ "" content_color strcat 21
-        22 me @ "Field Color" field_color me @ "" content_color strcat 22
-        23 me @ "Box Color" box_color me @ "" content_color strcat 23
-        24 me @ "Content Color" content_color me @ "" content_color strcat 24
-        77 "Reset to Defaults" 77
-        88 "Save" 88
-        99 "Quit" 99
-    27 width @ doMenu dup 99 = not while
-        case
-            1 = when
-                me @ "Please enter a single character. Any extra will be truncated."
-                note_color tell read cleanString 1 ansi_strcut pop
-                dup l ! me @ swap "prefs/line" swap setConfig
-                0 set_defaults !
-            end
-            2 = when
-                me @ "Please enter a single character. Any extra will be truncated."
-                note_color tell read cleanString 1 ansi_strcut pop
-                dup vl ! me @ swap "prefs/vline" swap setConfig
-                0 set_defaults !
-            end
-            3 = when
-                me @ "Please enter a single character. Any extra will be truncated."
-                note_color tell read cleanString 1 ansi_strcut pop
-                dup open ! me @ swap "prefs/open_tag" swap setConfig
-                0 set_defaults !
-            end
-            4 = when
-                me @ "Please enter a single character. Any extra will be truncated."
-                note_color tell read cleanString 1 ansi_strcut pop
-                dup close ! me @ swap "prefs/close_tag" swap setConfig
-                0 set_defaults !
-            end
-            5 = when
-                "^NOTE_COLOR^Please enter a first-person present tense verb (e.g. \"say/chirr/roar/giggle\")" tell
-                read s1 ! me @ "prefs/say" s1 @ setConfig
-            end
-            6 = when
-                "^NOTE_COLOR^Please enter a third-person present tense verb (e.g. \"says/chirrs/roars/giggles\")" tell
-                read s2 ! me @ "prefs/says" s2 @ setConfig
-            end
-            7 = when me @ color_menu dup if dup error ! me @ swap "prefs/color/error_color" swap setConfig 0 set_defaults ! else pop then end
-            8 = when me @ color_menu dup if dup success ! me @ swap "prefs/color/success_color" swap setConfig 0 set_defaults ! else pop then end
-            9 = when me @ color_menu dup if dup info ! me @ swap "prefs/color/info_color" swap setConfig 0 set_defaults ! else pop then end
-            10 = when me @ color_menu dup if dup note ! me @ swap "prefs/color/note_color" swap setConfig 0 set_defaults ! else pop then end
-            11 = when me @ color_menu dup if dup tag1 ! me @ swap "prefs/color/tag1" swap setConfig 0 set_defaults ! else pop then end
-            12 = when me @ color_menu dup if dup tag2 ! me @ swap "prefs/color/tag2" swap setConfig 0 set_defaults ! else pop then end
-            13 = when me @ color_menu dup if dup ooc1 ! me @ swap "prefs/color/ooc1" swap setConfig 0 set_defaults ! else pop then end
-            14 = when me @ color_menu dup if dup ooc2 ! me @ swap "prefs/color/ooc2" swap setConfig 0 set_defaults ! else pop then end
-            15 = when me @ color_menu dup if dup oocn ! me @ swap "prefs/color/oocn" swap setConfig 0 set_defaults ! else pop then end
-            16 = when me @ color_menu dup if dup ic1 ! me @ swap "prefs/color/ic1" swap setConfig 0 set_defaults ! else pop then end
-            17 = when me @ color_menu dup if dup ic2 ! me @ swap "prefs/color/ic2" swap setConfig 0 set_defaults ! else pop then end
-            18 = when me @ color_menu dup if dup icn ! me @ swap "prefs/color/icn" swap setConfig 0 set_defaults ! else pop then end
-            19 = when me @ color_menu dup if dup option1 ! me @ swap "prefs/color/opt1" swap setConfig 0 set_defaults ! else pop then end
-            20 = when me @ color_menu dup if dup option2 ! me @ swap "prefs/color/opt2" swap setConfig 0 set_defaults ! else pop then end
-            21 = when me @ color_menu dup if dup title ! me @ swap "prefs/color/title" swap setConfig 0 set_defaults ! else pop then end
-            22 = when me @ color_menu dup if dup field ! me @ swap "prefs/color/field" swap setConfig 0 set_defaults ! else pop then end
-            23 = when me @ color_menu dup if dup box ! me @ swap "prefs/color/box" swap setConfig 0 set_defaults ! else pop then end
-            24 = when me @ color_menu dup if dup content ! me @ swap "prefs/color/content" swap setConfig 0 set_defaults ! else pop then end
-            77 = when
-                me @ "prefs/line" 0 setConfig
-                me @ "prefs/vline" 0 setConfig
-                me @ "prefs/open_tag" 0 setConfig
-                me @ "prefs/close_tag" 0 setConfig
-                me @ "prefs/color/error_color" 0 setConfig
-                me @ "prefs/color/success_color" 0 setConfig
-                me @ "prefs/color/info_color" 0 setConfig
-                me @ "prefs/color/note_color" 0 setConfig
-                me @ "prefs/color/tag1" 0 setConfig
-                me @ "prefs/color/tag2" 0 setConfig
-                me @ "prefs/color/ooc1" 0 setConfig
-                me @ "prefs/color/ooc2" 0 setConfig
-                me @ "prefs/color/opt1" 0 setConfig
-                me @ "prefs/color/opt2" 0 setConfig
-                me @ "prefs/color/ic1" 0 setConfig
-                me @ "prefs/color/ic2" 0 setConfig
-                me @ "prefs/color/title" 0 setConfig
-                me @ "prefs/color/field" 0 setConfig
-                me @ "prefs/color/box" 0 setConfig
-                me @ "prefs/color/content" 0 setConfig
-                me @ "prefs/say" 0 setConfig
-                me @ "prefs/says" 0 setConfig
-                1 set_defaults !
-            end
-            88 = when
-                me @ "orig/prefs/line" l @ setConfig
-                me @ "orig/prefs/vline" vl @ setConfig
-                me @ "orig/prefs/open_tag" open @ setConfig
-                me @ "orig/prefs/close_tag" close @ setConfig
-                me @ "orig/prefs/color/error_color" error @ setConfig
-                me @ "orig/prefs/color/success_color" success @ setConfig
-                me @ "orig/prefs/color/info_color" info @ setConfig
-                me @ "orig/prefs/color/note_color" note @ setConfig
-                me @ "orig/prefs/color/tag1" tag1 @ setConfig
-                me @ "orig/prefs/color/tag2" tag2 @ setConfig
-                me @ "orig/prefs/color/ooc1" ooc1 @ setConfig
-                me @ "orig/prefs/color/ooc2" ooc2 @ setConfig
-                me @ "orig/prefs/color/opt1" option1 @ setConfig
-                me @ "orig/prefs/color/opt2" option2 @ setConfig
-                me @ "orig/prefs/color/ic1" ic1 @ setConfig
-                me @ "orig/prefs/color/ic2" ic2 @ setConfig
-                me @ "orig/prefs/color/title" title @ setConfig
-                me @ "orig/prefs/color/field" field @ setConfig
-                me @ "orig/prefs/color/box" box @ setConfig
-                me @ "orig/prefs/color/content" content @ setConfig
-                me @ "orig/prefs/say" s1 @ setConfig
-                me @ "orig/prefs/says" s2 @ setConfig
-                set_defaults @ if
-                    1 save_defaults !
-                else
-                    0 save_defaults !
-                then
-            end
-        endcase
-    repeat
-    me @ me @ "orig/prefs/line" getConfig "prefs/line" swap setConfig
-    me @ me @ "orig/prefs/vline" getConfig "prefs/vline" swap setConfig
-    me @ me @ "orig/prefs/open_tag" getConfig "prefs/open_tag" swap setConfig
-    me @ me @ "orig/prefs/close_tag" getConfig "prefs/close_tag" swap setConfig
-    me @ me @ "orig/prefs/color/error_color" getConfig "prefs/color/error_color" swap setConfig
-    me @ me @ "orig/prefs/color/success_color" getConfig "prefs/color/success_color" swap setConfig
-    me @ me @ "orig/prefs/color/info_color" getConfig "prefs/color/info_color" swap setConfig
-    me @ me @ "orig/prefs/color/note_color" getConfig "prefs/color/note_color" swap setConfig
-    me @ me @ "orig/prefs/color/tag1" getConfig "prefs/color/tag1" swap setConfig
-    me @ me @ "orig/prefs/color/tag2" getConfig "prefs/color/tag2" swap setConfig
-    me @ me @ "orig/prefs/color/ooc1" getConfig "prefs/color/ooc1" swap setConfig
-    me @ me @ "orig/prefs/color/ooc2" getConfig "prefs/color/ooc2" swap setConfig
-    me @ me @ "orig/prefs/color/opt1" getConfig "prefs/color/opt1" swap setConfig
-    me @ me @ "orig/prefs/color/opt2" getConfig "prefs/color/opt2" swap setConfig
-    me @ me @ "orig/prefs/color/ic1" getConfig "prefs/color/ic1" swap setConfig
-    me @ me @ "orig/prefs/color/ic2" getConfig "prefs/color/ic2" swap setConfig
-    me @ me @ "orig/prefs/color/title" getConfig "prefs/color/title" swap setConfig
-    me @ me @ "orig/prefs/color/field" getConfig "prefs/color/field" swap setConfig
-    me @ me @ "orig/prefs/color/box" getConfig "prefs/color/box" swap setConfig
-    me @ me @ "orig/prefs/color/content" getConfig "prefs/color/content" swap setConfig
-    me @ me @ "orig/prefs/say" getConfig "prefs/say" swap setConfig
-    me @ me @ "orig/prefs/says" getConfig "prefs/says" swap setConfig
-    me @ "_config/orig" remove_prop
-    save_defaults @ if
-        me @ "_config/prefs/" remove_prop
-    then
+    me @ "Player Preferences" "This is the tool for setting player-specific preferences."
+    set_look_feel
 ;
 
 : doBasics ( d -- )
@@ -824,6 +538,16 @@ lvar submitted
     repeat
 ;
 
+: set_special
+    strip dup if
+        dup trigger @ swap "special_name" swap setConfig
+        "^SUCCESS_COLOR^Special character field name set to " swap strcat "." strcat tell
+    else
+        pop trigger @ "special_name" 0 setConfig
+        "^SUCCESS_COLOR^Special character field name cleared." tell
+    then
+;
+
 : show_help
     me @ command @ " Command Help" strcat 80 boxTitle
     me @ "editplayer - Change player information, character information, and preferences." 80 boxContent
@@ -831,12 +555,16 @@ lvar submitted
     me @ "@request #process - WIZARDS ONLY: Process a character application." 80 boxContent
     me @ "pinfo <NAME> - View NAME's player information." 80 boxContent
     me @ "cinfo <NAME> - View NAME's character information." 80 boxContent
+    me @ "W" flag? if
+        me @ command @ " #set-special - Set the special character field name." strcat 80 boxContent
+    then
     me @ me @ 80 line box_color tell 
 ;
 
 : main
     var newPRef
     dup "help" paramTest if show_help exit then
+    dup "set-special" paramTest if " " split nip set_special exit then
     command @ tolower case
         "editplayer" stringcmp not when pop
             begin

@@ -37,6 +37,24 @@ lvar box_buffer
     0 cache ! cache_gen
 ;
 
+: time_explode ( i -- i i i i i i )
+    var time_value
+    var moons
+    var weeks
+    var days
+    var hours
+    var minutes
+    var seconds
+
+    time_value ! time_value @ 2419200 / moons !
+    time_value @ 604800 / 4 % weeks !
+    time_value @ 86400 / 7 % days !
+    time_value @ 3600 / 24 % hours !
+    time_value @ 60 / 60 % minutes !
+    time_value @ 60 % seconds !
+    moons @ weeks @ days @ hours @ minutes @ seconds @
+;
+
 : time_format ( i -- s )
     var t
 
@@ -1222,6 +1240,145 @@ lvar box_buffer
     s @ "\"" "^QUOTE^" subst
 ;
 
+: set_color
+    case
+        1 = when me @ color_menu dup if "prefs/color/error_color" swap else pop then end
+        2 = when me @ color_menu dup if "prefs/color/success_color" swap else pop then end
+        3 = when me @ color_menu dup if "prefs/color/info_color" swap else pop then end
+        4 = when me @ color_menu dup if "prefs/color/note_color" swap else pop then end
+        5 = when me @ color_menu dup if "prefs/color/field" swap else pop then end
+        6 = when me @ color_menu dup if "prefs/color/content" swap else pop then end
+        7 = when me @ color_menu dup if "prefs/color/tag1" swap else pop then end
+        8 = when me @ color_menu dup if "prefs/color/tag2" swap else pop then end
+        9 = when me @ color_menu dup if "prefs/color/ooc1" swap else pop then end
+        10 = when me @ color_menu dup if "prefs/color/ooc2" swap else pop then end
+        11 = when me @ color_menu dup if "prefs/color/oocn" swap else pop then end
+        12 = when me @ color_menu dup if "prefs/color/ic1" swap else pop then end
+        13 = when me @ color_menu dup if "prefs/color/ic2" swap else pop then end
+        14 = when me @ color_menu dup if "prefs/color/icn" swap else pop then end
+        15 = when me @ color_menu dup if "prefs/color/opt1" swap else pop then end
+        16 = when me @ color_menu dup if "prefs/color/opt2" swap else pop then end
+        17 = when me @ color_menu dup if "prefs/color/title" swap else pop then end
+        18 = when me @ color_menu dup if "prefs/color/box" swap else pop then end
+    endcase
+;
+
+: set_character
+    case
+        19 = when
+            "^NOTE_COLOR^Please enter a single character." tell read 1 strcut pop "prefs/open_tag" swap
+        end
+        20 = when
+            "^NOTE_COLOR^Please enter a single character." tell read 1 strcut pop "prefs/close_tag" swap
+        end
+        22 = when
+            "^NOTE_COLOR^Please enter a single character." tell read 1 strcut pop "prefs/vline" swap
+        end
+    endcase
+;
+
+: set_line
+    case
+        21 = when
+            "^NOTE_COLOR^Please enter a string of characters." tell read "prefs/line" swap
+        end
+        23 = when
+            "^NOTE_COLOR^Please enter a string of characters." tell read "prefs/say" swap
+        end
+        24 = when
+            "^NOTE_COLOR^Please enter a string of characters." tell read "prefs/says" swap
+        end
+    endcase
+;
+
+: show_look_feel ( d -- )
+    var ref
+
+    ref !
+    me @ {
+        { ref @ "^ERROR_COLOR^ERROR COLOR" process_tags 
+          ref @ "^SUCCESS_COLOR^SUCCESS COLOR" process_tags } array_make
+        { ref @ "^INFO_COLOR^INFO COLOR" process_tags 
+          ref @ "^NOTE_COLOR^NOTE COLOR" process_tags } array_make
+        { ref @ "^FIELD_COLOR^FIELD COLOR" process_tags
+          ref @ "^CONTENT_COLOR^CONTENT_COLOR" process_tags } array_make
+        { ref @ "^TAG_COLOR_2^^OPEN_TAG^^TAG_COLOR_1^TAG^TAG_COLOR_2^^CLOSE_TAG^" process_tags
+          ref @ "^CONTENT_COLOR^CONTENT COLOR" process_tags } array_make
+        { ref @ ref @ "^OOC_NAME_COLOR^(You/" me @ name strcat
+        ")^OOC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat
+        ") \"Hello\" in an OOC manner." strcat strcat strcat process_tags
+        "^OOC_COLOR_1^" "^OOC_COLOR_2^" color_quotes process_tags "" } array_make
+        { ref @ ref @ "^IC_NAME_COLOR^(You/" me @ name strcat
+        ")^IC_COLOR_1^ (" ref @ says strcat "/" ref @ say strcat
+        ") \"Hello\" in an IC manner." strcat strcat strcat process_tags
+        "^IC_COLOR_1^" "^IC_COLOR_2^" color_quotes process_tags "" } array_make
+        { ref @ "^OPTION_COLOR_1^1) ^OPTION_COLOR_2^FAKE OPTION 1" process_tags
+          ref @ "^OPTION_COLOR_1^2) ^OPTION_COLOR_2^FAKE OPTION 2" process_tags } array_make
+    } array_make 80 boxInfo
+;
+
+: set_look_feel ( d s s -- )
+    var ref
+    var title
+    var message
+
+    message !
+    title !
+    ref !
+
+    { ref @ "_config/orig" remove_prop
+    ref @ "_config/prefs" ref @ "_config/orig/prefs" 1 copyprops pop
+    begin me @ title @ 80 boxTitle
+    me @ message @ 80 boxContent me @ "" 80 boxContent
+    ref @ show_look_feel
+    me @ "Options" {
+    1 "^ERROR_COLOR^Error Color^RESET^" 'set_color
+    2 "^SUCCESS_COLOR^Success Color^RESET^" 'set_color
+    3 "^INFO_COLOR^Info Color^RESET^" 'set_color
+    4 "^NOTE_COLOR^Note Color^RESET^" 'set_color
+    5 "^FIELD_COLOR^Field Color^RESET^" 'set_color
+    6 "^CONTENT_COLOR^Content Color^RESET^" 'set_color
+    7 "^TAG_COLOR_1^Inner Tag Color^RESET^" 'set_color
+    8 "^TAG_COLOR_2^Outer Tag Color^RESET^" 'set_color
+    9 "^OOC_COLOR_1^OOC Message Descriptor Color^RESET^" 'set_color
+    10 "^OOC_COLOR_2^OOC Message Color^RESET^" 'set_color
+    11 "^OOC_NAME_COLOR^OOC Name Color^RESET^" 'set_color
+    12 "^IC_COLOR_1^IC Message Descriptor Color^RESET^" 'set_color
+    13 "^IC_COLOR_2^IC Message Color^RESET^" 'set_color
+    14 "^IC_NAME_COLOR^IC Name Color^RESET^" 'set_color
+    15 "^OPTION_COLOR_1^Option Number Color^RESET^" 'set_color
+    16 "^OPTION_COLOR_2^Option Text Color^RESET^" 'set_color
+    17 "^TITLE_COLOR^Title Color^RESET^" 'set_color
+    18 "^BOX_COLOR^Box Color^RESET^" 'set_color
+    19 "Opening Tag (^OPEN_TAG^)" 'set_character
+    20 "Closing Tag (^CLOSE_TAG^)" 'set_character
+    21 "Line (" me @ 3 line strcat ")" strcat 'set_line
+    22 "Vertical Line (^VLINE^)" 'set_character
+    23 "Second Person Say Verb (" me @ say strcat ")" strcat 'set_line
+    24 "Third Person Say Verb (" me @ says strcat ")" strcat 'set_line
+    77 "Default Settings" 77
+    88 "Save" 88
+    99 "Quit" 0
+    } 3 / 80 doMenu dup while
+            dup string? if
+                ref @ rot rot setConfig clear_cache
+            else
+                dup case
+                    77 = when 
+                        ref @ "_config/prefs" remove_prop clear_cache
+                    end
+                    88 = when 
+                        ref @ "_config/orig" remove_prop
+                        ref @ "_config/prefs" ref @ "_config/orig/prefs" 1 copyprops pop
+                    end
+                endcase
+            then pop
+    repeat
+    ref @ "_config/prefs" remove_prop
+    ref @ "_config/orig/prefs" ref @ "_config/prefs" 1 copyprops pop
+    ref @ "_config/orig" remove_prop clear_cache } popn
+;
+
 : main ( s -- )
     command @ "yaroconf" strcmp not if
         dup "test" paramTest if pop doTest exit then
@@ -1304,13 +1461,18 @@ public columns
 public checkbox
 public cleanString
 public time_format
+public time_explode
 public process_tags
 public color_quotes
 public array_to_menu
 public clear_cache
 public say
 public says
+<<<<<<< HEAD
 public flush_buffer
+=======
+public set_look_feel
+>>>>>>> e17265820e702756a19e7770fad40b257def1924
 .
 c
 q
@@ -1370,10 +1532,15 @@ q
 @set lib-yaro=_defs/checkbox:"$lib/yaro" match "checkbox" call
 @set lib-yaro=_defs/cleanString:"$lib/yaro" match "cleanString" call
 @set lib-yaro=_defs/time_format:"$lib/yaro" match "time_format" call
+@set lib-yaro=_defs/time_explode:"$lib/yaro" match "time_explode" call
 @set lib-yaro=_defs/process_tags:"$lib/yaro" match "process_tags" call
 @set lib-yaro=_defs/color_quotes:"$lib/yaro" match "color_quotes" call
 @set lib-yaro=_defs/clear_cache:"$lib/yaro" match "clear_cache" call
 @set lib-yaro=_defs/say:"$lib/yaro" match "say" call
 @set lib-yaro=_defs/says:"$lib/yaro" match "says" call
+<<<<<<< HEAD
 @set lib-yaro=_defs/flush_buffer:"$lib/yaro" match "flush_buffer" call
+=======
+@set lib-yaro=_defs/set_look_feel:"$lib/yaro" match "set_look_feel" call
+>>>>>>> e17265820e702756a19e7770fad40b257def1924
 

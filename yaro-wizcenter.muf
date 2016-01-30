@@ -84,8 +84,33 @@ $include $cmd/status
     { "^FIELD_COLOR^Connected Players:" "^CONTENT_COLOR^" concount intostr strcat } array_make } array_make 80 boxInfo
 ;
 
+: show_connections
+    var ref
+    var d
+
+    me @ "Connections" 55 boxTitle
+    me @ { "Name" "REF" "Contime" "Port" "IP Address" } array_make 
+    { online array_make foreach nip
+        dup ref ! descriptors array_make { swap foreach nip
+            d !
+            "^FIELD_COLOR^" ref @ name strcat "^RESET^" strcat
+            "^CONTENT_COLOR^" ref @ dtos strcat "^RESET^" strcat
+            "^FIELD_COLOR^" d @ descrcon contime time_format strcat "^RESET^" strcat
+            "^CONTENT_COLOR^" d @ descrconport intostr strcat "^RESET^" strcat
+            "^FIELD_COLOR^" d @ descrcon conipnum strcat "^RESET^" strcat
+        repeat } array_make
+    repeat } array_make 55 boxTable
+    "^BOX_COLOR^" me @ 55 line strcat tell
+    " " tell
+;
+
 : main
     dup "help" paramTest if show_help exit then
+    dup "Connect" stringcmp not me @ "W" flag? and if
+        getAlerts "^BOX_COLOR^" me @ 80 line strcat tell 
+        me @ " " tell
+        exit
+    then
     command @ case
         "wizzes" stringcmp not when 
             dup "set-role" paramTest if
@@ -100,8 +125,12 @@ $include $cmd/status
             then
             list_wizards 
         end
-        "wcenter" stringcmp not rot "Connect" stringcmp not or when 
+        "wcenter" stringcmp not when 
             me @ "W" flag? if 
+                dup "connections" paramTest if
+                    show_connections
+                    exit
+                then
                 getAlerts 
                 get_sysinfo
                 me @ "" 80 boxContent
@@ -109,6 +138,8 @@ $include $cmd/status
                 "https://github.com/YaroKasear/yaro-muf/issues" strcat 80 boxContent
                 me @ version 80 boxTitle
                 me @ " " tell
+            else
+                "^ERROR_COLOR^Only wizards can access the Wizard Center." tell
             then 
         end
         default 
