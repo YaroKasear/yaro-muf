@@ -193,6 +193,7 @@ $include $lib/yaro
                     me @ me @ close_tag tag_color_2 strcat strcat
                 else pop then
             else pop then
+            dup ansi_strlen 46 > if 40 ansi_strcut pop "... ^TAG_COLOR_2^^CLOSE_TAG^" strcat then
         repeat } array_make 50 boxList
     else
         pop me @ "There are no listeners on " channel_name @ get_channel_alias strcat "." strcat 50 boxContent
