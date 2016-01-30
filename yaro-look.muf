@@ -136,6 +136,7 @@ $include $cmd/status
     "^CONTENT_COLOR^Toggle if you see sleeping players or not." } array_make
     { "^FIELD_COLOR^" trigger @ name ";" split pop strcat " #help" strcat
     "^CONTENT_COLOR^Show this box" } array_make } array_make 80 boxInfo
+    me @ flush_buffer
     "^BOX_COLOR^" me @ 80 line strcat tell
     " " tell
 ;
@@ -264,6 +265,7 @@ $include $cmd/status
             me @ swap 80 boxList
         else pop then
     then
+    me @ flush_buffer
     me @ 80 line "^BOX_COLOR^" swap strcat tell
     me @ " " tell
 ;

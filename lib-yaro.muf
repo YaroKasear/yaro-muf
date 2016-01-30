@@ -4,6 +4,7 @@
 i
 
 lvar cache
+lvar box_buffer
 
 : make_cache_key ( d s -- s )
     swap dtos "_" strcat swap strcat
@@ -533,6 +534,9 @@ lvar cache
             begin dup toupper "\\^LINE:([0-9]+)\\^" 4 regexp while
                 array_vals pop atoi ref @ swap line swap subst
             repeat pop
+            begin dup toupper "\\^SPACE:([0-9]+)\\^" 4 regexp while
+                array_vals pop atoi space swap subst
+            repeat pop
             dup toupper "^VLINE^" instr if ref @ vline  "^VLINE^" subst then
             dup toupper "^UNDERLINE^" instr if "\[[4m" "^UNDERLINE^" subst then
             dup toupper "^BOLD^" instr if "\[[1m" "^BOLD^" subst then
@@ -623,7 +627,8 @@ lvar cache
     cleanString text !
 
     length @ text @ ansi_strlen -
-    space text @ swap strcat
+    ( space ) "^SPACE:" swap intostr strcat "^" strcat 
+    text @ swap strcat
 ;
 
 : format_center ( s n -- s )
@@ -855,18 +860,39 @@ lvar cache
     then
 ;
 
+: render_to_buffer ( s -- )
+    box_buffer @ not if "" box_buffer ! then
+    box_buffer @ dup if "\r" strcat then
+    swap strcat box_buffer !
+;
+
+: flush_buffer ( d -- )
+    box_buffer @ otell
+    "" box_buffer !
+;
+
 : boxify ( s n -- s )
     var width
     var string
+    var process_length
 
     4 - width !
     string !
+    string @ begin dup toupper "\\^SPACE:([0-9]+)\\^" 4 regexp while
+        array_vals pop atoi space swap subst
+    repeat pop
+
+    ansi_strlen process_length !
     
-    width @ string @ ansi_strlen > if
-        string @ width @ format_left
-    else width @ string @ ansi_strlen < if
+    width @ process_length @ > if
+        string @ width @ process_length @ - 
+        intostr "^SPACE:" swap strcat "^" strcat strcat
+    else width @ process_length @ < if
         string @ width @ 4 - rsplit pop " ..." strcat
+    else
+        string @
     then then
+    
     "^BOX_COLOR^^VLINE^^RESET^ " swap strcat " ^RESET^^BOX_COLOR^^VLINE^" strcat
 ;
 
@@ -920,34 +946,29 @@ lvar cache
         else pop pop then then
         dup array_count 1 swap 1 for pop
             0 array_extract dup ansi_strlen
-            width @ 4 - wrap_point @ - swap - space strcat
+            width @ 4 - wrap_point @ - swap -  
+            "^SPACE:" swap intostr strcat "^" strcat strcat
             rot 0 array_extract dup ansi_strlen
-            wrap_point @ swap - space strcat
-            rot strcat width @ boxify ref @ swap otell swap
+            wrap_point @ swap - "^SPACE:" swap intostr strcat "^" strcat strcat
+            rot strcat width @ boxify render_to_buffer swap
         repeat 2 popn
     repeat
 ;
 
 : boxTitle ( d s n -- )
+    var width
+    var title
     var ref
-    var length
-    var target
-    dup target !
-    rot ref !
 
-    swap ref @ swap process_tags cleanString swap
-    over ansi_strlen swap 2 /
-    swap 2 / - 2 -
-    length !
-    length @ intostr "^BOX_COLOR^^LINE:" swap strcat 
-    "^^OPEN_TAG^ ^TITLE_COLOR^" strcat swap strcat
-    " ^BOX_COLOR^^CLOSE_TAG^^LINE:" length @ intostr 
-    strcat "^" strcat strcat 
-    ref @ swap process_tags cleanString dup ansi_strlen
-    target @ > if
-        target @ ansi_strcut pop
-    then
-    ref @ swap otell
+    width !
+    title !
+    ref !
+
+    ref @ title @ process_tags cleanString ansi_strlen
+    width @ 2 / over 2 / - 2 - "^BOX_COLOR^^LINE:" over intostr strcat 
+    "^^OPEN_TAG^^TITLE_COLOR^ " strcat title @ strcat " ^BOX_COLOR^^CLOSE_TAG^^LINE:" strcat
+    -3 rotate + 2 + width @ swap - 2 - intostr strcat "^" strcat
+    render_to_buffer
 ;
 
 : boxContent ( d s n -- )
@@ -960,7 +981,7 @@ lvar cache
     ref !
 
     content @ width @ 4 - format_wrap foreach swap pop
-        width @ boxify ref @ swap otell
+        width @ boxify render_to_buffer
     repeat
 ;
 
@@ -970,20 +991,20 @@ lvar cache
     var ref
 
     var column_width
+    var cc
 
     width !
     swap ref !
+    ref @ "" content_color cc !
+
     { swap foreach swap pop
-        ref @ swap process_tags cleanString ref @ swap content_color dup ansi_strlen column_width @ > if dup ansi_strlen column_width ! then
+        cc @ swap strcat ref @ swap process_tags cleanString dup ansi_strlen 
+        column_width @ > if dup ansi_strlen column_width ! then
     repeat } array_make strings !
     column_width @ 1 + column_width !
 
     strings @ width @ 4 - column_width @ / width @ 4 - columns foreach swap pop
-        dup ansi_strlen width @ 4 - swap - space strcat
-        ref @ swap content_color
-        ref @ ref @ vline " " strcat box_color swap strcat
-        ref @ ref @ vline " " swap strcat box_color strcat
-        ref @ swap otell
+        width @ boxify render_to_buffer
     repeat
 ;
 
@@ -1289,6 +1310,7 @@ public array_to_menu
 public clear_cache
 public say
 public says
+public flush_buffer
 .
 c
 q
@@ -1353,4 +1375,5 @@ q
 @set lib-yaro=_defs/clear_cache:"$lib/yaro" match "clear_cache" call
 @set lib-yaro=_defs/say:"$lib/yaro" match "say" call
 @set lib-yaro=_defs/says:"$lib/yaro" match "says" call
+@set lib-yaro=_defs/flush_buffer:"$lib/yaro" match "flush_buffer" call
 
