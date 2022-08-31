@@ -99,7 +99,27 @@ $include $lib/yaro
 ;
 
 : deleteScreen
+    var screenKey
 
+    "Delete Screen" screenMenu over over = if
+    pop pop
+        "^ERROR_COLOR^Delete canceled." tell exit
+    then
+    swap pop #0 "loginScreens" getConfig array_keys array_make
+    swap 1 - array_getitem "#" rsplit pop 
+    "_config/loginScreens/" swap strcat screenKey !
+    #0 "{list:" screenKey @ strcat ", #0}" strcat "(MUF)" 0 parsempi
+    #0 swap process_tags descr swap ansi_notify_descriptor
+    me @ "Delete?" 1 "Yes" 1 2 "No" 2 2 11 doMenu
+    case
+        1 = when
+            #0 screenKey @ "#" strcat remove_prop
+            "^SUCCESS_COLOR^Screen deleted. Please ensure you have a backup if you plan to restore the screen in the future." tell
+        end
+        2 = when
+            "^ERROR_COLOR^Delete canceled." tell
+        end
+    endcase
 ;
 
 : main
