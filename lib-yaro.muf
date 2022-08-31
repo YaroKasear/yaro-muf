@@ -580,6 +580,7 @@ lvar cache
                 endcase
                 strcat "m" strcat
             "^BRANDOM^" subst then
+            "\\^(\\d+)\\^" "\[[38;5;\\1m" REG_ALL REGSUB
             cleanString
         ( then )
     else s @ then
