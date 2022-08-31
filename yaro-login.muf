@@ -166,6 +166,7 @@ $include $lib/yaro
         then
     else
         descr "DF_COLOR" descr_set
+        descr "DF_256COLOR" descr_set
         #0 "loginScreens" getConfig array_keys array_make
         dup array_count random swap % array_getitem "#" rsplit pop
         "{list:_config/loginScreens/" swap strcat ", #0}" strcat 
