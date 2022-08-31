@@ -112,7 +112,7 @@ lvar cache
             "^CINFO^" dup 1 parse_ansi swap subst
             "^CNOTE^" dup 1 parse_ansi swap subst
             "^CMOVE^" dup 1 parse_ansi swap subst
-            ( "^^" "^" subst )
+            "^" "^ESCAPE^" subst
         ( then )
     then
 ;
