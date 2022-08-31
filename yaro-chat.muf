@@ -1,5 +1,5 @@
 @q
-@program yaro-chat
+@program yaro-chat.muf
 1 999999 d
 i
 $include $lib/yaro
@@ -15,7 +15,7 @@ $include $lib/yaro
     var channel_name
 
     get_channel_name channel_name !
-    command @ match channel_name @ "/alias" strcat getConfig dup not if
+    command @ tolower match channel_name @ "/alias" strcat getConfig dup not if
         pop channel_name @
     then
 ;
@@ -37,7 +37,7 @@ $include $lib/yaro
 
     get_channel_name channel_name !
     ref !
-    command @ match channel_name @ "/members" strcat getConfig dup array? if
+    command @ tolower match channel_name @ "/members" strcat getConfig dup array? if
         ref @ array_findval if
             1
         else
@@ -74,7 +74,7 @@ $include $lib/yaro
 
     get_channel_name channel_name !
     ref !
-    command @ match channel_name @ "/banlist" strcat getConfig dup array? if
+    command @ tolower match channel_name @ "/banlist" strcat getConfig dup array? if
         ref @ array_findval if
             1
         else
@@ -88,13 +88,13 @@ $include $lib/yaro
 : command_match ( s - )
     var channel_list
 
-    command @ match "channels" getConfig dup array? if
-        channel_list ! channel_list @ command @ get_channel_name array_findval if
-            command @ get_channel_name command !
+    command @ tolower match "channels" getConfig dup array? if
+        channel_list ! channel_list @ command @ tolower get_channel_name array_findval if
+            command @ tolower get_channel_name command !
         else
             channel_list @ foreach swap pop
-                dup command @ match swap "/commands" strcat getConfig dup array? if
-                    command @ array_findval if
+                dup command @ tolower match swap "/commands" strcat getConfig dup array? if
+                    command @ tolower array_findval if
                         command ! exit
                     else pop then
                 else pop pop then
@@ -114,7 +114,7 @@ $include $lib/yaro
         "" break_string !
     
         dup if
-            command @ match "channels" getConfig dup array? if
+            command @ tolower match "channels" getConfig dup array? if
                 dup chan_list !
                 over over swap array_findval 
                 3 pick trigger @ name swap instr or
@@ -122,7 +122,7 @@ $include $lib/yaro
                     pop pop pop me @ "That channel already exists!" error_color tell exit
                 else pop then
             else pop then
-            chan_list @ over array_append command @ match swap "channels" swap setConfig
+            chan_list @ over array_append command @ tolower match swap "channels" swap setConfig
             begin dup while
                 break_string @ ";" strcat over strcat break_string !
                 dup strlen 1 - strcut pop
@@ -152,13 +152,13 @@ $include $lib/yaro
                     break_string @ ";" strcat over strcat break_string !
                     dup strlen 1 - strcut pop
             repeat pop
-            command @ match "channels" getConfig dup array? if
+            command @ tolower match "channels" getConfig dup array? if
                 chan_list ! chan_list @ channel_name @ array_findval if
                     trigger @ trigger @ name "" break_string @ subst setname
                     trigger @ "_config/channels#" remove_prop
                     chan_list @ chan_list @ channel_name @ array_findval 0 array_getitem
-                    array_delitem command @ match swap "channels" swap setConfig
-                    command @ match "_config/" channel_name @ strcat remove_prop
+                    array_delitem command @ tolower match swap "channels" swap setConfig
+                    command @ tolower match "_config/" channel_name @ strcat remove_prop
                     me @ "Channel " channel_name @ strcat " has been deleted." strcat success_color tell
                 else
                     me @ "That channel does not exist." error_color tell
@@ -179,9 +179,9 @@ $include $lib/yaro
     var channel_name
     var listeners
 
-    command @ get_channel_name channel_name !
+    command @ tolower get_channel_name channel_name !
     me @ "Listeners on " channel_name @ get_channel_alias strcat 50 boxTitle
-    command @ match channel_name @ "/members" strcat getConfig
+    command @ tolower match channel_name @ "/members" strcat getConfig
     dup array? if
         listeners ! 
         me @ { listeners @ foreach swap pop
@@ -250,7 +250,7 @@ $include $lib/yaro
 
     message !
     channel_name !
-    command @ match channel_name @ "/members" strcat 
+    command @ tolower match channel_name @ "/members" strcat 
     getConfig foreach swap pop
         dup me @ channel_name @ is_gagged? over me @ swap channel_name @ is_gagged? or not if
             dup channel_name @ "/alert" strcat getConfig if
@@ -265,11 +265,11 @@ $include $lib/yaro
     var message
 
     strip message !
-    command @ get_channel_name channel_name !
+    command @ tolower get_channel_name channel_name !
     me @ channel_name @ on_channel? if
         "^+2+^You^+1+^ " me @ say strcat ", \"" strcat message @ strcat "\"" strcat 
         me @ swap channel_name @ swap channel_decorate tell
-        command @ match channel_name @ "/members" strcat getConfig foreach swap pop
+        command @ tolower match channel_name @ "/members" strcat getConfig foreach swap pop
             dup me @ = if pop
             else
                 dup me @ channel_name @ is_gagged? over me @ swap channel_name @ is_gagged? or not if
@@ -290,9 +290,9 @@ $include $lib/yaro
     var message
 
     strip message !
-    command @ get_channel_name channel_name !
+    command @ tolower get_channel_name channel_name !
     me @ channel_name @ on_channel? if
-        command @ match channel_name @ "/members" strcat getConfig foreach swap pop
+        command @ tolower match channel_name @ "/members" strcat getConfig foreach swap pop
             dup me @ channel_name @ is_gagged? over me @ swap channel_name @ is_gagged? or not if
                 dup me @ channel_name @ get_nickname "^+2+^" swap strcat "^+1+^" strcat 
                 message @ case
@@ -314,10 +314,10 @@ $include $lib/yaro
     var listeners
 
     { } array_make listeners !
-    command @ get_channel_name channel_name !
-    command @ match channel_name @ "/restricted" strcat getConfig not me @ "W" flag? or if
+    command @ tolower get_channel_name channel_name !
+    command @ tolower match channel_name @ "/restricted" strcat getConfig not me @ "W" flag? or if
         me @ channel_name @ is_banned? not if
-            command @ match channel_name @ "/members" strcat getConfig dup array? if
+            command @ tolower match channel_name @ "/members" strcat getConfig dup array? if
                 listeners ! listeners @ me @ array_findval if
                     me @ "You are already on this channel." error_color tell
                     exit
@@ -326,7 +326,7 @@ $include $lib/yaro
                 pop
             then
             listeners @ me @ array_append listeners !
-            command @ match channel_name @ "/members" strcat listeners @ setConfig
+            command @ tolower match channel_name @ "/members" strcat listeners @ setConfig
             channel_name @ me @ name " has joined " channel_name @ get_channel_alias strcat "." strcat strcat
             alert_members
             me @ "You have joined " channel_name @ get_channel_alias strcat " successfully." strcat success_color tell
@@ -344,14 +344,14 @@ $include $lib/yaro
     var listeners
 
     { } array_make listeners !
-    command @ get_channel_name channel_name !
-    command @ match channel_name @ "/members" strcat getConfig dup array? if
+    command @ tolower get_channel_name channel_name !
+    command @ tolower match channel_name @ "/members" strcat getConfig dup array? if
         listeners ! listeners @ me @ array_findval dup if
             channel_name @ me @ name " has left " strcat channel_name @ get_channel_alias strcat "." strcat
             alert_members
             0 array_getitem listeners @ swap array_delitem listeners !
             trigger @ "_config/" channel_name @ strcat "/members#" strcat remove_prop
-            command @ match channel_name @ "/members" strcat listeners @ setConfig
+            command @ tolower match channel_name @ "/members" strcat listeners @ setConfig
             me @ "You have left " channel_name @ get_channel_alias strcat " successfully." strcat success_color tell
         else
             me @ "You are not on this channel!" error_color tell
@@ -365,14 +365,14 @@ $include $lib/yaro
     var channel_name
 
     me @ "W" flag? if
-        command @ get_channel_name channel_name !
+        command @ tolower get_channel_name channel_name !
         dup if
-            command @ match swap channel_name @ "/alias" strcat swap setConfig
+            command @ tolower match swap channel_name @ "/alias" strcat swap setConfig
             me @ "You have given " channel_name @ strcat 
             " the alias " strcat channel_name @ get_channel_alias strcat "!" strcat
             success_color tell
         else
-            command @ match channel_name @ "/alias" strcat 0 setConfig
+            command @ tolower match channel_name @ "/alias" strcat 0 setConfig
             me @ "Alias for channel " channel_name @ strcat " cleared." strcat success_color tell
         then
     else
@@ -383,7 +383,7 @@ $include $lib/yaro
 : doNick ( s -- )
     var channel_name
 
-    command @ get_channel_name channel_name !
+    command @ tolower get_channel_name channel_name !
     dup if
         dup me @ swap channel_name @ "/nick" strcat swap setConfig
         me @ swap "Nickname for " channel_name @ strcat " set to " strcat
@@ -399,12 +399,12 @@ $include $lib/yaro
     var listeners
 
     { } array_make listeners !
-    command @ get_channel_name channel_name !
-    command @ match channel_name @ "/restricted" strcat getConfig if
-        command @ match channel_name @ "/restricted" strcat 0 setConfig
+    command @ tolower get_channel_name channel_name !
+    command @ tolower match channel_name @ "/restricted" strcat getConfig if
+        command @ tolower match channel_name @ "/restricted" strcat 0 setConfig
         me @ "The channel " channel_name @ strcat " has been unrestricted. All players may join." strcat success_color tell
     else
-        command @ match channel_name @ "/restricted" strcat 1 setConfig
+        command @ tolower match channel_name @ "/restricted" strcat 1 setConfig
         me @ "The channel " channel_name @ strcat " has been restricted. Only wizards may join." strcat success_color tell
     then
 ;
@@ -412,7 +412,7 @@ $include $lib/yaro
 : gag ( s -- )
     var channel_name
 
-    command @ get_channel_name channel_name !
+    command @ tolower get_channel_name channel_name !
     dup if
         pmatch dup ok? over player? and if
             me @ channel_name @ on_channel? if
@@ -458,19 +458,19 @@ $include $lib/yaro
     var channel_name
     var listeners
 
-    command @ get_channel_name channel_name !
+    command @ tolower get_channel_name channel_name !
     me @ "W" flag? if
         dup if
             pmatch dup ok? over player? and if
                 dup channel_name @ on_channel? if
                     dup "W" flag? not if
-                        command @ match channel_name @ "/members" strcat getConfig listeners !
-                        command @ match "_config/" channel_name @ strcat "/members#" strcat remove_prop
+                        command @ tolower match channel_name @ "/members" strcat getConfig listeners !
+                        command @ tolower match "_config/" channel_name @ strcat "/members#" strcat remove_prop
                         listeners @ over over swap array_findval 0 array_getitem array_delitem
-                        command @ match swap channel_name @ "/members" strcat swap setConfig
+                        command @ tolower match swap channel_name @ "/members" strcat swap setConfig
                         dup dup "You have been kicked off of " channel_name @ get_channel_alias strcat "." strcat
                         info_color otell
-                        command @ match channel_name @ "/members" strcat getConfig foreach swap pop
+                        command @ tolower match channel_name @ "/members" strcat getConfig foreach swap pop
                             dup "W" flag? if
                                 over me @ name " has kicked " strcat swap name strcat " from " strcat
                                 channel_name @ get_channel_alias strcat over swap info_color otell
@@ -502,24 +502,24 @@ $include $lib/yaro
     var listeners
     var banlist
 
-    command @ get_channel_name channel_name !
+    command @ tolower get_channel_name channel_name !
     me @ "W" flag? if
         dup if
             pmatch dup ok? over player? and if
                 dup channel_name @ is_banned? not if
                     dup channel_name @ on_channel? if
                         dup "W" flag? not if
-                            command @ match channel_name @ "/members" strcat getConfig listeners !
-                            command @ match "_config/" channel_name @ strcat "/members#" strcat remove_prop
+                            command @ tolower match channel_name @ "/members" strcat getConfig listeners !
+                            command @ tolower match "_config/" channel_name @ strcat "/members#" strcat remove_prop
                             listeners @ over over swap array_findval 0 array_getitem array_delitem
-                            command @ match swap channel_name @ "/members" strcat swap setConfig
-                            command @ match channel_name @ "/banlist" strcat getConfig dup array? not if
+                            command @ tolower match swap channel_name @ "/members" strcat swap setConfig
+                            command @ tolower match channel_name @ "/banlist" strcat getConfig dup array? not if
                                 pop { } array_make
                             then
-                            over array_append command @ match swap channel_name @ "/banlist" strcat swap setConfig
+                            over array_append command @ tolower match swap channel_name @ "/banlist" strcat swap setConfig
                             dup dup "You have been kicked off of " channel_name @ get_channel_alias strcat " and banned." strcat
                             info_color otell
-                            command @ match channel_name @ "/members" strcat getConfig foreach swap pop
+                            command @ tolower match channel_name @ "/members" strcat getConfig foreach swap pop
                                 dup "W" flag? if
                                     over me @ name " has kicked and banned " strcat swap name strcat " from " strcat
                                     channel_name @ get_channel_alias strcat over swap info_color otell
@@ -534,13 +534,13 @@ $include $lib/yaro
                         error_color tell
                     then
                 else
-                    command @ match channel_name @ "/banlist" strcat getConfig banlist ! banlist @
-                    command @ match "_config/" channel_name @ strcat "/banlist" strcat remove_prop
+                    command @ tolower match channel_name @ "/banlist" strcat getConfig banlist ! banlist @
+                    command @ tolower match "_config/" channel_name @ strcat "/banlist" strcat remove_prop
                     over over swap array_findval 0 array_getitem array_delitem
-                    command @ match swap channel_name @ "/banlist" strcat swap setConfig
+                    command @ tolower match swap channel_name @ "/banlist" strcat swap setConfig
                     dup dup "The ban placed on you for " channel_name @ get_channel_alias strcat " has been lifted." strcat
                     info_color otell
-                    command @ match channel_name @ "/members" strcat getConfig foreach swap pop
+                    command @ tolower match channel_name @ "/members" strcat getConfig foreach swap pop
                         dup "W" flag? if
                             over me @ name " has lifted the ban off " strcat swap name strcat " for " strcat
                             channel_name @ get_channel_alias strcat "." strcat over swap info_color otell
@@ -561,38 +561,38 @@ $include $lib/yaro
 ;
 
 : show_help
-    me @ command @ get_channel_name get_channel_alias " Command Help" strcat 80 boxTitle
-    me @ "W" flag? command @ match command @ get_channel_name "/restricted" strcat getConfig not or if
+    me @ command @ tolower get_channel_name get_channel_alias " Command Help" strcat 80 boxTitle
+    me @ "W" flag? command @ tolower match command @ tolower get_channel_name "/restricted" strcat getConfig not or if
         me @ { 
         me @ "W" flag? if
-            { me @ command @ " #create <NAME>" strcat field_color 
+            { me @ command @ tolower " #create <NAME>" strcat field_color 
             me @ "Create a new channel <NAME>" content_color } array_make
-            { me @ command @ " #delete <NAME>" strcat field_color 
+            { me @ command @ tolower " #delete <NAME>" strcat field_color 
             me @ "Delete channel <NAME>" content_color } array_make
-            { me @ command @ " #restrict" strcat field_color 
-            me @ "Toggle if " command @ strcat " is accessible only to wizards" strcat content_color } array_make
-            { me @ command @ " #alias" strcat field_color 
-            me @ "Set an alias for " command @ strcat ". Leave alias out to clear." strcat content_color } array_make
-            { me @ command @ " #kick" strcat field_color 
-            me @ "Throw a user out of " command @ strcat "." strcat content_color } array_make
-            { me @ command @ " #ban" strcat field_color 
-            me @ "Toggle a user ban on " command @ strcat "." strcat content_color } array_make
-            { me @ command @ " #add-command <COMMAND>" strcat field_color 
-            me @ "Add a new command to use " command @ strcat "." strcat content_color } array_make
-            { me @ command @ " #channel-settings" strcat field_color 
-            me @ "Set configurations for " command @ strcat "." strcat content_color } array_make
+            { me @ command @ tolower " #restrict" strcat field_color 
+            me @ "Toggle if " command @ tolower strcat " is accessible only to wizards" strcat content_color } array_make
+            { me @ command @ tolower " #alias" strcat field_color 
+            me @ "Set an alias for " command @ tolower strcat ". Leave alias out to clear." strcat content_color } array_make
+            { me @ command @ tolower " #kick" strcat field_color 
+            me @ "Throw a user out of " command @ tolower strcat "." strcat content_color } array_make
+            { me @ command @ tolower " #ban" strcat field_color 
+            me @ "Toggle a user ban on " command @ tolower strcat "." strcat content_color } array_make
+            { me @ command @ tolower " #add-command <COMMAND>" strcat field_color 
+            me @ "Add a new command to use " command @ tolower strcat "." strcat content_color } array_make
+            { me @ command @ tolower " #channel-settings" strcat field_color 
+            me @ "Set configurations for " command @ tolower strcat "." strcat content_color } array_make
         then
-        { me @ command @ " #on" strcat field_color 
-        me @ "Join the " command @ strcat " channel" strcat content_color } array_make
-        { me @ command @ " #off" strcat field_color 
-        me @ "Leave the " command @ strcat " channel" strcat content_color } array_make
-        { me @ command @ " #who" strcat field_color 
-        me @ "Get a list of users listening on " command @ strcat content_color } array_make
-        { me @ command @ " #nick" strcat field_color 
-        me @ "Give yourself a nickname on " command @ strcat ". Leave nickname blank to clear." strcat content_color } array_make
-        { me @ command @ " #gag" strcat field_color 
-        me @ "Stop a user from sending or recieving messages from you on " command @ strcat content_color } array_make
-        { me @ command @ " #help" strcat field_color 
+        { me @ command @ tolower " #on" strcat field_color 
+        me @ "Join the " command @ tolower strcat " channel" strcat content_color } array_make
+        { me @ command @ tolower " #off" strcat field_color 
+        me @ "Leave the " command @ tolower strcat " channel" strcat content_color } array_make
+        { me @ command @ tolower " #who" strcat field_color 
+        me @ "Get a list of users listening on " command @ tolower strcat content_color } array_make
+        { me @ command @ tolower " #nick" strcat field_color 
+        me @ "Give yourself a nickname on " command @ tolower strcat ". Leave nickname blank to clear." strcat content_color } array_make
+        { me @ command @ tolower " #gag" strcat field_color 
+        me @ "Stop a user from sending or recieving messages from you on " command @ tolower strcat content_color } array_make
+        { me @ command @ tolower " #help" strcat field_color 
         me @ "Display this message." content_color } array_make } array_make 80 boxInfo
     else
         me @ me @ "This channel is accessible only to wizards!" error_color 80 boxContent
@@ -603,15 +603,15 @@ $include $lib/yaro
 : add_command ( s -- )
     var channel_name
 
-    command @ get_channel_name channel_name !
+    command @ tolower get_channel_name channel_name !
 
     me @ "W" flag? if
         dup if
-            command @ match channel_name @ "/commands" strcat getConfig dup not if
+            command @ tolower match channel_name @ "/commands" strcat getConfig dup not if
                 pop { } array_make 
             then
             over over swap array_findval not if
-                over array_append command @ match swap channel_name @ "/commands" strcat swap setConfig
+                over array_append command @ tolower match swap channel_name @ "/commands" strcat swap setConfig
                 dup ";" swap strcat trigger @ name swap strcat trigger @ swap setname
                 me @ "Successfully set the command " rot strcat " for " strcat channel_name @ get_channel_alias
                 strcat "." strcat success_color tell
@@ -632,15 +632,15 @@ $include $lib/yaro
     var channel_name
     var listeners
 
-    command @ get_channel_name channel_name !
-    command @ match channel_name @ "/members" strcat getConfig dup array? if
+    command @ tolower get_channel_name channel_name !
+    command @ tolower match channel_name @ "/members" strcat getConfig dup array? if
         listeners ! listeners @ foreach swap pop
             dup ok? not if
                 listeners @ swap over swap array_findval 0 array_getitem array_delitem listeners !
             else pop then
         repeat
-        command @ match "_config/" channel_name @ strcat "/members#" strcat remove_prop
-        command @ match channel_name @ "/members" strcat listeners @ setConfig
+        command @ tolower match "_config/" channel_name @ strcat "/members#" strcat remove_prop
+        command @ tolower match channel_name @ "/members" strcat listeners @ setConfig
     else pop exit then
 ;
 
@@ -691,13 +691,13 @@ $include $lib/yaro
 
 : channel_settings
     me @ "W" flag? if
-        command @ match "_config/" command @ get_channel_name strcat "/orig" strcat remove_prop
-        command @ match "_config/" command @ get_channel_name strcat "/prefs" strcat
-        command @ match "_config/" command @ get_channel_name strcat "/orig/prefs" strcat 1
+        command @ tolower match "_config/" command @ tolower get_channel_name strcat "/orig" strcat remove_prop
+        command @ tolower match "_config/" command @ tolower get_channel_name strcat "/prefs" strcat
+        command @ tolower match "_config/" command @ tolower get_channel_name strcat "/orig/prefs" strcat 1
         copyprops pop
         begin 
             clear_cache
-            me @ command @ me @ command @ get_nickname "^+2+^" swap strcat "^+1+^ " strcat me @ says strcat
+            me @ command @ tolower me @ command @ tolower get_nickname "^+2+^" swap strcat "^+1+^ " strcat me @ says strcat
             ", \"This is a test message.\"" strcat channel_decorate tell 
             " " tell
             me @ "Channel Settings"
@@ -716,13 +716,13 @@ $include $lib/yaro
             dup int? if 
                 case
                     77 = when 
-                        command @ match "_config/" command @ get_channel_name strcat
+                        command @ tolower match "_config/" command @ tolower get_channel_name strcat
                         "/prefs" strcat remove_prop
                     end
                     88 = when 
-                        command @ match "_config/" command @ get_channel_name strcat "/orig" strcat remove_prop
-                        command @ match "_config/" command @ get_channel_name strcat "/prefs" strcat
-                        command @ match "_config/" command @ get_channel_name strcat "/orig/prefs" strcat 1
+                        command @ tolower match "_config/" command @ tolower get_channel_name strcat "/orig" strcat remove_prop
+                        command @ tolower match "_config/" command @ tolower get_channel_name strcat "/prefs" strcat
+                        command @ tolower match "_config/" command @ tolower get_channel_name strcat "/orig/prefs" strcat 1
                         copyprops pop
                     end
                     9 = when then
@@ -730,20 +730,20 @@ $include $lib/yaro
             else
                 pop 3 pick case
                     7 <= when
-                        rot pop command @ get_channel_name rot strcat 
-                        swap command @ match rot rot setConfig
+                        rot pop command @ tolower get_channel_name rot strcat 
+                        swap command @ tolower match rot rot setConfig
                     end
                 endcase
             then
         repeat
-        command @ match "_config/" command @ get_channel_name strcat "/prefs" strcat remove_prop
-        command @ match "_config/" command @ get_channel_name strcat "/orig/prefs" strcat
-        command @ match "_config/" command @ get_channel_name strcat "/prefs" strcat 1
+        command @ tolower match "_config/" command @ tolower get_channel_name strcat "/prefs" strcat remove_prop
+        command @ tolower match "_config/" command @ tolower get_channel_name strcat "/orig/prefs" strcat
+        command @ tolower match "_config/" command @ tolower get_channel_name strcat "/prefs" strcat 1
         copyprops pop
-        command @ match "_config/" command @ get_channel_name strcat "/orig" strcat remove_prop
+        command @ tolower match "_config/" command @ tolower get_channel_name strcat "/orig" strcat remove_prop
         me @ "^NOTE_COLOR^These changes apply to this channel only and not your preferences." tell
     else
-        "^ERROR_COLOR^You do not have authorization to modify " command @ get_channel_name get_channel_alias
+        "^ERROR_COLOR^You do not have authorization to modify " command @ tolower get_channel_name get_channel_alias
         strcat "." strcat tell
     then
 ;
